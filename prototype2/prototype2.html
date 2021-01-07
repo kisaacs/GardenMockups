@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arizona Map</title>
+    <link rel="stylesheet" href="prototype2.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   <!-- JQuery -->
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <select name="variable1" id="variable1">
+            <option value="none">(none)</option>
+            <option value="aluminum">aluminum</option>
+            <option value="arsenic">arsenic</option>
+            <option value="barium">barium</option>
+            <option value="beryllium">beryllium</option>
+            <option value="cadmium">cadmium</option>
+            <option value="chromium">chromium</option>
+            <option value="copper">copper</option>
+            <option value="lead">lead</option>
+            <option value="manganese">manganese</option>
+            <option value="nickel">nickel</option>
+            <option value="zinc">zinc</option>
+        </select>
+        <div id="map1"></div>
+    </div>
+    <div class="container">
+        <select name="variable2" id="variable2">
+            <option value="none">(none)</option>
+            <option value="aluminum">aluminum</option>
+            <option value="arsenic">arsenic</option>
+            <option value="barium">barium</option>
+            <option value="beryllium">beryllium</option>
+            <option value="cadmium">cadmium</option>
+            <option value="chromium">chromium</option>
+            <option value="copper">copper</option>
+            <option value="lead">lead</option>
+            <option value="manganese">manganese</option>
+            <option value="nickel">nickel</option>
+            <option value="zinc">zinc</option>
+        </select>
+        <div id="map2"></div>
+    </div>
+    <div class ="legend">
+        <div id="legend1"></div>
+        <div id="legend2"></div>
+    </div>
+    <script src="../arizona_census_blocks.js"></script>
+    <script src="mapFunctions.js"></script>
+    <script src="prototype2.js"></script>
+</body>
+</html>

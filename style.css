@@ -5,7 +5,7 @@
     display: block;
 }
 
-#container, #container2 {
+#container, #container2, #legend {
     display: inline-block;
 }
 
