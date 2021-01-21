@@ -26,6 +26,16 @@ h1 {
     margin-bottom: 5px;
 }
 
+hr {
+    height: 1px;
+    border-width: 0px;
+    color: black;
+    background-color: black;
+    position:absolute;
+    bottom: 1px;
+    width: inherit;
+}
+
 .info {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;

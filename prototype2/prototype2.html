@@ -9,6 +9,8 @@
    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
+   <!-- d3 -->
+   <script src="../d3.v5.js"></script>
    <!-- JQuery -->
    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -29,6 +31,11 @@
             <option value="zinc">zinc</option>
         </select>
         <div id="map1"></div>
+        <div>
+            <button id="download1">Download Data</button>
+            <button id="tableView1">Table</button>
+            <button id="mapView1">Map</button>
+        </div>
     </div>
     <div class="container">
         <select name="variable2" id="variable2">
@@ -46,12 +53,18 @@
             <option value="zinc">zinc</option>
         </select>
         <div id="map2"></div>
+        <div>
+            <button id="download2">Download Data</button>
+            <button id="tableView2">Table</button>
+            <button id="mapView2">Map</button>
+        </div>
     </div>
     <div class ="legend">
         <div id="legend1"></div>
         <div id="legend2"></div>
     </div>
     <script src="../arizona_census_blocks.js"></script>
+    <script src="../fipsCodes.js"></script>
     <script src="mapFunctions.js"></script>
     <script src="prototype2.js"></script>
 </body>

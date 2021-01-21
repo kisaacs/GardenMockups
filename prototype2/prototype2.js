@@ -1,11 +1,14 @@
 var map1 = null;
 var map2 = null;
+var dataMap = {};
 
 $(document).ready(function() {
         map1 = createMap("map1");
         map2 = createMap("map2");
         selectHandler("variable1", "#legend1", map1);
         selectHandler("variable2", "#legend2", map2);
+        downloadHandler("download1", map1, "variable1");
+        downloadHandler("download2", map2, "variable2");
 });
 
 function selectHandler(id, legendId, map) {
@@ -17,6 +20,7 @@ function selectHandler(id, legendId, map) {
             map.removeControl(features['info']);
             $(legendId).empty();
             features = null;
+            delete dataMap[map];
         }
         let value = $(idHandler + " option:selected").val();
         let location_type = "block_group";
@@ -25,6 +29,7 @@ function selectHandler(id, legendId, map) {
                 + value + "&location_type="
                 + location_type)
             .then((measurementsResponse) => measurementsResponse.json())
+            .then((measurementsResponse)=>{ dataMap[map] = measurementsResponse; return measurementsResponse; })
             .then(getMapData)
             .then(getMinMax)
             .then(createColorMapping)
@@ -34,6 +39,39 @@ function selectHandler(id, legendId, map) {
             .catch((response) => console.log(response));
         } else {
             console.log('value is none');
+        }
+    });
+}
+
+function downloadHandler(downloadId, mapId, selectId) {
+    $("#" + downloadId).on("click", function() {
+        if (mapId in dataMap) {
+            console.log("downloading data...");
+            let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Value\n";
+            let data = dataMap[mapId];
+            for (let i=0; i<data.length; i++) {
+                let geoId = "";
+                if (data[i]['location_name'][0] != '0') {
+                    geoId = "0";
+                }
+                geoId += data[i]['location_name'];
+                csv += (i+1) + ',';
+                csv += '="' + geoId + '",';
+                csv += '="' + geoId.slice(0,2) + '",';
+                csv += '="' + fipsToState[geoId.slice(0,2)] + '",';
+                csv += '="' + geoId.slice(2,5) + '",';
+                csv += '="' + fipsToCounty[geoId.slice(2,5)] + '",';
+                csv += '="' + geoId.slice(5,11) + '",';
+                csv += '="' + geoId[11] + '",';
+                csv += data[i]['value'] + "\n";
+            }
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = $("#" + selectId + " option:selected").val() + ".csv";
+            hiddenElement.click();
+        } else {
+            alert("This map has no data.");
         }
     });
 }
@@ -124,6 +162,7 @@ function createLegend(createLegendRequest, legendId) {
             maxCount = counts[color];
         }
     }
+
     var convertHeight = (count) => (count/maxCount) * legendHeight;
     let width = (legendWidth - 20) / 8;
     console.log(counts);
@@ -136,6 +175,8 @@ function createLegend(createLegendRequest, legendId) {
         div.addClass("legendDiv");
         $(legendId).append(div);
     }
+    let hr = $("<hr>");
+    $(legendId).append(hr);
 
     return createLegendRequest;
 }
@@ -175,9 +216,12 @@ function fillMap(createColorResponse, map) {
     };
     // method that we will use to update the control based on feature properties passed
     info.update = function (props) {
-        this._div.innerHTML = '<h4>Data Value</h4>' +  (props ?
-            '<b>' + data[props['STATE'] + props['COUNTY'] + props['TRACT']]
-            : 'Hover over a tract');
+        if (props) {
+            let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
+            this._div.innerHTML = '<h4>Data Value</h4>' +  (key in data ?
+                '<b>' + data[key][0].toFixed(2)
+                : 'Hover over a tract');
+        }
     };
     info.addTo(map);
 
