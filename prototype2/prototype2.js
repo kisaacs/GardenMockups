@@ -1,46 +1,96 @@
 var map1 = null;
 var map2 = null;
 var dataMap = {};
+var variableDesc = [];
+var variableMap = {}
+var variableSourceMap = {}
+var features = {};
 
 $(document).ready(function() {
+        loadVariables();
+        
+        $("#searchBar2").autocomplete({
+            source: variableDesc
+        });
         map1 = createMap("map1");
         map2 = createMap("map2");
-        selectHandler("variable1", "#legend1", map1);
-        selectHandler("variable2", "#legend2", map2);
-        downloadHandler("download1", map1, "variable1");
-        downloadHandler("download2", map2, "variable2");
+
+        $("#searchBar1").autocomplete({
+            source: variableDesc,
+            select: function(event, ui) {
+                console.log("Finished Response!");
+                if ("map1" in features) {
+                    map1.removeLayer(features['map1']['geojson']);
+                    map2.removeControl(features['map1']['info']);
+                    $("#legend1").empty();
+                    delete features['map1'];
+                    delete dataMap['map1'];
+                }
+                let value=variableMap[ui['item']['value']]['name'];
+                console.log(value);
+                let location_type = 'census_block';
+                fetchMapData(value, location_type, "map1", "#legend1", map1);
+                if (!('map1' in dataMap)) {
+                    location_type = 'block_group';
+                    fetchMapData(value, location_type, 'map1', '#legend1', map1);
+                }
+            }
+        });
+        selectHandler("variable1", "#legend1", "map1", map1);
+        selectHandler("variable2", "#legend2", "map1", map2);
+        downloadHandler("download1", 'map1', "variable1");
+        downloadHandler("download2", 'map2', "variable2");
 });
 
-function selectHandler(id, legendId, map) {
+function loadVariables() {
+    fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables")
+        .then((variablesResponse) => variablesResponse.json())
+        .then((variables)=>{
+            for (let i=0; i<variables.length; i++) {
+                let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
+                variableDesc.push(desc);
+                variableMap[desc] = variables[i];
+                if (!(variables[i]['source'] in variableSourceMap)) {
+                    variableSourceMap[variables[i]['source']] = [];
+                }
+                variableSourceMap[variables[i]['source']].push(desc);
+            }
+        });
+}
+
+function selectHandler(id, legendId, mapId, map) {
     let idHandler = "#" + id;
-    var features = null;
     $(idHandler).change(function() {
-        if (features !== null) {
-            map.removeLayer(features['geojson']);
-            map.removeControl(features['info']);
+        if (mapId in features) {
+            map.removeLayer(features[mapId]['geojson']);
+            map.removeControl(features[mapId]['info']);
             $(legendId).empty();
-            features = null;
-            delete dataMap[map];
+            delete features[mapId];
+            delete dataMap[mapId];
         }
         let value = $(idHandler + " option:selected").val();
         let location_type = "block_group";
-        if (value !== 'none') {
+        fetchMapData(value, location_type, mapId, legendId, map);
+    });
+}
+
+function fetchMapData(value, location_type, mapId, legendId, map) {
+    if (value !== 'none') {
         fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable="
                 + value + "&location_type="
                 + location_type)
             .then((measurementsResponse) => measurementsResponse.json())
-            .then((measurementsResponse)=>{ dataMap[map] = measurementsResponse; return measurementsResponse; })
+            .then((measurementsResponse)=>{ dataMap[mapId] = measurementsResponse; return measurementsResponse; })
             .then(getMapData)
             .then(getMinMax)
             .then(createColorMapping)
             .then((createColorResponse)=>createLegend(createColorResponse, legendId))
             .then((createColorResponse)=>fillMap(createColorResponse, map))
-            .then((fillMapResponse)=>{ features = fillMapResponse; })
+            .then((fillMapResponse)=>{ features[mapId] = fillMapResponse; })
             .catch((response) => console.log(response));
         } else {
             console.log('value is none');
         }
-    });
 }
 
 function downloadHandler(downloadId, mapId, selectId) {
