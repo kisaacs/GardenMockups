@@ -18,12 +18,16 @@ $(document).ready(function() {
         $("#searchBar1").autocomplete({
             autoFocus: true,
             source: variableDesc,
+            // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
             select: (event, ui)=>searchHandler(event, ui, "map1", map1, "#legend1")
         });
         $("#searchBar2").autocomplete({
             autoFocus: true,
-            source: variableDesc,
-            _resizeMenu: function() { this.menu.element.outerWidth( 100 ); },
+            source: function(request, response) {
+                var results = $.ui.autocomplete.filter(variableDesc, request.term);
+                response(results.slice(0, 20));
+            },
+            // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
             select: (event, ui)=>searchHandler(event, ui, "map2", map2, "#legend2")
         })
         selectHandler("variable1", "#legend1", "map1", map1);
