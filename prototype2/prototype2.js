@@ -16,28 +16,18 @@ $(document).ready(function() {
         map2 = createMap("map2");
 
         $("#searchBar1").autocomplete({
+            autoFocus: true,
             source: variableDesc,
-            select: function(event, ui) {
-                console.log("Finished Response!");
-                if ("map1" in features) {
-                    map1.removeLayer(features['map1']['geojson']);
-                    map2.removeControl(features['map1']['info']);
-                    $("#legend1").empty();
-                    delete features['map1'];
-                    delete dataMap['map1'];
-                }
-                let value=variableMap[ui['item']['value']]['name'];
-                console.log(value);
-                let location_type = 'census_block';
-                fetchMapData(value, location_type, "map1", "#legend1", map1);
-                if (!('map1' in dataMap)) {
-                    location_type = 'block_group';
-                    fetchMapData(value, location_type, 'map1', '#legend1', map1);
-                }
-            }
+            select: (event, ui)=>searchHandler(event, ui, "map1", map1, "#legend1")
         });
+        $("#searchBar2").autocomplete({
+            autoFocus: true,
+            source: variableDesc,
+            _resizeMenu: function() { this.menu.element.outerWidth( 100 ); },
+            select: (event, ui)=>searchHandler(event, ui, "map2", map2, "#legend2")
+        })
         selectHandler("variable1", "#legend1", "map1", map1);
-        selectHandler("variable2", "#legend2", "map1", map2);
+        selectHandler("variable2", "#legend2", "map2", map2);
         downloadHandler("download1", 'map1', "variable1");
         downloadHandler("download2", 'map2', "variable2");
 });
@@ -58,10 +48,26 @@ function loadVariables() {
         });
 }
 
+function searchHandler(event, ui, mapId, map, legendId) {
+    if (mapId in features) {
+        console.log("Removing Layer Search...");
+        map.removeLayer(features[mapId]['geojson']);
+        map.removeControl(features[mapId]['info']);
+        $(legendId).empty();
+        delete features[mapId];
+        delete dataMap[mapId];
+    }
+    let value=variableMap[ui['item']['value']]['name'];
+    let units=variableMap[ui['item']['value']]['unit'];
+    let location_type = 'census_block';
+    fetchMapData(value, location_type, mapId, legendId, map, units=units);
+}
+
 function selectHandler(id, legendId, mapId, map) {
     let idHandler = "#" + id;
     $(idHandler).change(function() {
         if (mapId in features) {
+            console.log("Removing Layer Select");
             map.removeLayer(features[mapId]['geojson']);
             map.removeControl(features[mapId]['info']);
             $(legendId).empty();
@@ -69,23 +75,25 @@ function selectHandler(id, legendId, mapId, map) {
             delete dataMap[mapId];
         }
         let value = $(idHandler + " option:selected").val();
+        let units = variableMap[" (" + value + ")"]['unit'];
         let location_type = "block_group";
-        fetchMapData(value, location_type, mapId, legendId, map);
+        fetchMapData(value, location_type, mapId, legendId, map, units);
     });
 }
 
-function fetchMapData(value, location_type, mapId, legendId, map) {
+function fetchMapData(value, location_type, mapId, legendId, map, units='') {
+    console.log(units);
     if (value !== 'none') {
-        fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable="
-                + value + "&location_type="
-                + location_type)
+        fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + value)
+               //  + value + "&location_type="
+               //  + location_type)
             .then((measurementsResponse) => measurementsResponse.json())
             .then((measurementsResponse)=>{ dataMap[mapId] = measurementsResponse; return measurementsResponse; })
             .then(getMapData)
             .then(getMinMax)
             .then(createColorMapping)
             .then((createColorResponse)=>createLegend(createColorResponse, legendId))
-            .then((createColorResponse)=>fillMap(createColorResponse, map))
+            .then((createColorResponse)=>fillMap(createColorResponse, map, units))
             .then((fillMapResponse)=>{ features[mapId] = fillMapResponse; })
             .catch((response) => console.log(response));
         } else {
@@ -118,7 +126,7 @@ function downloadHandler(downloadId, mapId, selectId) {
             var hiddenElement = document.createElement('a');
             hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
             hiddenElement.target = '_blank';
-            hiddenElement.download = $("#" + selectId + " option:selected").val() + ".csv";
+            hiddenElement.download = "data.csv";
             hiddenElement.click();
         } else {
             alert("This map has no data.");
@@ -215,7 +223,7 @@ function createLegend(createLegendRequest, legendId) {
 
     var convertHeight = (count) => (count/maxCount) * legendHeight;
     let width = (legendWidth - 20) / 8;
-    console.log(counts);
+    // console.log(counts);
     for (var i=0; i<colors.length; i++) {
         let div = $("<div></div>");
         div.css("width", width);
@@ -231,10 +239,8 @@ function createLegend(createLegendRequest, legendId) {
     return createLegendRequest;
 }
 
-function fillMap(createColorResponse, map) {
+function fillMap(createColorResponse, map, units) {
     let data = createColorResponse['blockData'];
-    console.log("max " + createColorResponse['max']);
-    console.log("min " + createColorResponse['min']);
     function parseFeature(feature) {
         // console.log(feature);
         var string = "" + feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
@@ -269,7 +275,7 @@ function fillMap(createColorResponse, map) {
         if (props) {
             let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
             this._div.innerHTML = '<h4>Data Value</h4>' +  (key in data ?
-                '<b>' + data[key][0].toFixed(2)
+                '<b>' + data[key][0].toFixed(2) + ' ' + units
                 : 'Hover over a tract');
         }
     };
@@ -319,14 +325,14 @@ var maps = [];
 function initMap(getColor, data, mapId) {
 
     L.DomEvent.on(mymap, 'zoom', (event) => {
-        console.log(event);
+        // console.log(event);
         for (var i=0; i<maps.length; i++) {
             maps[i].setView(event.target.getCenter(), event.target.getZoom());
         }
 
     });
     L.DomEvent.on(mymap, 'dragend', (event) => {
-        console.log(event);
+        // console.log(event);
         for (var i=0; i<maps.length; i++) {
             maps[i].setView(event.target.getCenter(), event.target.getZoom());
         }
