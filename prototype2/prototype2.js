@@ -5,6 +5,8 @@ var variableDesc = [];
 var variableMap = {}
 var variableSourceMap = {}
 var features = {};
+var table=null;
+var newWindow=null;
 
 $(document).ready(function() {
         loadVariables();
@@ -34,6 +36,43 @@ $(document).ready(function() {
         selectHandler("variable2", "#legend2", "map2", map2);
         downloadHandler("download1", 'map1', "variable1");
         downloadHandler("download2", 'map2', "variable2");
+        $("#tableView1").on("click", function() {
+            table = $("<table id='table' class='table table-striped'></table>");
+            var head = $("<tr id='head'></tr>");
+            head.append("<th>Name</th>");
+            head.append("<th>Value</th>");
+            head.append("<th>Location</th>");
+            head.append("<th>Location Type</th>");
+            head.append("<th>Collected On</th>");
+            head.append("<th>Medium</th>");
+            table.append(head);
+
+            var body = $("<tbody></tbody>");
+            var data = dataMap['map1'];
+            for (var i=0; i<data.length; i++) {
+                var row = $("<tr></tr>");
+                row.append($("<td></td>").text(data[i]['variable_name']));
+                row.append($("<td></td>").text(data[i]['value']));
+                row.append($("<td></td>").text(data[i]['location_name']));
+                row.append($("<td></td>").text(data[i]['location_type']));
+                row.append($("<td></td>").text(data[i]['collected_on']));
+                row.append($("<td></td>").text(data[i]['medium']));
+                body.append(row);
+            }
+            table.append(body);
+            // table.DataTable();
+            newWindow = window.open("../table.html", "", "width=800,height=800");
+            newWindow.document.body.innerHTML = table[0].outerHTML;
+            // newWindow.onload = function() {
+            //     console.log("Setting the window");
+            //     let content = table[0].outerHTML;
+            //     newWindow.document.getElementById('test').innerHTML = content;
+
+            // }
+            var body = $("<body></body>");
+            body.append(table);
+            // newWindow.document.body.innerHTML = body.html();
+        })
 });
 
 function loadVariables() {
