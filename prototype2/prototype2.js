@@ -109,7 +109,7 @@ function downloadHandler(downloadId, mapId, selectId) {
     $("#" + downloadId).on("click", function() {
         if (mapId in dataMap) {
             console.log("downloading data...");
-            let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Value\n";
+            let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Medium,Value\n";
             let data = dataMap[mapId];
             for (let i=0; i<data.length; i++) {
                 let geoId = "";
@@ -125,6 +125,7 @@ function downloadHandler(downloadId, mapId, selectId) {
                 csv += '="' + fipsToCounty[geoId.slice(2,5)] + '",';
                 csv += '="' + geoId.slice(5,11) + '",';
                 csv += '="' + geoId[11] + '",';
+                csv += '="' + data[i]['medium'] + '",';
                 csv += data[i]['value'] + "\n";
             }
             var hiddenElement = document.createElement('a');
