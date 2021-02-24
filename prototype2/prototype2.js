@@ -1,35 +1,39 @@
 var map1 = null;
 var map2 = null;
 var dataMap = {};
-var variableDesc = [];
+var variableDesc = ['test1', 'test2'];
 var variableMap = {}
 var variableSourceMap = {}
 var features = {};
 
-$(document).ready(function() {
+document.addEventListener("DOMContentLoaded", function() {
         loadVariables();
         
-        $("#searchBar2").autocomplete({
-            source: variableDesc
-        });
         map1 = createMap("map1");
         map2 = createMap("map2");
 
-        $("#searchBar1").autocomplete({
-            autoFocus: true,
-            source: variableDesc,
-            // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
-            select: (event, ui)=>searchHandler(event, ui, "map1", map1, "#legend1")
+        var searchBar1 = new Awesomplete(document.getElementById("searchBar1"), {
+            list: variableDesc
         });
-        $("#searchBar2").autocomplete({
-            autoFocus: true,
-            source: function(request, response) {
-                var results = $.ui.autocomplete.filter(variableDesc, request.term);
-                response(results.slice(0, 20));
-            },
-            // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
-            select: (event, ui)=>searchHandler(event, ui, "map2", map2, "#legend2")
-        })
+        var searchBar2 = new Awesomplete(document.getElementById("searchBar2"), {
+            list: variableDesc
+        });
+
+        // $("#searchBar1").autocomplete({
+        //     autoFocus: true,
+        //     source: variableDesc,
+        //     // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
+        //     select: (event, ui)=>searchHandler(event, ui, "map1", map1, "#legend1")
+        // });
+        // $("#searchBar2").autocomplete({
+        //     autoFocus: true,
+        //     source: function(request, response) {
+        //         var results = $.ui.autocomplete.filter(variableDesc, request.term);
+        //         response(results.slice(0, 20));
+        //     },
+        //     // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
+        //     select: (event, ui)=>searchHandler(event, ui, "map2", map2, "#legend2")
+        // });
         selectHandler("variable1", "#legend1", "map1", map1);
         selectHandler("variable2", "#legend2", "map2", map2);
         downloadHandler("download1", 'map1', "variable1");
