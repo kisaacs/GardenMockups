@@ -11,5 +11,5 @@ function createMap(mapId) {
     }).addTo(mymap);
     console.log("Created Map " + mapId);
 
-    return mymap
+    return mymap;
 }

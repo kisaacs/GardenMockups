@@ -2,96 +2,36 @@ var map1 = null;
 var map2 = null;
 var dataMap = {};
 var variableDesc = [];
-var variableMap = {}
-var variableSourceMap = {}
+var variableMap = {};
 var features = {};
-var table=null;
-var newWindow=null;
+var model = null;
 
-$(document).ready(function() {
-        loadVariables();
-        
-        $("#searchBar2").autocomplete({
-            source: variableDesc
-        });
+document.addEventListener("DOMContentLoaded", function() {
+        model = new Model();
+        model.fetchVariables();   
+        // loadVariables();
         map1 = createMap("map1");
         map2 = createMap("map2");
 
-        $("#searchBar1").autocomplete({
-            autoFocus: true,
-            source: variableDesc,
-            // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
-            select: (event, ui)=>searchHandler(event, ui, "map1", map1, "#legend1")
+        new Awesomplete(document.getElementById("searchBar1"), {
+            list: model.getVariables()
         });
-        $("#searchBar2").autocomplete({
-            autoFocus: true,
-            source: function(request, response) {
-                var results = $.ui.autocomplete.filter(variableDesc, request.term);
-                response(results.slice(0, 20));
-            },
-            // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
-            select: (event, ui)=>searchHandler(event, ui, "map2", map2, "#legend2")
-        })
+        new Awesomplete(document.getElementById("searchBar2"), {
+            list: model.getVariables()
+        });
+        document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
+            searchHandler(event.text.value, "map1", map1, "#legend1");
+        });
+        document.getElementById("searchBar2").addEventListener('awesomplete-selectcomplete', (event)=>{
+            searchHandler(event.text.value, "map2", map2, "#legend2");
+        });
         selectHandler("variable1", "#legend1", "map1", map1);
         selectHandler("variable2", "#legend2", "map2", map2);
         downloadHandler("download1", 'map1', "variable1");
         downloadHandler("download2", 'map2', "variable2");
-        $("#tableView1").on("click", function() {
-            table = $("<table id='table' class='table table-striped'></table>");
-            var head = $("<tr id='head'></tr>");
-            head.append("<th>Name</th>");
-            head.append("<th>Value</th>");
-            head.append("<th>Location</th>");
-            head.append("<th>Location Type</th>");
-            head.append("<th>Collected On</th>");
-            head.append("<th>Medium</th>");
-            table.append(head);
-
-            var body = $("<tbody></tbody>");
-            var data = dataMap['map1'];
-            for (var i=0; i<data.length; i++) {
-                var row = $("<tr></tr>");
-                row.append($("<td></td>").text(data[i]['variable_name']));
-                row.append($("<td></td>").text(data[i]['value']));
-                row.append($("<td></td>").text(data[i]['location_name']));
-                row.append($("<td></td>").text(data[i]['location_type']));
-                row.append($("<td></td>").text(data[i]['collected_on']));
-                row.append($("<td></td>").text(data[i]['medium']));
-                body.append(row);
-            }
-            table.append(body);
-            // table.DataTable();
-            newWindow = window.open("../table.html", "", "width=800,height=800");
-            newWindow.document.body.innerHTML = table[0].outerHTML;
-            // newWindow.onload = function() {
-            //     console.log("Setting the window");
-            //     let content = table[0].outerHTML;
-            //     newWindow.document.getElementById('test').innerHTML = content;
-
-            // }
-            var body = $("<body></body>");
-            body.append(table);
-            // newWindow.document.body.innerHTML = body.html();
-        })
 });
 
-function loadVariables() {
-    fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables")
-        .then((variablesResponse) => variablesResponse.json())
-        .then((variables)=>{
-            for (let i=0; i<variables.length; i++) {
-                let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
-                variableDesc.push(desc);
-                variableMap[desc] = variables[i];
-                if (!(variables[i]['source'] in variableSourceMap)) {
-                    variableSourceMap[variables[i]['source']] = [];
-                }
-                variableSourceMap[variables[i]['source']].push(desc);
-            }
-        });
-}
-
-function searchHandler(event, ui, mapId, map, legendId) {
+function searchHandler(variableName, mapId, map, legendId) {
     if (mapId in features) {
         console.log("Removing Layer Search...");
         map.removeLayer(features[mapId]['geojson']);
@@ -100,8 +40,8 @@ function searchHandler(event, ui, mapId, map, legendId) {
         delete features[mapId];
         delete dataMap[mapId];
     }
-    let value=variableMap[ui['item']['value']]['name'];
-    let units=variableMap[ui['item']['value']]['unit'];
+    let value=variableMap[variableName]['name'];
+    let units=variableMap[variableName]['unit'];
     let location_type = 'census_block';
     fetchMapData(value, location_type, mapId, legendId, map, units=units);
 }
@@ -118,7 +58,7 @@ function selectHandler(id, legendId, mapId, map) {
             delete dataMap[mapId];
         }
         let value = $(idHandler + " option:selected").val();
-        let units = variableMap[" (" + value + ")"]['unit'];
+        let units = model.getUnits(" (" + value + ")");
         let location_type = "block_group";
         fetchMapData(value, location_type, mapId, legendId, map, units);
     });
@@ -128,8 +68,6 @@ function fetchMapData(value, location_type, mapId, legendId, map, units='') {
     console.log(units);
     if (value !== 'none') {
         fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + value)
-               //  + value + "&location_type="
-               //  + location_type)
             .then((measurementsResponse) => measurementsResponse.json())
             .then((measurementsResponse)=>{ dataMap[mapId] = measurementsResponse; return measurementsResponse; })
             .then(getMapData)
@@ -148,7 +86,7 @@ function downloadHandler(downloadId, mapId, selectId) {
     $("#" + downloadId).on("click", function() {
         if (mapId in dataMap) {
             console.log("downloading data...");
-            let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Value\n";
+            let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Medium,Value\n";
             let data = dataMap[mapId];
             for (let i=0; i<data.length; i++) {
                 let geoId = "";
@@ -164,6 +102,7 @@ function downloadHandler(downloadId, mapId, selectId) {
                 csv += '="' + fipsToCounty[geoId.slice(2,5)] + '",';
                 csv += '="' + geoId.slice(5,11) + '",';
                 csv += '="' + geoId[11] + '",';
+                csv += '="' + data[i]['medium'] + '",';
                 csv += data[i]['value'] + "\n";
             }
             var hiddenElement = document.createElement('a');
@@ -182,6 +121,9 @@ function getMapData(measurementsResponse) {
     let data = measurementsResponse;
     let blockData = {};
     for (let i=0; i<data.length; i++) {
+        if (data[i]['location_type'] !== 'block_group') {
+            continue;
+        }
         let blockId = "";
         if (data[i]['location_name'][0] != '0') {
             blockId = "0";
@@ -307,12 +249,14 @@ function fillMap(createColorResponse, map, units) {
 
     // Adding the Data Box
     var info = L.control();
-
+    // info.addTo(map);
     info.onAdd = function (map) {
         this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
         this.update();
         return this._div;
     };
+    info.update = function(props) { return '0'; }
+    info.addTo(map);
     // method that we will use to update the control based on feature properties passed
     info.update = function (props) {
         if (props) {
@@ -322,7 +266,7 @@ function fillMap(createColorResponse, map, units) {
                 : 'Hover over a tract');
         }
     };
-    info.addTo(map);
+    
 
     var geojson;
     function highlightFeature(e) {
@@ -362,24 +306,3 @@ function fillMap(createColorResponse, map, units) {
 
     return {'geojson': geojson, 'info': info} ;
 }
-
-var maps = [];
-
-function initMap(getColor, data, mapId) {
-
-    L.DomEvent.on(mymap, 'zoom', (event) => {
-        // console.log(event);
-        for (var i=0; i<maps.length; i++) {
-            maps[i].setView(event.target.getCenter(), event.target.getZoom());
-        }
-
-    });
-    L.DomEvent.on(mymap, 'dragend', (event) => {
-        // console.log(event);
-        for (var i=0; i<maps.length; i++) {
-            maps[i].setView(event.target.getCenter(), event.target.getZoom());
-        }
-    });
-    maps.push(mymap);
-}
-
