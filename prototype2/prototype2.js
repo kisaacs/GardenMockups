@@ -18,22 +18,12 @@ document.addEventListener("DOMContentLoaded", function() {
         var searchBar2 = new Awesomplete(document.getElementById("searchBar2"), {
             list: variableDesc
         });
-
-        // $("#searchBar1").autocomplete({
-        //     autoFocus: true,
-        //     source: variableDesc,
-        //     // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
-        //     select: (event, ui)=>searchHandler(event, ui, "map1", map1, "#legend1")
-        // });
-        // $("#searchBar2").autocomplete({
-        //     autoFocus: true,
-        //     source: function(request, response) {
-        //         var results = $.ui.autocomplete.filter(variableDesc, request.term);
-        //         response(results.slice(0, 20));
-        //     },
-        //     // open: function(event, ui) {$(this).autocomplete("widget").css({"width": '300px'})},
-        //     select: (event, ui)=>searchHandler(event, ui, "map2", map2, "#legend2")
-        // });
+        document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
+            searchHandler(event.text.value, "map1", map1, "#legend1");
+        });
+        document.getElementById("searchBar2").addEventListener('awesomplete-selectcomplete', (event)=>{
+            searchHandler(event.text.value, "map2", map2, "#legend2");
+        });
         selectHandler("variable1", "#legend1", "map1", map1);
         selectHandler("variable2", "#legend2", "map2", map2);
         downloadHandler("download1", 'map1', "variable1");
@@ -56,7 +46,7 @@ function loadVariables() {
         });
 }
 
-function searchHandler(event, ui, mapId, map, legendId) {
+function searchHandler(variableName, mapId, map, legendId) {
     if (mapId in features) {
         console.log("Removing Layer Search...");
         map.removeLayer(features[mapId]['geojson']);
@@ -65,8 +55,8 @@ function searchHandler(event, ui, mapId, map, legendId) {
         delete features[mapId];
         delete dataMap[mapId];
     }
-    let value=variableMap[ui['item']['value']]['name'];
-    let units=variableMap[ui['item']['value']]['unit'];
+    let value=variableMap[variableName]['name'];
+    let units=variableMap[variableName]['unit'];
     let location_type = 'census_block';
     fetchMapData(value, location_type, mapId, legendId, map, units=units);
 }
@@ -148,6 +138,9 @@ function getMapData(measurementsResponse) {
     let data = measurementsResponse;
     let blockData = {};
     for (let i=0; i<data.length; i++) {
+        if (data[i]['location_type'] !== 'block_group') {
+            continue;
+        }
         let blockId = "";
         if (data[i]['location_name'][0] != '0') {
             blockId = "0";
@@ -328,24 +321,3 @@ function fillMap(createColorResponse, map, units) {
 
     return {'geojson': geojson, 'info': info} ;
 }
-
-var maps = [];
-
-function initMap(getColor, data, mapId) {
-
-    L.DomEvent.on(mymap, 'zoom', (event) => {
-        // console.log(event);
-        for (var i=0; i<maps.length; i++) {
-            maps[i].setView(event.target.getCenter(), event.target.getZoom());
-        }
-
-    });
-    L.DomEvent.on(mymap, 'dragend', (event) => {
-        // console.log(event);
-        for (var i=0; i<maps.length; i++) {
-            maps[i].setView(event.target.getCenter(), event.target.getZoom());
-        }
-    });
-    maps.push(mymap);
-}
-
