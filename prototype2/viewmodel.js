@@ -27,7 +27,6 @@ class ViewModel {
     createInfoBox(map) {
         // Adding the Data Box
         var info = L.control();
-        // info.addTo(map);
         info.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
             this.update();
@@ -44,12 +43,62 @@ class ViewModel {
         });
     }
 
-    downloadBlockData(key) {
 
+    downloadBlockData(key) {
+        let data = model.getBlockData(key);
+        if (data.length === 0) {
+            alert(key + " has no data to download.");
+        }
+        let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Medium,Value\n";
+        for (let i=0; i<data.length; i++) {
+            let geoId = data[i]['location_name'];
+            csv += (i+1) + ',';
+            csv += '="' + geoId + '",';
+            csv += '="' + geoId.slice(0,2) + '",';
+            csv += '="' + fipsToState[geoId.slice(0,2)] + '",';
+            csv += '="' + geoId.slice(2,5) + '",';
+            csv += '="' + fipsToCounty[geoId.slice(2,5)] + '",';
+            csv += '="' + geoId.slice(5,11) + '",';
+            csv += '="' + geoId[11] + '",';
+            csv += '="' + data[i]['medium'] + '",';
+            csv += data[i]['value'] + "\n";
+        }
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = key + ".csv";
+        hiddenElement.click();
     }
 
     populateLegend(key, legend) {
-
+        let legendWidth = 250;
+        let legendHeight = 200;
+        let colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
+        let counts = {'#FFEDA0': 0, '#FED976': 0, '#FEB24C': 0, '#FD8D3C': 0, '#FC4E2A': 0, '#E31A1C': 0, '#BD0026': 0, '#800026': 0};
+        let tractData = model.getTractData();
+        let colorMapping = model.getColorMapping(key);
+        let maxCount = 0;
+    
+        for (tractId in tractData) {
+            let color = colorMapping(tractData[tractId][0] / tractData[tractId][1]);
+            counts[color] += 1;
+            if (maxCount < counts[color])
+                maxCount = counts[color];
+        }
+    
+        var convertHeight = (count) => (count/maxCount) * legendHeight;
+        let width = (legendWidth - 20) / 8;
+        for (var i=0; i<colors.length; i++) {
+            let div = document.createElement("div");
+            div.style.width = width;
+            div.style.height = convertHeight(counts[colors[i]]);
+            div.style.left = width * i;
+            div.style.background = colors[i];
+            div.className = "legendDiv";
+            legend.appendChild(div);
+        }
+        let hr = document.createElement("hr");
+        legend.appendChild(hr);
     }
 
     populateMap(key, map, infoBox, variableName) {
@@ -60,10 +109,10 @@ class ViewModel {
             return -1;
         }
         let colorMapping = model.getColorMapping(key);
-        let blockData = model.getBlockData(key);
-        let parseFeature = this._parseFeature(blockData, colorMapping);
+        let tractData = model.getTractData(key);
+        let parseFeature = this._parseFeature(tractData, colorMapping);
         let style = this._style(parseFeature);
-        infoBox.update = this._update(blockData);
+        infoBox.update = this._update(tractData);
         let highlightFeature = this._highlightFeature(infoBox);
         var geojson;
         let resetHighlight = function(e) {
@@ -77,12 +126,11 @@ class ViewModel {
         return 1;
     }
 
-    _parseFeature(blockData, colorMapping) {
+    _parseFeature(tractData, colorMapping) {
         return function(feature) {
             let string = "" + feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT']; 
-            if (string in blockData) {   
-                let value = (blockData[string][0] / blockData[string][1]);
-                return colorMapping(blockData[string][0] / blockData[string][1]);
+            if (string in tractData) {
+                return colorMapping(tractData[string][0] / tractData[string][1]);
             }
             return 0;
         }
@@ -101,12 +149,12 @@ class ViewModel {
         }
     }
 
-    _update(blockData) {
+    _update(tractData) {
         return function (props) {
             if (props) {
                 let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
-                this._div.innerHTML = '<h4>Data Value</h4>' +  (key in blockData ?
-                    '<b>' + blockData[key][0].toFixed(2) + ' ' + model.getUnits(variableName)
+                this._div.innerHTML = '<h4>Data Value</h4>' +  (key in tractData ?
+                    '<b>' + tractData[key][0].toFixed(2) + ' ' + model.getUnits(variableName)
                     : 'Hover over a tract');
             }
         };

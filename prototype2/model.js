@@ -22,6 +22,18 @@ class Model {
         return [];
     }
 
+    getBlockData(key) {
+        if (key in this.blockDataLists)
+            return this.blockDataLists[key];
+        return [];
+    }
+
+    getTractData(key) {
+        if (key in this.tractDataMaps)
+            return this.tractDataMaps[key];
+        return {};
+    }
+
     getColorMapping(key) {
         let minmax = this._getMinMax(key);
         let min = minmax[0];
@@ -46,6 +58,7 @@ class Model {
     removeData(key) {
         delete this.originalDataLists[key];
         delete this.blockDataLists[key];
+        delete this.tractDataMaps[key];
     }
 
     fetchVariables() {
