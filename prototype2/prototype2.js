@@ -1,86 +1,47 @@
 var map1 = null;
 var map2 = null;
-var dataMap = {};
-var variableDesc = [];
-var variableMap = {};
-var features = {};
-var model = null;
+var infoBox1 = null;
+var infoBox2 = null;
+var ViewModel = null;
 
 document.addEventListener("DOMContentLoaded", function() {
-        model = new Model();
-        model.fetchVariables();   
-        // loadVariables();
-        map1 = createMap("map1");
-        map2 = createMap("map2");
+        ViewModel = new ViewModel();
+        map1 = ViewModel.createMap("map1");
+        map2 = ViewModel.createMap("map2");
+        infoBox1 = ViewModel.createInfoBox(map1);
+        infoBox2 = ViewModel.createInfoBox(map2);
+        ViewModel.createSearchBar(document.getElementById("searchBar1"));
+        ViewModel.createSearchBar(document.getElementById("searchBar2"));
 
-        new Awesomplete(document.getElementById("searchBar1"), {
-            list: model.getVariables()
-        });
-        new Awesomplete(document.getElementById("searchBar2"), {
-            list: model.getVariables()
-        });
+        // View UI Listeners
         document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
-            searchHandler(event.text.value, "map1", map1, "#legend1");
+            ViewModel.populateMap("map1", map1, infoBox1, event.text.value);
+            ViewModel.populateLegend("map1", document.getElementById("legend1"));
         });
         document.getElementById("searchBar2").addEventListener('awesomplete-selectcomplete', (event)=>{
-            searchHandler(event.text.value, "map2", map2, "#legend2");
+            ViewModel.populateMap("map2", map2, infoBox2, event.text.value);
+            ViewModel.populateLegend("map2", document.getElementById("legend2"));
         });
-        selectHandler("variable1", "#legend1", "map1", map1);
-        selectHandler("variable2", "#legend2", "map2", map2);
-        downloadHandler("download1", 'map1', "variable1");
-        downloadHandler("download2", 'map2', "variable2");
+        document.getElementById("variable1").addEventListener('change', (event) => {
+            console.log(event);
+            let sel = document.getElementById('variable1');
+            let variableName = sel.options[sel.selectedIndex].text;
+            ViewModel.populateMap("map1", map1, infoBox1, variableName);
+            ViewModel.populateLegend("map1", document.getElementById("legend1"));
+        });
+        document.getElementById("variable2").addEventListener('change', (event) => {
+            let sel = document.getElementById('variable2');
+            let variableName = sel.options[sel.selectedIndex].text;
+            ViewModel.populateMap("map2", map2, infoBox2, variableName);
+            ViewModel.populateLegend("map2", document.getElementById("legend2"));
+        });
+        document.getElementById("download1").addEventListener('click', () => {
+            ViewModel.downloadBlockData("map1");
+        });
+        document.getElementById("download2").addEventListener('click', () => {
+            ViewModel.downloadBlockData("map2");
+        });
 });
-
-function searchHandler(variableName, mapId, map, legendId) {
-    if (mapId in features) {
-        console.log("Removing Layer Search...");
-        map.removeLayer(features[mapId]['geojson']);
-        map.removeControl(features[mapId]['info']);
-        $(legendId).empty();
-        delete features[mapId];
-        delete dataMap[mapId];
-    }
-    let value=variableMap[variableName]['name'];
-    let units=variableMap[variableName]['unit'];
-    let location_type = 'census_block';
-    fetchMapData(value, location_type, mapId, legendId, map, units=units);
-}
-
-function selectHandler(id, legendId, mapId, map) {
-    let idHandler = "#" + id;
-    $(idHandler).change(function() {
-        if (mapId in features) {
-            console.log("Removing Layer Select");
-            map.removeLayer(features[mapId]['geojson']);
-            map.removeControl(features[mapId]['info']);
-            $(legendId).empty();
-            delete features[mapId];
-            delete dataMap[mapId];
-        }
-        let value = $(idHandler + " option:selected").val();
-        let units = model.getUnits(" (" + value + ")");
-        let location_type = "block_group";
-        fetchMapData(value, location_type, mapId, legendId, map, units);
-    });
-}
-
-function fetchMapData(value, location_type, mapId, legendId, map, units='') {
-    console.log(units);
-    if (value !== 'none') {
-        fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + value)
-            .then((measurementsResponse) => measurementsResponse.json())
-            .then((measurementsResponse)=>{ dataMap[mapId] = measurementsResponse; return measurementsResponse; })
-            .then(getMapData)
-            .then(getMinMax)
-            .then(createColorMapping)
-            .then((createColorResponse)=>createLegend(createColorResponse, legendId))
-            .then((createColorResponse)=>fillMap(createColorResponse, map, units))
-            .then((fillMapResponse)=>{ features[mapId] = fillMapResponse; })
-            .catch((response) => console.log(response));
-        } else {
-            console.log('value is none');
-        }
-}
 
 function downloadHandler(downloadId, mapId, selectId) {
     $("#" + downloadId).on("click", function() {
@@ -114,68 +75,6 @@ function downloadHandler(downloadId, mapId, selectId) {
             alert("This map has no data.");
         }
     });
-}
-
-function getMapData(measurementsResponse) {
-    let getMapDataResponse = {};
-    let data = measurementsResponse;
-    let blockData = {};
-    for (let i=0; i<data.length; i++) {
-        if (data[i]['location_type'] !== 'block_group') {
-            continue;
-        }
-        let blockId = "";
-        if (data[i]['location_name'][0] != '0') {
-            blockId = "0";
-        }
-        blockId += data[i]['location_name'].slice(0, data[i]['location_name'].length - 1);
-        let value = parseFloat(data[i]['value']);
-        if (!(blockId in blockData)) {
-            blockData[blockId] = [0, 0];
-        }
-        blockData[blockId][0] += value; // Current sum of values in the tract
-        blockData[blockId][1] += 1;     // Current num of values in the tract
-
-    }
-    getMapDataResponse['blockData']  = blockData;
-    return getMapDataResponse;
-}
-
-function getMinMax(getMapDataResponse) {
-    let getMinMaxResponse = getMapDataResponse;
-    let min = Number.MAX_VALUE;
-    let max = Number.MIN_SAFE_INTEGER;
-    for (blockId in getMapDataResponse['blockData']) {
-        let avg = getMinMaxResponse['blockData'][blockId][0] / getMinMaxResponse['blockData'][blockId][1];
-        if (avg < min) {
-            min = avg;
-        }
-        if (max < avg) {
-            max = avg;
-        }
-    }
-    getMinMaxResponse['min'] = min;
-    getMinMaxResponse['max'] = max;
-    return getMinMaxResponse;
-}
-
-function createColorMapping(getMinMaxResponse) {
-    let createColorResponse = getMinMaxResponse;
-    let min = createColorResponse['min'];
-    let max = createColorResponse['max'];
-    let diff = max - min;
-    function getColor(d) {
-        return d > (min + diff * 7.0 / 8.0)  ? '#800026' :
-               d > (min + diff * 6.0 / 8.0)  ? '#BD0026' :
-               d > (min + diff * 5.0 / 8.0)  ? '#E31A1C' :
-               d > (min + diff * 4.0 / 8.0)  ? '#FC4E2A' :
-               d > (min + diff * 3.0 / 8.0)  ? '#FD8D3C' :
-               d > (min + diff * 2.0 / 8.0)  ? '#FEB24C' :
-               d > (min + diff * 1.0 / 8.0)  ? '#FED976' :
-                                             '#FFEDA0';
-    }
-    createColorResponse['getColor'] = getColor;
-    return createColorResponse;
 }
 
 /**
@@ -222,87 +121,4 @@ function createLegend(createLegendRequest, legendId) {
     $(legendId).append(hr);
 
     return createLegendRequest;
-}
-
-function fillMap(createColorResponse, map, units) {
-    let data = createColorResponse['blockData'];
-    function parseFeature(feature) {
-        // console.log(feature);
-        var string = "" + feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
-        if (string in createColorResponse['blockData']) {   
-            let value = (createColorResponse['blockData'][string][0] / createColorResponse['blockData'][string][1]);
-            return createColorResponse['getColor'](createColorResponse['blockData'][string][0] / createColorResponse['blockData'][string][1]);
-        }
-        return 0;
-    }
-
-    function style(feature) {
-        return {
-            fillColor: parseFeature(feature),
-            weight: 1,
-            opacity: 1,
-            color: 'white',
-            dashArray: '3',
-            fillOpacity: 0.7
-        };
-    }
-
-    // Adding the Data Box
-    var info = L.control();
-    // info.addTo(map);
-    info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-        this.update();
-        return this._div;
-    };
-    info.update = function(props) { return '0'; }
-    info.addTo(map);
-    // method that we will use to update the control based on feature properties passed
-    info.update = function (props) {
-        if (props) {
-            let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
-            this._div.innerHTML = '<h4>Data Value</h4>' +  (key in data ?
-                '<b>' + data[key][0].toFixed(2) + ' ' + units
-                : 'Hover over a tract');
-        }
-    };
-    
-
-    var geojson;
-    function highlightFeature(e) {
-        var layer = e.target;
-    
-        layer.setStyle({
-            weight: 2,
-            color: '#666',
-            dashArray: '',
-            fillOpacity: 0.7
-        });
-    
-        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-            layer.bringToFront();
-        }
-        info.update(layer.feature.properties);
-    }
-
-    function resetHighlight(e) {
-        geojson.resetStyle(e.target);
-        info.update();
-    }
-
-    function zoomToFeature(e) {
-        map.fitBounds(e.target.getBounds());
-    }
-
-    function onEachFeature(feature, layer) {
-        layer.on({
-            mouseover: highlightFeature,
-            mouseout: resetHighlight,
-            click: zoomToFeature
-        });
-    }
-
-    geojson = L.geoJson(censusBlockData, {style: style, onEachFeature: onEachFeature}).addTo(map);
-
-    return {'geojson': geojson, 'info': info} ;
 }
