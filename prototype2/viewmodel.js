@@ -39,13 +39,13 @@ class ViewModel {
 
     createSearchBar(searchBar) {
         new Awesomplete(searchBar, {
-            list: model.getVariables()
+            list: this.model.getVariables()
         });
     }
 
 
     downloadBlockData(key) {
-        let data = model.getBlockData(key);
+        let data = this.model.getBlockData(key);
         if (data.length === 0) {
             alert(key + " has no data to download.");
         }
@@ -75,8 +75,9 @@ class ViewModel {
         let legendHeight = 200;
         let colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
         let counts = {'#FFEDA0': 0, '#FED976': 0, '#FEB24C': 0, '#FD8D3C': 0, '#FC4E2A': 0, '#E31A1C': 0, '#BD0026': 0, '#800026': 0};
-        let tractData = model.getTractData();
-        let colorMapping = model.getColorMapping(key);
+        let tractData = this.model.getTractData();
+        console.log(tractData);
+        let colorMapping = this.model.getColorMapping(key);
         let maxCount = 0;
     
         for (tractId in tractData) {
@@ -101,29 +102,32 @@ class ViewModel {
         legend.appendChild(hr);
     }
 
-    populateMap(key, map, infoBox, variableName) {
+    async populateMap(key, map, infoBox, variableName) {
         try {
-            this.model.fetchData(key, variableName);
+            await this.model.fetchData(key, variableName).then((response) => {
+                let colorMapping = this.model.getColorMapping(key);
+                let tractData = this.model.getTractData(key);
+                // console.log(tractData);
+                let parseFeature = this._parseFeature(tractData, colorMapping);
+                let style = this._style(parseFeature);
+                infoBox.update = this._update(tractData, variableName);
+                let highlightFeature = this._highlightFeature(infoBox);
+                var geojson;
+                let resetHighlight = function(e) {
+                    geojson.resetStyle(e.target);
+                    infoBox.update();
+                }
+                let zoomToFeature = this._zoomToFeature(map);
+                let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature);
+                geojson = L.geoJson(censusBlockData, {style: style, onEachFeature: onEachFeature}).addTo(map);
+                this.model.setGeoJson(key, geojson);
+                return 1;
+        });
+            
         } catch(error) {
             console.log("Could not load " + variableName + " data from scrutinizer");
             return -1;
         }
-        let colorMapping = model.getColorMapping(key);
-        let tractData = model.getTractData(key);
-        let parseFeature = this._parseFeature(tractData, colorMapping);
-        let style = this._style(parseFeature);
-        infoBox.update = this._update(tractData);
-        let highlightFeature = this._highlightFeature(infoBox);
-        var geojson;
-        let resetHighlight = function(e) {
-            geojson.resetStyle(e.target);
-            info.update();
-        }
-        let zoomToFeature = this._zoomToFeature(map);
-        let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature);
-        geojson = L.geoJson(censusBlockData, {style: style, onEachFeature: onEachFeature}).addTo(map);
-        model.setGeoJson(key, geojson);
-        return 1;
     }
 
     _parseFeature(tractData, colorMapping) {
@@ -149,12 +153,12 @@ class ViewModel {
         }
     }
 
-    _update(tractData) {
+    _update(tractData, variableName) {
         return function (props) {
             if (props) {
                 let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
                 this._div.innerHTML = '<h4>Data Value</h4>' +  (key in tractData ?
-                    '<b>' + tractData[key][0].toFixed(2) + ' ' + model.getUnits(variableName)
+                    '<b>' + tractData[key][0].toFixed(2) + ' ' + this.model.getUnits(variableName)
                     : 'Hover over a tract');
             }
         };

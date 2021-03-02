@@ -61,29 +61,26 @@ class Model {
         delete this.tractDataMaps[key];
     }
 
-    fetchVariables() {
-        fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables")
-        .then((variablesResponse) => variablesResponse.json())
-        .then((variables)=>{
-            for (let i=0; i<variables.length; i++) {
-                let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
-                this.variableDesc.push(desc);
-                this.variableMap[desc] = variables[i];
-            }
-        });
+    async fetchVariables() {
+        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables");
+        const variables = await response.json();
+        for (let i=0; i<variables.length; i++) {
+            let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
+            this.variableDesc.push(desc);
+            this.variableMap[desc] = variables[i];
+        }
     }
 
-    fetchData(key, variableName) {
-        fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + variableName)
-        .then((measurementsResponse) => measurementsResponse.json())
-        .then((data) => {
-            this.originalData[key] = data;
-            this._createBlockData(key);
-        });      
+    async fetchData(key, variableName) {
+        let variable = this.variableMap[variableName]['name'];
+        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + variable);
+        const data = await response.json();
+        this.originalDataLists[key] = data;
+        await this._createBlockData(key, data);
+        await this._createTractDataMap(key)     
     }
 
-    _createBlockData(key) {
-        let data = this.originalData[key];
+    async _createBlockData(key, data) {
         let blockData = [];
         for (let i=0; i<data.length; i++) {
             if (data[i]['location_type'] === 'block_group' || data[i]['location_type'] === 'census_block') {
@@ -91,23 +88,24 @@ class Model {
                     data[i]['location_name'] = '0' + data[i]['location_name'];
                 }
                 blockData.push(data[i]);
-            } else if (data[i]['location_type'] === 'centroid') {
-                let newData = json.parse(json.stringify(data[i]));
+            } else if (data[i]['location_type'] === 'centroid' || data[i]['location_type'] === 'point') {
+                let newData = JSON.parse(JSON.stringify(data[i]));
                 newData['location_type'] = 'block_group';
                 let coord = data[i]['location_name'].split(",");
-                fetch("https://geo.fcc.gov/api/census/area?lat=" + coord[0] + "&lon=" + coord[1])
+                await fetch("https://geo.fcc.gov/api/census/area?lat=" + coord[0] + "&lon=" + coord[1])
                     .then((response) => response.json())
                     .then((response) => {
                         let value = response['results'][0]['block_fips'];
                         value = value.slice(0, 12);
                         newData['location_name'] = value;
+                        blockData.push(newData);
                     });
             }
         }
         this.blockDataLists[key] = blockData;
     }
 
-    _createTractDataMap(key) {
+    async _createTractDataMap(key) {
         if (!(key in this.blockDataLists)) {
             console.log("Error in getBlockDataMap, " + key + " is not present.");
             return -1;
@@ -134,7 +132,7 @@ class Model {
         let min = Number.MAX_VALUE;
         let max = Number.MIN_SAFE_INTEGER;
         let tractMap = this.tractDataMaps[key];
-        for (tractId in tractMap) {
+        for (var tractId in tractMap) {
             let avg = tractMap[tractId][0] / tractMap[tractId][1];
             if (avg < min) {
                 min = avg;
