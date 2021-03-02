@@ -47,7 +47,7 @@ class Model {
                    d > (min + diff * 3.0 / 8.0)  ? '#FD8D3C' :
                    d > (min + diff * 2.0 / 8.0)  ? '#FEB24C' :
                    d > (min + diff * 1.0 / 8.0)  ? '#FED976' :
-                                                 '#FFEDA0';
+                                                   '#FFEDA0';
         }
     }
 
