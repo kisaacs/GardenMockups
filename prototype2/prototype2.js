@@ -28,6 +28,28 @@ document.addEventListener("DOMContentLoaded", function() {
         selectHandler("variable2", "#legend2", "map2", map2);
         downloadHandler("download1", 'map1', "variable1");
         downloadHandler("download2", 'map2', "variable2");
+
+        document.getElementById("queryButton1").addEventListener("click", (event) => {
+            document.getElementById("queryPanel").style.display = "block";
+        });
+
+        document.getElementsByClassName("close")[0].addEventListener("click", (event) => {
+            // Clear the current state of the modal
+            document.getElementById("queryPanel").style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target == document.getElementById("queryPanel")) {
+                document.getElementById("queryPanel").style.display = "none";
+            }
+        });
+
+        // Implementing the chain of selectables for the query panel
+        document.getElementById("lofi-groups").addEventListener('change', (event)=>{
+            let lofiGroup = document.getElementById("lofi-groups");
+            let key = lofiGroup.selectedOptions[0].value;
+            console.log(key);
+        });
 });
 
 function loadVariables() {
@@ -57,7 +79,7 @@ function searchHandler(variableName, mapId, map, legendId) {
     }
     let value=variableMap[variableName]['name'];
     let units=variableMap[variableName]['unit'];
-    let location_type = 'census_block';
+    let location_type = 'block_group';
     fetchMapData(value, location_type, mapId, legendId, map, units=units);
 }
 
@@ -79,13 +101,22 @@ function selectHandler(id, legendId, mapId, map) {
     });
 }
 
+async function fetchMeasurements(value) {
+    let response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable="
+         + value + "&location_type=block_group");
+    response = await response.json();
+    if (response.length == 0) {
+        response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable="
+        + value + "&location_type=census_block");
+        response = await response.json();
+    }
+    return response;
+}
+
 function fetchMapData(value, location_type, mapId, legendId, map, units='') {
     console.log(units);
     if (value !== 'none') {
-        fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + value)
-               //  + value + "&location_type="
-               //  + location_type)
-            .then((measurementsResponse) => measurementsResponse.json())
+        fetchMeasurements(value)
             .then((measurementsResponse)=>{ dataMap[mapId] = measurementsResponse; return measurementsResponse; })
             .then(getMapData)
             .then(getMinMax)
