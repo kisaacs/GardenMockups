@@ -33,6 +33,10 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("queryPanel").style.display = "block";
         });
 
+        document.getElementById("queryButton2").addEventListener("click", (event) => {
+            document.getElementById("queryPanel").style.display = "block";
+        });
+
         document.getElementsByClassName("close")[0].addEventListener("click", (event) => {
             // Clear the current state of the modal
             document.getElementById("queryPanel").style.display = "none";
@@ -48,6 +52,16 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("lofi-groups").addEventListener('change', (event)=>{
             let lofiGroup = document.getElementById("lofi-groups");
             let key = lofiGroup.selectedOptions[0].value;
+            let midGroup = document.getElementById("mid-groups");
+            while(midGroup.length > 0) {
+                midGroup.remove(0);
+            }
+            let newOptions = medfiMap[key];
+            for (let i=0; i<newOptions.length; i++) {
+                let option = document.createElement("option");
+                option.text = newOptions[i]['text'];
+                midGroup.add(option);
+            }
             console.log(key);
         });
 });
