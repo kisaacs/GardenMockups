@@ -11,6 +11,7 @@ class ViewModel {
     }
 
     createMap(mapId) {
+        console.log("Populating Map");
         let mymap = L.map(mapId).setView([34.0489, -112.0937], 7);
     
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -71,16 +72,16 @@ class ViewModel {
     }
 
     populateLegend(key, legend) {
+        console.log("Populating Legend");
         let legendWidth = 250;
         let legendHeight = 200;
         let colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
         let counts = {'#FFEDA0': 0, '#FED976': 0, '#FEB24C': 0, '#FD8D3C': 0, '#FC4E2A': 0, '#E31A1C': 0, '#BD0026': 0, '#800026': 0};
-        let tractData = this.model.getTractData();
-        console.log(tractData);
+        let tractData = this.model.getTractData(key);
         let colorMapping = this.model.getColorMapping(key);
-        let maxCount = 0;
+        var maxCount = 0;
     
-        for (tractId in tractData) {
+        for (let tractId in tractData) {
             let color = colorMapping(tractData[tractId][0] / tractData[tractId][1]);
             counts[color] += 1;
             if (maxCount < counts[color])
@@ -91,9 +92,11 @@ class ViewModel {
         let width = (legendWidth - 20) / 8;
         for (var i=0; i<colors.length; i++) {
             let div = document.createElement("div");
-            div.style.width = width;
-            div.style.height = convertHeight(counts[colors[i]]);
-            div.style.left = width * i;
+            div.style.width = width + "px";
+            console.log(counts[colors[i]]);
+            div.style.height = (counts[colors[i]] / maxCount) * legendHeight + "px";
+            // console.log(div.style.height);
+            div.style.left = width * i + "px";
             div.style.background = colors[i];
             div.className = "legendDiv";
             legend.appendChild(div);
@@ -103,6 +106,11 @@ class ViewModel {
     }
 
     async populateMap(key, map, infoBox, variableName) {
+        console.log("Populating map");
+        let old_geojson = this.model.getGeoJson(key);
+        if (old_geojson !== null) {
+            map.removeLayer(old_geojson);
+        }
         try {
             await this.model.fetchData(key, variableName).then((response) => {
                 let colorMapping = this.model.getColorMapping(key);
@@ -110,7 +118,7 @@ class ViewModel {
                 // console.log(tractData);
                 let parseFeature = this._parseFeature(tractData, colorMapping);
                 let style = this._style(parseFeature);
-                infoBox.update = this._update(tractData, variableName);
+                infoBox.update = this._update(tractData, this.model.getUnits(variableName));
                 let highlightFeature = this._highlightFeature(infoBox);
                 var geojson;
                 let resetHighlight = function(e) {
@@ -153,12 +161,12 @@ class ViewModel {
         }
     }
 
-    _update(tractData, variableName) {
+    _update(tractData, units) {
         return function (props) {
             if (props) {
                 let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
                 this._div.innerHTML = '<h4>Data Value</h4>' +  (key in tractData ?
-                    '<b>' + tractData[key][0].toFixed(2) + ' ' + this.model.getUnits(variableName)
+                    '<b>' + tractData[key][0].toFixed(2) + ' ' + units
                     : 'Hover over a tract');
             }
         };

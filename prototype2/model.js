@@ -13,6 +13,7 @@ class Model {
     }
 
     getUnits(variableName) {
+        console.log(this.variableMap[variableName]);
         return this.variableMap[variableName]['unit'];
     }
 
@@ -29,8 +30,11 @@ class Model {
     }
 
     getTractData(key) {
+        console.log("Getting tract data...");
+        console.log(this.tractDataMaps);
         if (key in this.tractDataMaps)
             return this.tractDataMaps[key];
+        console.log("Tract data key " + key + " not found");
         return {};
     }
 
@@ -51,6 +55,13 @@ class Model {
         }
     }
 
+    getGeoJson(key) {
+        if (key in this.geojsonInstances) {
+            return this.geojsonInstances[key];
+        }
+        return null;
+    } 
+
     setGeoJson(key, geojson) {
         this.geojsonInstances[key] = geojson;
     }
@@ -59,6 +70,7 @@ class Model {
         delete this.originalDataLists[key];
         delete this.blockDataLists[key];
         delete this.tractDataMaps[key];
+        delete this.geojsonInstances[key];
     }
 
     async fetchVariables() {
@@ -77,7 +89,7 @@ class Model {
         const data = await response.json();
         this.originalDataLists[key] = data;
         await this._createBlockData(key, data);
-        await this._createTractDataMap(key)     
+        await this._createTractDataMap(key);     
     }
 
     async _createBlockData(key, data) {
@@ -89,23 +101,24 @@ class Model {
                 }
                 blockData.push(data[i]);
             } else if (data[i]['location_type'] === 'centroid' || data[i]['location_type'] === 'point') {
-                let newData = JSON.parse(JSON.stringify(data[i]));
-                newData['location_type'] = 'block_group';
-                let coord = data[i]['location_name'].split(",");
-                await fetch("https://geo.fcc.gov/api/census/area?lat=" + coord[0] + "&lon=" + coord[1])
-                    .then((response) => response.json())
-                    .then((response) => {
-                        let value = response['results'][0]['block_fips'];
-                        value = value.slice(0, 12);
-                        newData['location_name'] = value;
-                        blockData.push(newData);
-                    });
+                // let newData = JSON.parse(JSON.stringify(data[i]));
+                // newData['location_type'] = 'block_group';
+                // let coord = data[i]['location_name'].split(",");
+                // await fetch("https://geo.fcc.gov/api/census/area?lat=" + coord[0] + "&lon=" + coord[1])
+                //     .then((response) => response.json())
+                //     .then((response) => {
+                //         let value = response['results'][0]['block_fips'];
+                //         value = value.slice(0, 12);
+                //         newData['location_name'] = value;
+                //         blockData.push(newData);
+                //     });
             }
         }
         this.blockDataLists[key] = blockData;
     }
 
     async _createTractDataMap(key) {
+        console.log("Creating Tract Data!");
         if (!(key in this.blockDataLists)) {
             console.log("Error in getBlockDataMap, " + key + " is not present.");
             return -1;

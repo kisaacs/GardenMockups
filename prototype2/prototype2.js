@@ -15,12 +15,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // View UI Listeners
         document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
-            viewModel.populateMap("map1", map1, infoBox1, event.text.value);
-            viewModel.populateLegend("map1", document.getElementById("legend1"));
+            viewModel.populateMap("map1", map1, infoBox1, event.text.value).then((status) => 
+                viewModel.populateLegend("map1", document.getElementById("legend1")));
         });
         document.getElementById("searchBar2").addEventListener('awesomplete-selectcomplete', (event)=>{
-            viewModel.populateMap("map2", map2, infoBox2, event.text.value);
-            viewModel.populateLegend("map2", document.getElementById("legend2"));
+            viewModel.populateMap("map2", map2, infoBox2, event.text.value).then((status) => 
+                viewModel.populateLegend("map2", document.getElementById("legend2")));
         });
         document.getElementById("variable1").addEventListener('change', (event) => {
             console.log(event);
@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("variable2").addEventListener('change', (event) => {
             let sel = document.getElementById('variable2');
             let variableName = ' (' + sel.options[sel.selectedIndex].text + ')';
-            viewModel.populateMap("map2", map2, infoBox2, variableName);
-            viewModel.populateLegend("map2", document.getElementById("legend2"));
+            viewModel.populateMap("map2", map2, infoBox2, variableName).then((status) => 
+                viewModel.populateLegend("map2", document.getElementById("legend2")));
         });
         document.getElementById("download1").addEventListener('click', () => {
             viewModel.downloadBlockData("map1");
