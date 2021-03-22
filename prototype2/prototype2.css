@@ -5,9 +5,14 @@
     display: block;
 }
 
-.container, .legend {
+
+.map {
+    display: flex;
+}
+.viz {
     display: inline-block;
     height: 700px;
+    margin: auto;
 }
 
 #legend1, #legend2 {

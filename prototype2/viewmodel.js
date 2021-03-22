@@ -10,6 +10,11 @@ class ViewModel {
         }
     }
 
+    /**
+     * Creates an empty map using the leaflet API
+     * 
+     * @param {*} mapId The id of the div that the map will attach to
+     */
     createMap(mapId) {
         console.log("Populating Map");
         let mymap = L.map(mapId).setView([34.0489, -112.0937], 7);
@@ -25,6 +30,11 @@ class ViewModel {
         return mymap;
     }
 
+    /**
+     * Creates an empty info box and attaches it to the map
+     * 
+     * @param {*} map The map object to add the info box to
+     */
     createInfoBox(map) {
         // Adding the Data Box
         var info = L.control();
@@ -33,11 +43,16 @@ class ViewModel {
             this.update();
             return this._div;
         };
-        info.update = function(props) { this._div.innerHTML = '<h4>No Data Present.</h4>'; }
+        info.update = function(props) { this._div.innerHTML = '<h6>No Data Present.</h6>'; }
         info.addTo(map);
         return info;
     }
 
+    /**
+     *  Creates a basic search bar with the Awesomplete library
+     * 
+     * @param {*} searchBar The input object that will become a search bar
+     */
     createSearchBar(searchBar) {
         new Awesomplete(searchBar, {
             list: this.model.getVariables()
@@ -45,6 +60,11 @@ class ViewModel {
     }
 
 
+    /**
+     * Downloads data from the specified map into a csv file
+     * 
+     * @param {*} key The key for the map's data in the model
+     */
     downloadBlockData(key) {
         let data = this.model.getBlockData(key);
         if (data.length === 0) {
@@ -71,6 +91,12 @@ class ViewModel {
         hiddenElement.click();
     }
 
+    /**
+     * Populates the legend with the colormapping being used by the specified visualiztion
+     * 
+     * @param {*} key The model key for the specified visualization's data
+     * @param {*} legend The div object that will have the colormapping filled out
+     */
     populateLegend(key, legend) {
         console.log("Populating Legend");
         let legendWidth = 250;
@@ -101,10 +127,18 @@ class ViewModel {
             div.className = "legendDiv";
             legend.appendChild(div);
         }
-        let hr = document.createElement("hr");
-        legend.appendChild(hr);
+        // let hr = document.createElement("hr");
+        // legend.appendChild(hr);
     }
 
+    /**
+     * Populates the map with data regarding the specified variable
+     * 
+     * @param {*} key 
+     * @param {*} map 
+     * @param {*} infoBox 
+     * @param {*} variableName 
+     */
     async populateMap(key, map, infoBox, variableName) {
         console.log("Populating map");
         let old_geojson = this.model.getGeoJson(key);
@@ -115,7 +149,6 @@ class ViewModel {
             await this.model.fetchData(key, variableName).then((response) => {
                 let colorMapping = this.model.getColorMapping(key);
                 let tractData = this.model.getTractData(key);
-                // console.log(tractData);
                 let parseFeature = this._parseFeature(tractData, colorMapping);
                 let style = this._style(parseFeature);
                 infoBox.update = this._update(tractData, this.model.getUnits(variableName));
@@ -137,6 +170,12 @@ class ViewModel {
             return -1;
         }
     }
+
+    /*
+     * 
+     * Helper functions for populating the map
+     *  
+     */
 
     _parseFeature(tractData, colorMapping) {
         return function(feature) {
@@ -165,7 +204,7 @@ class ViewModel {
         return function (props) {
             if (props) {
                 let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
-                this._div.innerHTML = '<h4>Data Value</h4>' +  (key in tractData ?
+                this._div.innerHTML = '<h6>Data Value</h6>' +  (key in tractData ?
                     '<b>' + tractData[key][0].toFixed(2) + ' ' + units
                     : 'Hover over a tract');
             }

@@ -8,6 +8,9 @@ class Model {
         this.geojsonInstances = {};
     }
 
+    /**
+     * Getter functions for the various data types in each map
+     */
     getVariables() {
         return this.variableDesc;
     }
@@ -73,6 +76,13 @@ class Model {
         delete this.geojsonInstances[key];
     }
 
+    /**
+     * Fetches the scrutinizer variable metadata and stores it in the variableDesc and variableMap
+     * variables.
+     * variableDesc is a list in this format for each variable: description (name)
+     * variableMap has each value of variableDesc as a key mapped to the metadata pulled from the
+     * scrutinizer
+     */
     async fetchVariables() {
         const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables");
         const variables = await response.json();
@@ -83,15 +93,28 @@ class Model {
         }
     }
 
+    /**
+     * Fetches the scrutinizer data for the specified variable. The data is stored in the
+     *  originalDataLists, tractDataMaps, and blockDataLists variables under the specified
+     *  key.
+     * @param {} key The key that will be used to store the fetched data
+     * @param {*} variableName The name of the variable that will be fetched 
+     */
     async fetchData(key, variableName) {
         let variable = this.variableMap[variableName]['name'];
         const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + variable);
         const data = await response.json();
         this.originalDataLists[key] = data;
         await this._createBlockData(key, data);
-        await this._createTractDataMap(key);     
+        await this._createTractDataMap(key, data);     
     }
 
+    /**
+     * Fills the blockDataLists variable under the specified key with the specified data. Each object in
+     * the data list should have at least the 'location_type' and 'location_name' specifiers.
+     * @param {*} key 
+     * @param {*} data 
+     */
     async _createBlockData(key, data) {
         let blockData = [];
         for (let i=0; i<data.length; i++) {
@@ -101,6 +124,9 @@ class Model {
                 }
                 blockData.push(data[i]);
             } else if (data[i]['location_type'] === 'centroid' || data[i]['location_type'] === 'point') {
+                // Below is code for converting the point and centroid latitude and longitutde data into 
+                // block data. As it stands, fetching to do all of these conversion is too time intensive
+
                 // let newData = JSON.parse(JSON.stringify(data[i]));
                 // newData['location_type'] = 'block_group';
                 // let coord = data[i]['location_name'].split(",");
@@ -117,27 +143,37 @@ class Model {
         this.blockDataLists[key] = blockData;
     }
 
-    async _createTractDataMap(key) {
+    /**
+     * Fills the tractDataMaps variable under the specified key with the specified data. Each object
+     * in the data list should have at least the 'location_name' and 'location_type' specifiers
+     * @param {} key 
+     */
+    async _createTractDataMap(key, data) {
         console.log("Creating Tract Data!");
         if (!(key in this.blockDataLists)) {
             console.log("Error in getBlockDataMap, " + key + " is not present.");
             return -1;
         }
-        let data = this.blockDataLists[key];
         let tractData = {};
         for (let i=0; i<data.length; i++) {
-            let tractId = data[i]['location_name'].slice(0, 11); // Organized as tracts, not block groups
-            let value = parseFloat(data[i]['value']);
-            if (!(tractId in tractData)) {
-                tractData[tractId] = [0, 0];
+            if (data[i]['location_type'] === 'block_group' || data[i]['location_type'] === 'census_block') {
+                let tractId = data[i]['location_name'].slice(0, 11); // Organized as tracts, not block groups
+                let value = parseFloat(data[i]['value']);
+                if (!(tractId in tractData)) {
+                    tractData[tractId] = [0, 0];
+                }
+                tractData[tractId][0] += value; // Current sum of values in the tract
+                tractData[tractId][1] += 1;     // Current num of values in the tract
             }
-            tractData[tractId][0] += value; // Current sum of values in the tract
-            tractData[tractId][1] += 1;     // Current num of values in the tract
     
         }
         this.tractDataMaps[key] = tractData;
     }
 
+    /**
+     * Gets the minimum and maximum data values from the tractMap under the specified key.
+     * @param {*} key 
+     */
     _getMinMax(key) {
         if (!(key in this.tractDataMaps)) {
             return [-1, -1];
