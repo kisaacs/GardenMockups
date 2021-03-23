@@ -10,31 +10,18 @@ class ViewModel {
         }
     }
 
-    createTable(key, table) {
-        console.log("filling table!");
-        let data = this.model.getOriginalData(key);
-        
+    createTableHeader(table) {
         let row = document.createElement('tr');
         let head = document.createElement("thead");
-        this._addHeaderColumn(row, 'Name');
-        this._addHeaderColumn(row, 'Desc');
-        this._addHeaderColumn(row, 'Location Type');
-        this._addHeaderColumn(row, 'Location');
-        this._addHeaderColumn(row, 'Value');
-        head.appendChild(row);
+        this._addHeaderColumn(head, 'Name');
+        this._addHeaderColumn(head, 'Desc');
+        this._addHeaderColumn(head, 'Location Type');
+        this._addHeaderColumn(head, 'Location');
+        this._addHeaderColumn(head, 'Value');
+        // head.appendChild(row);
         table.appendChild(head);
-
-        let body = document.createElement("tbody");
-        for (let i=0; i<data.length; i++) {
-            row = document.createElement('tr');
-            this._addColumnValue(row, data[i]['variable_name']);
-            this._addColumnValue(row, data[i]['variable_desc']);
-            this._addColumnValue(row, data[i]['location_type']);
-            this._addColumnValue(row, data[i]['location_name']);
-            this._addColumnValue(row, data[i]['value']);
-            body.appendChild(row);
-        }
-        table.appendChild(body);
+        // $(table).DataTable();
+        // $('.dataTables_length').addClass('bs-select');
     }
 
     _addHeaderColumn(head, name) {
@@ -170,6 +157,27 @@ class ViewModel {
         }
         // let hr = document.createElement("hr");
         // legend.appendChild(hr);
+    }
+
+
+    populateTable(key, table) {
+        // first, remove any data that was there previously
+        
+        console.log("filling table!");
+        let data = this.model.getOriginalData(key);
+
+        let body = document.createElement("tbody");
+        for (let i=0; i<data.length; i++) {
+            let row = document.createElement('tr');
+            this._addColumnValue(row, data[i]['variable_name']);
+            this._addColumnValue(row, data[i]['variable_desc']);
+            this._addColumnValue(row, data[i]['location_type']);
+            this._addColumnValue(row, data[i]['location_name']);
+            this._addColumnValue(row, data[i]['value']);
+            body.appendChild(row);
+        }
+        table.appendChild(body);
+
     }
 
     /**

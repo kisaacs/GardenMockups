@@ -5,6 +5,13 @@
     display: block;
 }
 
+.none {
+    display: none;
+}
+
+.flex {
+    display: flex;
+}
 
 .map {
     display: flex;

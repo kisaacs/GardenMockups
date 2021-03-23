@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", function() {
         infoBox2 = viewModel.createInfoBox(map2);
         viewModel.createSearchBar(document.getElementById("searchBar1"));
         viewModel.createSearchBar(document.getElementById("searchBar2"));
+        // Creating the tables
+        // viewModel.createTableHeader(document.getElementById("table2"));
+
 
         // View UI Listeners
         document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
@@ -42,18 +45,21 @@ document.addEventListener("DOMContentLoaded", function() {
             viewModel.downloadBlockData("map2");
         });
         document.getElementById("table1").addEventListener('click', () => {
-            let newWindow = open('../table.html', 'example', 'width=800,height=800');
-            console.log(newWindow.document.body);
+            let location = window.location.href;
+            let newWindow = open(location + 'table.html', '');
 
             let table = document.createElement('table');
             table.className = "table table-striped";
+            table.id = "table"
             console.log(table);
             viewModel.createTable("map1", table);
             
-            $(table).DataTable();
+            // $(table).DataTable();
+            // $('.dataTables_length').addClass('bs-select');
+            console.log(newWindow.document.body);
+            newWindow.document.body.appendChild(table);
+            $("#table").DataTable();
             $('.dataTables_length').addClass('bs-select');
-            newWindow.document.write(table.outerHTML);
-
             newWindow.focus();
         });
 });
