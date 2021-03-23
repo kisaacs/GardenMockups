@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arizona Map</title>
+    <!-- Javascript files -->
+    <!-- bootstrap -->
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <!-- jquery -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- MDB DataTables -->
+    <script type="text/javascript" src="js/datatables.min.js"></script>
+    <!-- awesomplete -->
+    <script type="text/javascript" src="awesomplete/awesomplete.min.js"></script>
+    <!-- leaflet -->
+    <script type="text/javascript" src="js/leaflet.js"></script>
+    <!-- constants -->
+    <script src="js/arizona_census_blocks.js"></script>
+    <script src="js/fipsCodes.js"></script>
+    <!-- MVVM -->
+    <script src="js/model.js"></script>
+    <script src="js/viewmodel.js"></script>
+    <script src="js/view.js"></script>
+    <!-- CSS Files -->
+    <!-- bootstrap -->
+   <link rel="stylesheet" href="css/bootstrap.css">
+    <!-- awesomecomplete -->
+    <link rel="stylesheet" href="awesomplete/awesomplete.css">
+    <!-- leaflet -->
+    <link rel="stylesheet" href="css/leaflet.css">
+    <!-- prototype's css -->
+    <link rel="stylesheet" href="css/prototype2.css"/>
+</head>
+<body>
+    <div class="viz" id="viz1">
+        <select name="variable1" id="variable1">
+            <option value="none">(none)</option>
+            <option value="aluminum">aluminum</option>
+            <option value="arsenic">arsenic</option>
+            <option value="barium">barium</option>
+            <option value="beryllium">beryllium</option>
+            <option value="cadmium">cadmium</option>
+            <option value="chromium">chromium</option>
+            <option value="copper">copper</option>
+            <option value="lead">lead</option>
+            <option value="manganese">manganese</option>
+            <option value="nickel">nickel</option>
+            <option value="zinc">zinc</option>
+        </select>
+        <div class="map">
+            <div id="map1"></div>
+        </div>
+
+        <div>
+            <button id="download1" class="btn btn-primary">Download Data</button>
+            <button id="table1" class="btn btn-primary">Table</button>
+        </div>
+        <input id="searchBar1">
+    </div>
+    <div class="viz" id="viz2">
+        
+        <select name="variable2" id="variable2">
+            <option value="none">(none)</option>
+            <option value="aluminum">aluminum</option>
+            <option value="arsenic">arsenic</option>
+            <option value="barium">barium</option>
+            <option value="beryllium">beryllium</option>
+            <option value="cadmium">cadmium</option>
+            <option value="chromium">chromium</option>
+            <option value="copper">copper</option>
+            <option value="lead">lead</option>
+            <option value="manganese">manganese</option>
+            <option value="nickel">nickel</option>
+            <option value="zinc">zinc</option>
+        </select>
+        <div class="map">
+            <div id="map2"></div>
+        </div>
+        <div>
+            <button id="download2" class="btn btn-primary">Download Data</button>
+        </div>
+        <input id="searchBar2">
+    </div>
+    <div class ="legend">
+        <div id="legend1"></div>
+        <div id="legend2"></div>
+    </div>
+</body>
+</html>
