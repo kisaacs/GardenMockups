@@ -12,9 +12,6 @@ document.addEventListener("DOMContentLoaded", function() {
         infoBox2 = viewModel.createInfoBox(map2);
         viewModel.createSearchBar(document.getElementById("searchBar1"));
         viewModel.createSearchBar(document.getElementById("searchBar2"));
-        // Creating the tables
-        // viewModel.createTableHeader(document.getElementById("table2"));
-
 
         // View UI Listeners
         document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
@@ -45,21 +42,21 @@ document.addEventListener("DOMContentLoaded", function() {
             viewModel.downloadBlockData("map2");
         });
         document.getElementById("table1").addEventListener('click', () => {
-            let location = window.location.href;
-            let newWindow = open(location + 'table.html', '');
-
             let table = document.createElement('table');
-            table.className = "table table-striped";
-            table.id = "table"
-            console.log(table);
-            viewModel.createTable("map1", table);
-            
-            // $(table).DataTable();
-            // $('.dataTables_length').addClass('bs-select');
-            console.log(newWindow.document.body);
-            newWindow.document.body.appendChild(table);
-            $("#table").DataTable();
-            $('.dataTables_length').addClass('bs-select');
+            table = viewModel.populateTable("map1", table);
+            localStorage.setItem("table", table.outerHTML);
+
+            let location = window.location.href;
+            let newWindow = open(location + 'table.html', '', "width=600px,height=600px");
+            newWindow.focus();
+        });
+        document.getElementById("table2").addEventListener('click', () => {
+            let table = document.createElement('table');
+            table = viewModel.populateTable("map2", table);
+            localStorage.setItem("table", table.outerHTML);
+
+            let location = window.location.href;
+            let newWindow = open(location + 'table.html', '', "width=600px,height=600px");
             newWindow.focus();
         });
 });

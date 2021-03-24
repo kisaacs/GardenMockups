@@ -33,21 +33,17 @@
     <script src="js/view.js"></script>
 </head>
 <body>
-
-<div id="test"></div>
-
-<!-- <table id="table" class="table table-striped"> -->
-</table>
 </body>
 
 <script type="text/javascript">
-document.addEventListener("DOMContentLoaded", function() {
-    // let table = document.getElementById('table');
-    // viewModel.createTableHeader(table);
-    // viewModel.populateTable('map2', table);
-    // console.log("dom loaded!");
-    // console.log($("#table").html());
-})
+    document.addEventListener("DOMContentLoaded", function() {
+        let tableText = localStorage.getItem("table");
+        document.body.innerHTML = tableText;
+        let table = document.body.getElementsByTagName("table")[0];
+        table.className = "table table-striped";
+        $(table).DataTable();
+        $('.dataTables_length').addClass('bs-select');
+    });
 </script>
 
 </html>
