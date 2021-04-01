@@ -1,6 +1,6 @@
 $(document).ready(function() {
         initTable();
-        initMap();
+        // initMap();
 });
 
 
@@ -67,7 +67,7 @@ function initTable() {
 function createTable(params) {
     $.get("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements", params)
         .done((data) => {
-            // console.log(data);
+            console.log(data);
             // var total = Math.min(50, data.length)
             var body = $("<tbody></tbody>");
             for (var i=0; i<data.length; i++) {

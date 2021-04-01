@@ -1,0 +1,114 @@
+#map1, #map2 {
+    height: 650px;
+    width: 550px;
+    
+    display: block;
+    z-index: 0;
+}
+
+.map {
+    display: flex;
+    z-index: 0;
+    margin: 20px;
+}
+
+ul, li{
+    z-index: 1;
+}
+.viz {
+    display: inline-block;
+    margin: 20px;
+    padding: 10px;
+}
+
+#viz1 {
+    border-width: 2px;
+    border-color: blue;
+    border-style: solid;
+}
+
+#viz2 {
+    border-width: 2px;
+    border-color: red;
+    border-style: solid;
+}
+
+#tables {
+    width: 100%;
+}
+
+.dataTables_wrapper {
+    display: inline-block;
+    margin: 20px;
+    margin-right: 25px;
+    width: 612px;
+    padding: 5px;
+    vertical-align: top;
+}
+
+#table1_wrapper, #legend1 {
+    border-width: 2px;
+    border-color: blue;
+    border-style: solid;
+}
+
+#table2_wrapper, #legend2 {
+    border-width: 2px;
+    border-color: red;
+    border-style: solid;
+}
+.bottom-dash {
+    width: 550px;
+    display: flex;
+}
+
+#download1 {
+    /* display: inline-block; */
+}
+#legend1, #legend2 {
+    /* display: inline-block; */
+    position: relative;
+    height: 60px;
+    width: 200px;
+    margin-left: 50px;
+    /* margin-right: 100px;
+    margin-top: 10px; */
+}
+
+.legend {
+    display: flex;
+    width: 50%;
+}
+
+.legendDiv {
+    bottom: 0px;
+    position: absolute;
+    bottom: 0px;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+hr {
+    height: 1px;
+    border-width: 0px;
+    color: black;
+    background-color: black;
+    position:absolute;
+    bottom: 1px;
+    width: inherit;
+}
+
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
