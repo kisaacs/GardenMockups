@@ -1,37 +1,89 @@
 #map1, #map2 {
     height: 650px;
     width: 550px;
-    margin-right: 50px;
+    
     display: block;
-}
-
-.none {
-    display: none;
-}
-
-.flex {
-    display: flex;
+    z-index: 0;
 }
 
 .map {
     display: flex;
+    z-index: 0;
+    margin: 20px;
+}
+
+ul, li{
+    z-index: 1;
 }
 .viz {
     display: inline-block;
-    height: 700px;
-    margin: auto;
+    margin: 20px;
+    padding: 10px;
 }
 
+#viz1 {
+    border-width: 2px;
+    border-color: blue;
+    border-style: solid;
+}
+
+#viz2 {
+    border-width: 2px;
+    border-color: red;
+    border-style: solid;
+}
+
+#tables {
+    width: 100%;
+}
+
+.dataTables_wrapper {
+    display: inline-block;
+    margin: 20px;
+    margin-right: 25px;
+    width: 612px;
+    padding: 5px;
+    vertical-align: top;
+}
+
+#table1_wrapper, #legend1 {
+    border-width: 2px;
+    border-color: blue;
+    border-style: solid;
+}
+
+#table2_wrapper, #legend2 {
+    border-width: 2px;
+    border-color: red;
+    border-style: solid;
+}
+.bottom-dash {
+    width: 550px;
+    display: flex;
+}
+
+#download1 {
+    /* display: inline-block; */
+}
 #legend1, #legend2 {
-    height: 200px;
-    width: 250px;
+    /* display: inline-block; */
     position: relative;
-    margin-top: 100px;
+    height: 60px;
+    width: 200px;
+    margin-left: 50px;
+    /* margin-right: 100px;
+    margin-top: 10px; */
+}
+
+.legend {
+    display: flex;
+    width: 50%;
 }
 
 .legendDiv {
+    bottom: 0px;
     position: absolute;
-    bottom: 10px;
+    bottom: 0px;
 }
 
 h1 {

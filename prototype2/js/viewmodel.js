@@ -27,6 +27,8 @@ class ViewModel {
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiYmxhcmEiLCJhIjoiY2tnNzFrNmo2MDMweDJ5cW0zaXJwbWQ1ZyJ9.WydwzOibe0497pQbasuF-A'
         }).addTo(mymap);
+
+        L.control.scale().addTo(mymap);
         return mymap;
     }
 
@@ -100,8 +102,8 @@ class ViewModel {
      */
     populateLegend(key, legend) {
         console.log("Populating Legend");
-        let legendWidth = 250;
-        let legendHeight = 200;
+        let legendWidth = 200;
+        let legendHeight = 50;
         let colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
         let counts = {'#FFEDA0': 0, '#FED976': 0, '#FEB24C': 0, '#FD8D3C': 0, '#FC4E2A': 0, '#E31A1C': 0, '#BD0026': 0, '#800026': 0};
         let tractData = this.model.getTractData(key);
@@ -132,15 +134,9 @@ class ViewModel {
         // legend.appendChild(hr);
     }
 
-    /**
-     * Empties and fills the given table object with the data for the given key
-     * 
-     * @param {*} key The model key for the specified visualization's data
-     * @param {*} table The table object that will be filled and returned
-     */
-    populateTable(key, table) {
-        // first, remove any data that was there previously
-        table.innerHTML = "";
+    createTable(tableId, divId) {
+        let container = document.getElementById(divId);
+        let table = document.createElement("table");
         let row = document.createElement('tr');
         let head = document.createElement("thead");
         this._addHeaderColumn(row, 'Name');
@@ -150,20 +146,54 @@ class ViewModel {
         this._addHeaderColumn(row, 'Value');
         head.appendChild(row);
         table.appendChild(head);
-        console.log("filling table!");
+        table.id = tableId;
+        table.className = "table table-striped";
+        let body = document.createElement("tbody");
+        table.appendChild(body);
+        container.appendChild(table);
+        let dataTable = $(table).DataTable({
+            "language": {
+                "search": "Filter: "
+            }
+        });
+        $('.dataTables_length').addClass('bs-select');
+        return dataTable;
+    }
+
+    /**
+     * Empties and fills the given table object with the data for the given key
+     * See the MDB DataTable API for methods for the DataTable object
+     * 
+     * @param {*} key The model key for the specified visualization's data
+     * @param {*} table The DataTable object that will be filled and returned
+     */
+    async populateTable(key, table) {
+        // removing all rows in the DataTable
+        table.rows().remove();
         let data = this.model.getOriginalData(key);
 
-        let body = document.createElement("tbody");
+        // let body = table.getElementsByTagName('tbody')[0];
+        // body.innerHTML = "";
         for (let i=0; i<data.length; i++) {
-            let row = document.createElement('tr');
-            this._addColumnValue(row, data[i]['variable_name']);
-            this._addColumnValue(row, data[i]['variable_desc']);
-            this._addColumnValue(row, data[i]['location_type']);
-            this._addColumnValue(row, data[i]['location_name']);
-            this._addColumnValue(row, data[i]['value']);
-            body.appendChild(row);
+            table.row.add(
+                [
+                data[i]['variable_name'],
+                data[i]['variable_desc'],
+                data[i]['location_type'],
+                data[i]['location_name'],
+                data[i]['value']
+                ]); // .draw();
+            // let row = document.createElement('tr');
+            // this._addColumnValue(row, data[i]['variable_name']);
+            // this._addColumnValue(row, data[i]['variable_desc']);
+            // this._addColumnValue(row, data[i]['location_type']);
+            // this._addColumnValue(row, data[i]['location_name']);
+            // this._addColumnValue(row, data[i]['value']);
+            // body.appendChild(row);
         }
-        table.appendChild(body);
+        table.draw();
+        // $(table).DataTable();
+        // $('.dataTables_length').addClass('bs-select');
         return table;
     }
 
