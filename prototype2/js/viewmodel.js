@@ -101,6 +101,7 @@ class ViewModel {
      * @param {*} legend The div object that will have the colormapping filled out
      */
     populateLegend(key, legend) {
+        legend.innerHTML = "";
         console.log("Populating Legend");
         let legendWidth = 200;
         let legendHeight = 50;
