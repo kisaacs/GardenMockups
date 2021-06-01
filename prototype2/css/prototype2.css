@@ -1,9 +1,16 @@
+body {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
 #map1, #map2 {
     height: 650px;
     width: 550px;
     
     display: block;
     z-index: 0;
+	flex-grow: 1;
 }
 
 .map {
@@ -25,16 +32,21 @@ ul, li{
     border-width: 2px;
     border-color: blue;
     border-style: solid;
+	flex-grow: 1;
 }
 
 #viz2 {
     border-width: 2px;
     border-color: red;
     border-style: solid;
+	flex-grow: 1;
 }
 
 #tables {
     width: 100%;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: row;
 }
 
 .dataTables_wrapper {
@@ -50,12 +62,14 @@ ul, li{
     border-width: 2px;
     border-color: blue;
     border-style: solid;
+	flex-grow: 1;
 }
 
 #table2_wrapper, #legend2 {
     border-width: 2px;
     border-color: red;
     border-style: solid;
+	flex-grow: 1;
 }
 .bottom-dash {
     width: 550px;
