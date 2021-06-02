@@ -1,51 +1,52 @@
 #map1, #map2 {
     height: auto;
-    width: inherit;
+    width: 100%;
     
     display: block;
     z-index: 0;
 }
 
-.map.largeScreen, .bottom-dash.largeScreen {
-	width: 700px;
+.viz.largeScreen, .dataTables_wrapper.largeScreen{
+	width: 750px;
 }
 
-.map.midScreen, .bottom-dash.midScreen {
+.viz.midScreen, .dataTables_wrapper.midScreen{
+	width: 550px;
+}
+
+.viz.smallScreen, .dataTables_wrapper.smallScreen{
 	width: 500px;
 }
 
-.map.smallScreen, .bottom-dash.smallScreen {
-	width: 500px;
+.viz.largeScreen{
+	height: 900px;
 }
 
-.map.largeScreen {
-	height: 800px;
+.viz.midScreen{
+	height: 650px;
 }
 
-.map.midScreen {
-	height: 550px;
-}
-
-.map.smallScreen {
-	height: 250px;
-}
-
-.dataTables_wrapper.largeScreen {
-	width: 764px;
-}
-
-.dataTables_wrapper.midScreen {
-	width: 564px;
-}
-
-.dataTables_wrapper.smallScreen {
-	width: 564px;
+.viz.smallScreen{
+	height: 350px;
 }
 
 .map {
     display: flex;
     z-index: 0;
     margin: 20px;
+	width: auto;
+}
+
+.map.largeScreen {
+	height: 85%;
+}
+
+.map.midScreen {
+	height: 80%;
+}
+
+.map.smallScreen {
+	height: 60%;
 }
 
 ul, li{
@@ -93,8 +94,9 @@ ul, li{
     border-color: red;
     border-style: solid;
 }
+
 .bottom-dash {
-    width: 550px;
+    width: 100%;
     display: flex;
 }
 
@@ -161,12 +163,14 @@ hr {
 
 #buttonTab.midScreen, #placeholder.midScreen {
 	width: 45px;
-	margin-top: 500px;
+	margin-top: 340px;
 }
 
 #buttonTab.smallScreen, #placeholder.smallScreen {
 	width: 45px;
-	margin-top: 500px;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 25px;
 }
 
 .disabled {

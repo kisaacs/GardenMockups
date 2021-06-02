@@ -36,9 +36,10 @@ document.addEventListener("DOMContentLoaded", function() {
             viewModel.downloadBlockData("map2");
         });
 		
-		document.getElementById("toggleMapButton").addEventListener('click', () => {
+		document.getElementById("toggleMapButton").addEventListener('click', (event) => {
 			viewModel.toggleElement("viz2");
 			viewModel.toggleElement("table2_wrapper");
+			if(event.target.value == "Hide"){event.target.value = "Show"} else {event.target.value = "Hide"}
 		});
 		
 		window.addEventListener('resize', () => {
