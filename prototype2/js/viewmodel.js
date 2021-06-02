@@ -260,13 +260,13 @@ class ViewModel {
 	/**
 	* Resizes maps and tables based on window size
 	* Currently only depends on screen width
-	* Recognizes small(<1200px), medium(1200-1700px), and large(>1700px)
+	* Recognizes small(<1250px), medium(1250-1700px), and large(>1700px)
 	*/
 	resize(){
 		let x_size = window.innerWidth;
 		let sizeClasses = ["smallScreen","midScreen","largeScreen"]
 		let sizeClass = "midScreen";
-		if(x_size<1200){
+		if(x_size<1250){
 			sizeClass = "smallScreen";
 		} else if(x_size<1700){
 			sizeClass = "midScreen";
