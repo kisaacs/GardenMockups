@@ -168,3 +168,7 @@ hr {
 	width: 45px;
 	margin-top: 500px;
 }
+
+.disabled {
+	display: none !important;
+}
