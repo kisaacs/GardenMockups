@@ -35,7 +35,10 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("download2").addEventListener('click', () => {
             viewModel.downloadBlockData("map2");
         });
-        
+		let tableWrappers = document.getElementsByClassName("dataTables_wrapper");
+        for(var i=0;i<tableWrappers.length;i++){
+			tableWrappers[i].classList.add("sizeable");
+		}
         window.addEventListener('resize', () => {
 			viewModel.resize();
 		});
