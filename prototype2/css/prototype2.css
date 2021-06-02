@@ -23,11 +23,11 @@
 }
 
 .map.midScreen {
-	height: 600px;
+	height: 550px;
 }
 
 .map.smallScreen {
-	height: 400px;
+	height: 250px;
 }
 
 .dataTables_wrapper.largeScreen {
