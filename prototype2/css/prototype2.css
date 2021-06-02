@@ -148,3 +148,23 @@ hr {
     margin: 0 0 5px;
     color: #777;
 }
+
+#buttonTab, #placeholder {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#buttonTab.largeScreen, #placeholder.largeScreen {
+	width: 45px;
+	margin-top: 500px;
+}
+
+#buttonTab.midScreen, #placeholder.midScreen {
+	width: 45px;
+	margin-top: 500px;
+}
+
+#buttonTab.smallScreen, #placeholder.smallScreen {
+	width: 45px;
+	margin-top: 500px;
+}

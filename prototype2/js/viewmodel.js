@@ -286,6 +286,20 @@ class ViewModel {
 		}
 	}
 	
+	/**
+	* Toggles the disabled class on the given element
+	*
+	* @param {*} elementId The id attribute of the element to be toggled
+	*/
+	toggleElement(elementId){
+		let elem = document.getElementById(elementId);
+		if(elem.classList.contains("disabled")){
+			elem.classList.remove("disabled");
+		} else {
+			elem.classList.add("disabled");
+		}
+	}
+	
 
     /*
      * 

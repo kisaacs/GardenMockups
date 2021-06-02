@@ -35,15 +35,31 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("download2").addEventListener('click', () => {
             viewModel.downloadBlockData("map2");
         });
+		
+		document.getElementById("toggleMapButton").addEventListener('click', () => {
+			viewModel.toggleElement("viz2");
+			viewModel.toggleElement("table2_wrapper");
+		});
+		
+		window.addEventListener('resize', () => {
+			viewModel.resize();
+		});
+		
+		// I need to resize the tables, but I'm not sure if I can directly edit any of that code, so this is going here temporarily
 		let tableWrappers = document.getElementsByClassName("dataTables_wrapper");
         for(var i=0;i<tableWrappers.length;i++){
 			tableWrappers[i].classList.add("sizeable");
 		}
-        window.addEventListener('resize', () => {
-			viewModel.resize();
-		});
+		
+		let spacingPanel = document.createElement('div');
+		spacingPanel.id = "placeholder";
+		spacingPanel.className = "sizeable";
+		
+		tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
 		
 		viewModel.resize();
+		
+		
         // Old event handlers not being used
         // document.getElementById("variable1").addEventListener('change', (event) => {
         //     console.log(event);
