@@ -1,9 +1,45 @@
 #map1, #map2 {
-    height: 650px;
-    width: 550px;
+    height: auto;
+    width: inherit;
     
     display: block;
     z-index: 0;
+}
+
+.map.largeScreen, .bottom-dash.largeScreen {
+	width: 700px;
+}
+
+.map.midScreen, .bottom-dash.midScreen {
+	width: 500px;
+}
+
+.map.smallScreen, .bottom-dash.smallScreen {
+	width: 500px;
+}
+
+.map.largeScreen {
+	height: 800px;
+}
+
+.map.midScreen {
+	height: 600px;
+}
+
+.map.smallScreen {
+	height: 400px;
+}
+
+.dataTables_wrapper.largeScreen {
+	width: 764px;
+}
+
+.dataTables_wrapper.midScreen {
+	width: 564px;
+}
+
+.dataTables_wrapper.smallScreen {
+	width: 564px;
 }
 
 .map {

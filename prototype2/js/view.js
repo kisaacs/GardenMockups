@@ -36,7 +36,11 @@ document.addEventListener("DOMContentLoaded", function() {
             viewModel.downloadBlockData("map2");
         });
         
-        
+        window.addEventListener('resize', () => {
+			viewModel.resize();
+		});
+		
+		viewModel.resize();
         // Old event handlers not being used
         // document.getElementById("variable1").addEventListener('change', (event) => {
         //     console.log(event);

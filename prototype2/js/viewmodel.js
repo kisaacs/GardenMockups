@@ -256,6 +256,36 @@ class ViewModel {
             return -1;
         }
     }
+	
+	/**
+	* Resizes maps and tables based on window size
+	* Currently only depends on screen width
+	* Recognizes small(<1200px), medium(1200-1700px), and large(>1700px)
+	*/
+	resize(){
+		let x_size = window.innerWidth;
+		let sizeClasses = ["smallScreen","midScreen","largeScreen"]
+		let sizeClass = "midScreen";
+		if(x_size<1200){
+			sizeClass = "smallScreen";
+		} else if(x_size<1700){
+			sizeClass = "midScreen";
+		} else if(x_size>=1700){
+			sizeClass = "largeScreen";
+		}
+		// My current plan here is to mark all elements that need to be resized with the "sizeable" class
+		// Then it's easy to go through and change the class that designates the actual size
+		let sizedElements = document.getElementsByClassName("sizeable");
+		for(var i=0;i<sizedElements.length;i++){
+			// Clear previous size
+			for(var j=0;j<sizeClasses.length;j++){
+				sizedElements[i].classList.remove(sizeClasses[j]);
+			}
+			// Add new size
+			sizedElements[i].classList.add(sizeClass);
+		}
+	}
+	
 
     /*
      * 
