@@ -6,6 +6,9 @@ class Model {
         this.blockDataLists = {};
         this.tractDataMaps = {};
         this.geojsonInstances = {};
+		this.isLinked = false; // Whether the map views are currently linked
+		// Whether you are setting the map's zoom via code
+		this.isSetByCode = false; // This should toggle to determine if an event is triggered by the map or by the code
     }
 
     /**

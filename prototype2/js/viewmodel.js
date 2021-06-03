@@ -300,6 +300,39 @@ class ViewModel {
 		}
 	}
 	
+	/**
+	* Toggles the value parameter of the given object between value1 and value2
+	*
+	* @param {*} object Element with value parameter
+	* @param {*} value1 First value to toggle between
+	* @param {*} value2 Second value to toggle between
+	*/
+	toggleValue(object, value1, value2){
+		if(object.value == value1){
+			object.value = value2
+		} else {
+			object.value = value1
+		}
+	}
+	
+	toggleSync(){
+		this.model.isLinked = !this.model.isLinked;
+	}
+	
+	/**
+	* Sync maps
+	*/
+	syncMaps(map1, map2){
+		if(this.model.isLinked && !this.model.isSetByCode){
+			this.model.isSetByCode = true;
+			map1.flyTo(map2.getCenter(), map2.getZoom());
+			//map1.panTo(map2.getCenter(), {"animate":true});
+			//map1.setZoom(map2.getZoom());
+			//map1.setView(map2.getCenter(), map2.getZoom(), {"animate":false});
+		} else {
+			this.model.isSetByCode = false;
+		}
+	}
 
     /*
      * 

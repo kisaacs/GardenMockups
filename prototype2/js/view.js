@@ -39,24 +39,49 @@ document.addEventListener("DOMContentLoaded", function() {
 		document.getElementById("toggleMapButton").addEventListener('click', (event) => {
 			viewModel.toggleElement("viz2");
 			viewModel.toggleElement("table2_wrapper");
-			if(event.target.value == "Hide"){event.target.value = "Show"} else {event.target.value = "Hide"}
+			viewModel.toggleValue(event.target, "Hide", "Show");
 		});
 		
+		document.getElementById("linkMapButton").addEventListener('click', (event) => {
+			viewModel.toggleSync();
+			viewModel.toggleValue(event.target, "Link", "Unlink");
+		});
+		
+		
+		//Neither of these syncing solutions work because they trigger each other
+		//So there is an infinite loop between the two maps
+		
+		map1.addEventListener('moveend', () => {
+			viewModel.syncMaps(map2,map1);
+		});
+		
+		map2.addEventListener('moveend', () => {
+			viewModel.syncMaps(map1,map2);
+		});
+		
+		/*
+		map1.on('move', viewModel.syncMaps(map2,map1));
+		map2.on('move', viewModel.syncMaps(map1,map2));
+		*/
 		window.addEventListener('resize', () => {
 			viewModel.resize();
 		});
 		
-		// I need to resize the tables, but I'm not sure if I can directly edit any of that code, so this is going here temporarily
-		let tableWrappers = document.getElementsByClassName("dataTables_wrapper");
-        for(var i=0;i<tableWrappers.length;i++){
-			tableWrappers[i].classList.add("sizeable");
+		// I need to access the tables, but I'm not sure if I can directly edit any of that code, so this is going here temporarily
+		{
+			// Make table wrappers sizeable
+			let tableWrappers = document.getElementsByClassName("dataTables_wrapper");
+			for(var i=0;i<tableWrappers.length;i++){
+				tableWrappers[i].classList.add("sizeable");
+			}
+			
+			// Add empty panel between tables to match the gap between maps
+			let spacingPanel = document.createElement('div');
+			spacingPanel.id = "placeholder";
+			spacingPanel.className = "sizeable";
+			tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
 		}
-		
-		let spacingPanel = document.createElement('div');
-		spacingPanel.id = "placeholder";
-		spacingPanel.className = "sizeable";
-		
-		tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
+
 		
 		viewModel.resize();
 		
