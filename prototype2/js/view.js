@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
 		}
 
-		
+	
 		viewModel.resize();
 		
 		
