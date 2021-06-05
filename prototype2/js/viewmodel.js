@@ -1,8 +1,9 @@
 class ViewModel {
     constructor() {
         this.model = new Model();
-        this.colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
-        //colors = this.model.interpolate('#800026');
+        this.colors = this.model.interpolate('darkred', 'blue');
+        // the two colors passed into this function will be the two end colors of the legend
+        // and map illustration (shows the greatest and lowest level)
         try {
             this.model.fetchVariables();
         } catch (error) {
