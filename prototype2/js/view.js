@@ -6,6 +6,7 @@ var infoBox1 = null;
 var infoBox2 = null;
 var viewModel = null;
 
+
 document.addEventListener("DOMContentLoaded", function() {
         viewModel = new ViewModel();
         map1 = viewModel.createMap("map1");
@@ -34,8 +35,15 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         document.getElementById("download2").addEventListener('click', () => {
             viewModel.downloadBlockData("map2");
+		});
+		document.getElementById("downloadTable1").addEventListener('click', () => {
+            viewModel.downloadTableData("map1");
         });
-		
+        document.getElementById("downloadTable2").addEventListener('click', () => {
+            viewModel.downloadTableData("map2");
+        });
+
+
 		document.getElementById("toggleMapButton").addEventListener('click', (event) => {
 			viewModel.toggleMap2();
 			viewModel.toggleValue(event.target, "Hide", "Show");
@@ -77,36 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		viewModel.resize();
 		
 		
-        // Old event handlers not being used
-        // document.getElementById("variable1").addEventListener('change', (event) => {
-        //     console.log(event);
-        //     let sel = document.getElementById('variable1');
-        //     let variableName = ' (' + sel.options[sel.selectedIndex].text + ')';
-        //     viewModel.populateMap("map1", map1, infoBox1, variableName).then((status) => 
-        //         viewModel.populateLegend("map1", document.getElementById("legend1")));
-        // });
-        // document.getElementById("variable2").addEventListener('change', (event) => {
-        //     let sel = document.getElementById('variable2');
-        //     let variableName = ' (' + sel.options[sel.selectedIndex].text + ')';
-        //     viewModel.populateMap("map2", map2, infoBox2, variableName).then((status) => 
-        //         viewModel.populateLegend("map2", document.getElementById("legend2")));
-        // });
-        // document.getElementById("table2").addEventListener('click', () => {
-        //     let table = document.createElement('table');
-        //     table = viewModel.populateTable("map2", table);
-        //     localStorage.setItem("table", table.outerHTML);
-
-        //     let location = window.location.href;
-        //     let newWindow = open(location + 'table.html', '', "width=600px,height=600px");
-        //     newWindow.focus();
-        // });
-        // document.getElementById("table1").addEventListener('click', () => {
-        //     let table = document.createElement('table');
-        //     table = viewModel.populateTable("map1", table);
-        //     localStorage.setItem("table", table.outerHTML);
-
-        //     let location = window.location.href;
-        //     let newWindow = open(location + 'table.html', '', "width=600px,height=600px");
-        //     newWindow.focus();
-        // });
+        
+        
+        
 });
