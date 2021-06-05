@@ -8,6 +8,7 @@
 
 #maps {
 	text-align: center;
+	margin: auto;
 }
 
 .viz.largeScreen, .dataTables_wrapper.largeScreen{
@@ -75,8 +76,12 @@ ul, li{
 }
 
 #tables {
-    width: 100%;
 	text-align: center;
+	margin: auto;
+}
+
+#maps, #tables {
+	width: 100%;
 }
 
 .dataTables_wrapper {
