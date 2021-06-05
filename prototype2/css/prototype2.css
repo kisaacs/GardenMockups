@@ -7,7 +7,6 @@
 }
 
 #maps {
-	text-align: center;
 	margin: auto;
 }
 
@@ -76,21 +75,22 @@ ul, li{
 }
 
 #tables {
-	text-align: center;
 	margin: auto;
+	display: flex;
 }
 
 #maps, #tables {
 	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .dataTables_wrapper {
     display: inline-block;
     margin: 20px;
-    margin-right: 25px;
-    width: 612px;
     padding: 5px;
     vertical-align: top;
+	flex-grow: 1;
 }
 
 #table1_wrapper, #legend1 {
@@ -164,6 +164,8 @@ hr {
 #buttonTab, #placeholder {
 	display: inline-block;
 	vertical-align: top;
+	margin-left: 20px;
+	margin-right: 20px;
 }
 
 #buttonTab.largeScreen, #placeholder.largeScreen {
