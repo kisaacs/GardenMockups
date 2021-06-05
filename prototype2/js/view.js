@@ -37,8 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 		
 		document.getElementById("toggleMapButton").addEventListener('click', (event) => {
-			viewModel.toggleElement("viz2");
-			viewModel.toggleElement("table2_wrapper");
+			viewModel.toggleMap2();
 			viewModel.toggleValue(event.target, "Hide", "Show");
 		});
 		

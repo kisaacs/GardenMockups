@@ -281,23 +281,31 @@ class ViewModel {
 			for(var j=0;j<sizeClasses.length;j++){
 				sizedElements[i].classList.remove(sizeClasses[j]);
 			}
+			sizedElements[i].classList.remove("singleMap");
 			// Add new size
 			sizedElements[i].classList.add(sizeClass);
+			if(this.model.mapCount==1){
+				sizedElements[i].classList.add("singleMap");
+			}
 		}
 	}
 	
 	/**
-	* Toggles the disabled class on the given element
-	*
-	* @param {*} elementId The id attribute of the element to be toggled
+	* Toggles the disabled class on the second map
 	*/
-	toggleElement(elementId){
-		let elem = document.getElementById(elementId);
-		if(elem.classList.contains("disabled")){
-			elem.classList.remove("disabled");
+	toggleMap2(){
+		let mapElement = document.getElementById("viz2");
+		let tableElement = document.getElementById("table2_wrapper");
+		if(tableElement.classList.contains("disabled")){
+			tableElement.classList.remove("disabled");
+			mapElement.classList.remove("disabled");
+			this.model.mapCount = 2;
 		} else {
-			elem.classList.add("disabled");
+			tableElement.classList.add("disabled");
+			mapElement.classList.add("disabled");
+			this.model.mapCount = 1;
 		}
+		this.resize();
 	}
 	
 	/**

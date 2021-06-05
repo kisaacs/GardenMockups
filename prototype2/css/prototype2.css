@@ -6,6 +6,10 @@
     z-index: 0;
 }
 
+#maps {
+	text-align: center;
+}
+
 .viz.largeScreen, .dataTables_wrapper.largeScreen{
 	width: 750px;
 }
@@ -72,6 +76,7 @@ ul, li{
 
 #tables {
     width: 100%;
+	text-align: center;
 }
 
 .dataTables_wrapper {
