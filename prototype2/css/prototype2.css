@@ -60,6 +60,7 @@ ul, li{
     display: inline-block;
     margin: 20px;
     padding: 10px;
+	flex-grow: 1;
 }
 
 #viz1 {
