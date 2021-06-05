@@ -1,6 +1,8 @@
 class ViewModel {
     constructor() {
         this.model = new Model();
+        this.colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
+        //colors = this.model.interpolate('#800026');
         try {
             this.model.fetchVariables();
         } catch (error) {
@@ -95,20 +97,53 @@ class ViewModel {
     }
 
     /**
+    * Downloads data from the specified table into a csv file
+    * 
+    * @param {*} key The key for the table's data in the model
+    */
+    downloadTableData(key) {
+        let data = this.model.getBlockData(key);
+        let id = key[key.length - 1];
+        if (data.length === 0) {
+            alert("table"+id+" has no data to download.");
+            return;
+        }
+        let csv = "Name,Desc,Location Type,Location,Value\n";
+        for (let i = 0; i < data.length; i++) {
+            csv += data[i]['variable_name'] + ',';
+            csv += data[i]['variable_desc'] + ',';
+            csv += data[i]['location_type'] + ',';
+            csv += data[i]['location_name'] + ',';
+            csv += data[i]['value'] + "\n";
+            
+        }
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = "table" + id + ".csv";
+        hiddenElement.click();
+    }
+
+    /**
      * Populates the legend with the colormapping being used by the specified visualiztion
      * 
      * @param {*} key The model key for the specified visualization's data
      * @param {*} legend The div object that will have the colormapping filled out
+     * @param {*} colors array of colors that represent different amount
      */
     populateLegend(key, legend) {
+        let colors = this.colors;
         legend.innerHTML = "";
         console.log("Populating Legend");
         let legendWidth = 200;
         let legendHeight = 50;
-        let colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
-        let counts = {'#FFEDA0': 0, '#FED976': 0, '#FEB24C': 0, '#FD8D3C': 0, '#FC4E2A': 0, '#E31A1C': 0, '#BD0026': 0, '#800026': 0};
+        let counts = {};
+        for (var i = 0; i < colors.length; i++) {
+            counts[colors[i]] = 0;
+        }
+        console.log(counts);
         let tractData = this.model.getTractData(key);
-        let colorMapping = this.model.getColorMapping(key);
+        let colorMapping = this.model.getColorMapping(colors, key);
         var maxCount = 0;
     
         for (let tractId in tractData) {
@@ -125,7 +160,6 @@ class ViewModel {
             div.style.width = width + "px";
             console.log(counts[colors[i]]);
             div.style.height = (counts[colors[i]] / maxCount) * legendHeight + "px";
-            // console.log(div.style.height);
             div.style.left = width * i + "px";
             div.style.background = colors[i];
             div.className = "legendDiv";
@@ -152,6 +186,19 @@ class ViewModel {
         let body = document.createElement("tbody");
         table.appendChild(body);
         container.appendChild(table);
+        let btn = document.createElement('button');
+        let id = tableId[tableId.length - 1];
+        btn.id = "downloadTable" + id;
+        btn.innerHTML = "DOWNLOAD DATA";
+        if (id == "1") {
+            btn.className = "btn btn-primary";
+        }
+        if (id == "2") {
+            btn.className = "btn btn-danger";
+        }
+        table.appendChild(btn);
+        container.appendChild(table);
+
         let dataTable = $(table).DataTable({
             "language": {
                 "search": "Filter: "
@@ -224,8 +271,10 @@ class ViewModel {
      * @param {*} map 
      * @param {*} infoBox 
      * @param {*} variableName 
+     * @param {*} colors
      */
     async populateMap(key, map, infoBox, variableName) {
+        let colors = this.colors;
         console.log("Populating map");
         let old_geojson = this.model.getGeoJson(key);
         if (old_geojson !== null) {
@@ -233,7 +282,7 @@ class ViewModel {
         }
         try {
             await this.model.fetchData(key, variableName).then((response) => {
-                let colorMapping = this.model.getColorMapping(key);
+                let colorMapping = this.model.getColorMapping(colors, key);
                 let tractData = this.model.getTractData(key);
                 let parseFeature = this._parseFeature(tractData, colorMapping);
                 let style = this._style(parseFeature);

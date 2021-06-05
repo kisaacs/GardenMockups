@@ -45,20 +45,20 @@ class Model {
         return {};
     }
 
-    getColorMapping(key) {
+    getColorMapping(colors, key) {
         let minmax = this._getMinMax(key);
         let min = minmax[0];
         let max = minmax[1];
         let diff = max - min;
         return function (d) {
-            return d > (min + diff * 7.0 / 8.0)  ? '#800026' :
-                   d > (min + diff * 6.0 / 8.0)  ? '#BD0026' :
-                   d > (min + diff * 5.0 / 8.0)  ? '#E31A1C' :
-                   d > (min + diff * 4.0 / 8.0)  ? '#FC4E2A' :
-                   d > (min + diff * 3.0 / 8.0)  ? '#FD8D3C' :
-                   d > (min + diff * 2.0 / 8.0)  ? '#FEB24C' :
-                   d > (min + diff * 1.0 / 8.0)  ? '#FED976' :
-                                                   '#FFEDA0';
+            return d > (min + diff * 7.0 / 8.0) ? '#800026' :
+                   d > (min + diff * 6.0 / 8.0) ? '#BD0026' :
+                   d > (min + diff * 5.0 / 8.0) ? '#E31A1C' :
+                   d > (min + diff * 4.0 / 8.0) ? '#FC4E2A' :
+                   d > (min + diff * 3.0 / 8.0) ? '#FD8D3C' :
+                   d > (min + diff * 2.0 / 8.0) ? '#FEB24C' :
+                   d > (min + diff * 1.0 / 8.0) ? '#FED976' :
+                                                  '#FFEDA0';
         }
     }
 
@@ -78,6 +78,16 @@ class Model {
         delete this.blockDataLists[key];
         delete this.tractDataMaps[key];
         delete this.geojsonInstances[key];
+    }
+
+    /**
+     * Return an array of colors that represent different level in the map/legend based on
+     * the darkest color
+     * @param {*} maxColor
+     */
+    interpolate(maxColor) {
+        let colors = [];
+        return colors;
     }
 
     /**

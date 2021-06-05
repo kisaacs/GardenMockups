@@ -6,6 +6,7 @@ var infoBox1 = null;
 var infoBox2 = null;
 var viewModel = null;
 
+
 document.addEventListener("DOMContentLoaded", function() {
         viewModel = new ViewModel();
         map1 = viewModel.createMap("map1");
@@ -34,6 +35,12 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         document.getElementById("download2").addEventListener('click', () => {
             viewModel.downloadBlockData("map2");
+        });
+        document.getElementById("downloadTable1").addEventListener('click', () => {
+            viewModel.downloadTableData("map1");
+        });
+        document.getElementById("downloadTable2").addEventListener('click', () => {
+            viewModel.downloadTableData("map2");
         });
         
         
