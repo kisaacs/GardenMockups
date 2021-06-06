@@ -51,14 +51,14 @@ class Model {
         let max = minmax[1];
         let diff = max - min;
         return function (d) {
-            return d > (min + diff * 7.0 / 8.0) ? colors[0] :
-                   d > (min + diff * 6.0 / 8.0) ? colors[1] :
-                   d > (min + diff * 5.0 / 8.0) ? colors[2] :
-                   d > (min + diff * 4.0 / 8.0) ? colors[3] :
-                   d > (min + diff * 3.0 / 8.0) ? colors[4] :
-                   d > (min + diff * 2.0 / 8.0) ? colors[5] :
-                   d > (min + diff * 1.0 / 8.0) ? colors[6] :
-                                                  colors[7];
+            return d > (min + diff * 7.0 / 8.0) ? colors[7] :
+                   d > (min + diff * 6.0 / 8.0) ? colors[6] :
+                   d > (min + diff * 5.0 / 8.0) ? colors[5] :
+                   d > (min + diff * 4.0 / 8.0) ? colors[4] :
+                   d > (min + diff * 3.0 / 8.0) ? colors[3] :
+                   d > (min + diff * 2.0 / 8.0) ? colors[2] :
+                   d > (min + diff * 1.0 / 8.0) ? colors[1] :
+                                                  colors[0];
         }
     }
 
