@@ -80,7 +80,6 @@ class Model {
     /**
      * Return an array of colors that represent different level in the map/legend based on
      * the darkest and lightest color
-<<<<<<< HEAD
      * @param {*} minColor
      * @param {*} maxColor
      */
