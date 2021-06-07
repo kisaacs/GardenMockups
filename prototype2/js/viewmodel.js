@@ -261,6 +261,9 @@ class ViewModel {
 	* Resizes maps and tables based on window size
 	* Currently only depends on screen width
 	* Recognizes small(<1250px), medium(1250-1700px), and large(>1700px)
+	*
+	* The maps and tables will also expand to fill the screen,
+	* This just sets the initial sizes of the containers so they can't get too small
 	*/
 	resize(){
 		let x_size = window.innerWidth;
@@ -332,11 +335,12 @@ class ViewModel {
 	*/
 	syncMaps(map1, map2){
 		if(this.model.isLinked && !this.model.isSetByCode){
+			// When map1 changes to reflect map2, it will register that change
+			// This will trigger map2 to change to reflect map1 and so on
+			// The isSetByCode flag makes it ignore every other change to avoid this
+			// infinite recursion problem
 			this.model.isSetByCode = true;
 			map1.flyTo(map2.getCenter(), map2.getZoom());
-			//map1.panTo(map2.getCenter(), {"animate":true});
-			//map1.setZoom(map2.getZoom());
-			//map1.setView(map2.getCenter(), map2.getZoom(), {"animate":false});
 		} else {
 			this.model.isSetByCode = false;
 		}

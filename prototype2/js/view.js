@@ -46,10 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			viewModel.toggleValue(event.target, "Link", "Unlink");
 		});
 		
-		
-		//Neither of these syncing solutions work because they trigger each other
-		//So there is an infinite loop between the two maps
-		
 		map1.addEventListener('moveend', () => {
 			viewModel.syncMaps(map2,map1);
 		});
@@ -58,10 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			viewModel.syncMaps(map1,map2);
 		});
 		
-		/*
-		map1.on('move', viewModel.syncMaps(map2,map1));
-		map2.on('move', viewModel.syncMaps(map1,map2));
-		*/
 		window.addEventListener('resize', () => {
 			viewModel.resize();
 		});
