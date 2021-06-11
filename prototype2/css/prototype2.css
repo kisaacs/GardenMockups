@@ -1,15 +1,56 @@
 #map1, #map2 {
-    height: 650px;
-    width: 550px;
+    height: auto;
+    width: 100%;
     
     display: block;
     z-index: 0;
+}
+
+#maps {
+	margin: auto;
+}
+
+.viz.largeScreen, .dataTables_wrapper.largeScreen{
+	width: 750px;
+}
+
+.viz.midScreen, .dataTables_wrapper.midScreen{
+	width: 550px;
+}
+
+.viz.smallScreen, .dataTables_wrapper.smallScreen{
+	width: 500px;
+}
+
+.viz.largeScreen{
+	height: 900px;
+}
+
+.viz.midScreen{
+	height: 650px;
+}
+
+.viz.smallScreen{
+	height: 350px;
 }
 
 .map {
     display: flex;
     z-index: 0;
     margin: 20px;
+	width: auto;
+}
+
+.map.largeScreen {
+	height: 85%;
+}
+
+.map.midScreen {
+	height: 80%;
+}
+
+.map.smallScreen {
+	height: 60%;
 }
 
 ul, li{
@@ -19,6 +60,7 @@ ul, li{
     display: inline-block;
     margin: 20px;
     padding: 10px;
+	flex-grow: 1;
 }
 
 #viz1 {
@@ -34,16 +76,22 @@ ul, li{
 }
 
 #tables {
-    width: 100%;
+	margin: auto;
+	display: flex;
+}
+
+#maps, #tables {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .dataTables_wrapper {
     display: inline-block;
     margin: 20px;
-    margin-right: 25px;
-    width: 612px;
     padding: 5px;
     vertical-align: top;
+	flex-grow: 1;
 }
 
 #table1_wrapper, #legend1 {
@@ -57,8 +105,9 @@ ul, li{
     border-color: red;
     border-style: solid;
 }
+
 .bottom-dash {
-    width: 550px;
+    width: 100%;
     display: flex;
 }
 
@@ -111,4 +160,32 @@ hr {
 .info h4 {
     margin: 0 0 5px;
     color: #777;
+}
+
+#buttonTab, #placeholder {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+#buttonTab.largeScreen, #placeholder.largeScreen {
+	width: 45px;
+	margin-top: 500px;
+}
+
+#buttonTab.midScreen, #placeholder.midScreen {
+	width: 45px;
+	margin-top: 340px;
+}
+
+#buttonTab.smallScreen, #placeholder.smallScreen {
+	width: 45px;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 25px;
+}
+
+.disabled {
+	display: none !important;
 }

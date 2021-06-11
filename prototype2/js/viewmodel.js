@@ -256,6 +256,95 @@ class ViewModel {
             return -1;
         }
     }
+	
+	/**
+	* Resizes maps and tables based on window size
+	* Currently only depends on screen width
+	* Recognizes small(<1250px), medium(1250-1700px), and large(>1700px)
+	*
+	* The maps and tables will also expand to fill the screen,
+	* This just sets the initial sizes of the containers so they can't get too small
+	*/
+	resize(){
+		let x_size = window.innerWidth;
+		let sizeClasses = ["smallScreen","midScreen","largeScreen"]
+		let sizeClass = "midScreen";
+		if(x_size<1250){
+			sizeClass = "smallScreen";
+		} else if(x_size<1700){
+			sizeClass = "midScreen";
+		} else if(x_size>=1700){
+			sizeClass = "largeScreen";
+		}
+		// My current plan here is to mark all elements that need to be resized with the "sizeable" class
+		// Then it's easy to go through and change the class that designates the actual size
+		let sizedElements = document.getElementsByClassName("sizeable");
+		for(var i=0;i<sizedElements.length;i++){
+			// Clear previous size
+			for(var j=0;j<sizeClasses.length;j++){
+				sizedElements[i].classList.remove(sizeClasses[j]);
+			}
+			sizedElements[i].classList.remove("singleMap");
+			// Add new size
+			sizedElements[i].classList.add(sizeClass);
+			if(this.model.mapCount==1){
+				sizedElements[i].classList.add("singleMap");
+			}
+		}
+	}
+	
+	/**
+	* Toggles the disabled class on the second map
+	*/
+	toggleMap2(){
+		let mapElement = document.getElementById("viz2");
+		let tableElement = document.getElementById("table2_wrapper");
+		if(tableElement.classList.contains("disabled")){
+			tableElement.classList.remove("disabled");
+			mapElement.classList.remove("disabled");
+			this.model.mapCount = 2;
+		} else {
+			tableElement.classList.add("disabled");
+			mapElement.classList.add("disabled");
+			this.model.mapCount = 1;
+		}
+		this.resize();
+	}
+	
+	/**
+	* Toggles the value parameter of the given object between value1 and value2
+	*
+	* @param {*} object Element with value parameter
+	* @param {*} value1 First value to toggle between
+	* @param {*} value2 Second value to toggle between
+	*/
+	toggleValue(object, value1, value2){
+		if(object.value == value1){
+			object.value = value2
+		} else {
+			object.value = value1
+		}
+	}
+	
+	toggleSync(){
+		this.model.isLinked = !this.model.isLinked;
+	}
+	
+	/**
+	* Sync maps
+	*/
+	syncMaps(map1, map2){
+		if(this.model.isLinked && !this.model.isSetByCode){
+			// When map1 changes to reflect map2, it will register that change
+			// This will trigger map2 to change to reflect map1 and so on
+			// The isSetByCode flag makes it ignore every other change to avoid this
+			// infinite recursion problem
+			this.model.isSetByCode = true;
+			map1.flyTo(map2.getCenter(), map2.getZoom());
+		} else {
+			this.model.isSetByCode = false;
+		}
+	}
 
     /*
      * 
