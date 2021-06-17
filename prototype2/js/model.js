@@ -55,7 +55,7 @@ class Model {
         let max = minmax[1];
         let diff = max - min;
         return function (d) {
-            return colors[Math.floor((d - min) * 8.0 / diff)];
+            return (d < max) ? colors[Math.floor((d - min) * 8.0 / diff)] : colors[colors.length - 1];
         }
     }
 

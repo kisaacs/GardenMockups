@@ -281,7 +281,7 @@ class ViewModel {
         }
         try {
             await this.model.fetchData(key, variableName).then((response) => {
-                let colorMapping = this.model.getColorMapping(key);
+                let colorMapping = this.model.getColorMapping(this.colors, key);
                 let tractData = this.model.getTractData(key);
                 let parseFeature = this._parseFeature(tractData, colorMapping);
                 let style = this._style(parseFeature);
