@@ -75,6 +75,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		
 		viewModel.resize();
+		map1.invalidateSize();
+		map2.invalidateSize();
 		
 		
         // Old event handlers not being used
