@@ -39,6 +39,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		document.getElementById("toggleMapButton").addEventListener('click', (event) => {
 			viewModel.toggleMap2();
 			viewModel.toggleValue(event.target, "Hide", "Show");
+			map1.invalidateSize();
+			map2.invalidateSize();
 		});
 		
 		document.getElementById("linkMapButton").addEventListener('click', (event) => {
