@@ -1,66 +1,66 @@
 #map1, #map2 {
     height: auto;
     width: 100%;
-    
     display: block;
     z-index: 0;
 }
 
 #maps {
-	margin: auto;
+    margin: auto;
 }
 
-.viz.largeScreen, .dataTables_wrapper.largeScreen{
-	width: 750px;
+.viz.largeScreen, .dataTables_wrapper.largeScreen {
+    width: 750px;
 }
 
-.viz.midScreen, .dataTables_wrapper.midScreen{
-	width: 550px;
+.viz.midScreen, .dataTables_wrapper.midScreen {
+    width: 550px;
 }
 
-.viz.smallScreen, .dataTables_wrapper.smallScreen{
-	width: 500px;
+.viz.smallScreen, .dataTables_wrapper.smallScreen {
+    width: 500px;
 }
 
-.viz.largeScreen{
-	height: 900px;
+.viz.largeScreen {
+    height: 900px;
 }
 
-.viz.midScreen{
-	height: 650px;
+.viz.midScreen {
+    height: 650px;
 }
 
-.viz.smallScreen{
-	height: 350px;
+.viz.smallScreen {
+    height: 350px;
 }
 
 .map {
     display: flex;
     z-index: 0;
     margin: 20px;
-	width: auto;
+    width: auto;
 }
 
-.map.largeScreen {
-	height: 85%;
-}
+    .map.largeScreen {
+        height: 85%;
+    }
 
-.map.midScreen {
-	height: 80%;
-}
+    .map.midScreen {
+        height: 80%;
+    }
 
-.map.smallScreen {
-	height: 60%;
-}
+    .map.smallScreen {
+        height: 60%;
+    }
 
-ul, li{
+ul, li {
     z-index: 1;
 }
+
 .viz {
     display: inline-block;
     margin: 20px;
     padding: 10px;
-	flex-grow: 1;
+    flex-grow: 1;
 }
 
 #viz1 {
@@ -76,14 +76,14 @@ ul, li{
 }
 
 #tables {
-	margin: auto;
-	display: flex;
+    margin: auto;
+    display: flex;
 }
 
 #maps, #tables {
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .dataTables_wrapper {
@@ -91,7 +91,7 @@ ul, li{
     margin: 20px;
     padding: 5px;
     vertical-align: top;
-	flex-grow: 1;
+    flex-grow: 1;
 }
 
 #table1_wrapper, #legend1 {
@@ -114,6 +114,7 @@ ul, li{
 #download1 {
     /* display: inline-block; */
 }
+
 #legend1, #legend2 {
     /* display: inline-block; */
     position: relative;
@@ -144,7 +145,7 @@ hr {
     border-width: 0px;
     color: black;
     background-color: black;
-    position:absolute;
+    position: absolute;
     bottom: 1px;
     width: inherit;
 }
@@ -157,35 +158,36 @@ hr {
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
 }
-.info h4 {
-    margin: 0 0 5px;
-    color: #777;
-}
+
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
 
 #buttonTab, #placeholder {
-	display: inline-block;
-	vertical-align: top;
-	margin-left: 20px;
-	margin-right: 20px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
-#buttonTab.largeScreen, #placeholder.largeScreen {
-	width: 45px;
-	margin-top: 500px;
-}
+    #buttonTab.largeScreen, #placeholder.largeScreen {
+        width: 45px;
+        margin-top: 500px;
+    }
 
-#buttonTab.midScreen, #placeholder.midScreen {
-	width: 45px;
-	margin-top: 340px;
-}
+    #buttonTab.midScreen, #placeholder.midScreen {
+        width: 45px;
+        margin-top: 340px;
+    }
 
-#buttonTab.smallScreen, #placeholder.smallScreen {
-	width: 45px;
-	margin-top: 25px;
-	margin-bottom: 25px;
-	margin-left: 25px;
-}
+    #buttonTab.smallScreen, #placeholder.smallScreen {
+        width: 45px;
+        margin-top: 25px;
+        margin-bottom: 25px;
+        margin-left: 25px;
+    }
 
 .disabled {
-	display: none !important;
+    display: none !important;
 }
