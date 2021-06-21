@@ -13,8 +13,9 @@
     width: 750px;
 }
 
-.viz.midScreen, .dataTables_wrapper.midScreen {
-    width: 550px;
+
+.viz.midScreen, .dataTables_wrapper.midScreen{
+	width: 500px;
 }
 
 .viz.smallScreen, .dataTables_wrapper.smallScreen {
