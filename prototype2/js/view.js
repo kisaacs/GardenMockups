@@ -19,6 +19,12 @@ document.addEventListener("DOMContentLoaded", function() {
         table2 = viewModel.createTable("table2", "tables");
 
         // View UI Listeners
+		document.getElementById("searchBar1").addEventListener('keyup', function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				document.getElementById("search1").click();
+			}
+		});
 		document.getElementById("search1").addEventListener('click', (event) => {
 			var var1 = document.getElementById("searchBar1").value;
 			if (var1 != "") {
@@ -28,7 +34,13 @@ document.addEventListener("DOMContentLoaded", function() {
 					viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
 						viewModel.populateTable("map1", table1));
             } 
-        });
+		});
+		document.getElementById("searchBar2").addEventListener('keyup', function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				document.getElementById("search2").click();
+			}
+		});
        document.getElementById("search2").addEventListener('click', (event) => {
 			var var2 = document.getElementById("searchBar2").value;
 		   if (var2 != "") {

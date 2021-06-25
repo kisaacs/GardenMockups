@@ -72,7 +72,7 @@ class ViewModel {
     */
     changeToLoad(btn) {
         btn.innerHTML = "";
-        btn.className = "spinner-grow text";
+        btn.className = "spinner-border text-info";
     }
 
     /**
