@@ -19,15 +19,17 @@ document.addEventListener("DOMContentLoaded", function() {
         table2 = viewModel.createTable("table2", "tables");
 
         // View UI Listeners
-        document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
-            viewModel.populateMap("map1", map1, infoBox1, event.text.value).then((status) => 
+		document.getElementById("search1").addEventListener('click', (event) => {
+			var var1 = document.getElementById("searchBar1").value;
+            viewModel.populateMap("map1", map1, infoBox1, var1).then((status) => 
                 viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
                 viewModel.populateTable("map1", table1));
         });
-        document.getElementById("searchBar2").addEventListener('awesomplete-selectcomplete', (event)=>{
-            viewModel.populateMap("map2", map2, infoBox2, event.text.value).then((status) => 
+       document.getElementById("search2").addEventListener('click', (event) => {
+			var var1 = document.getElementById("searchBar2").value;
+            viewModel.populateMap("map2", map2, infoBox2, var2).then((status) => 
                 viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
-                viewModel.populateTable("map2", table2));
+                viewModel.populateTable("map2", table1));
         });
         
         document.getElementById("download1").addEventListener('click', () => {
