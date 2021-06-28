@@ -19,15 +19,37 @@ document.addEventListener("DOMContentLoaded", function() {
         table2 = viewModel.createTable("table2", "tables");
 
         // View UI Listeners
-        document.getElementById("searchBar1").addEventListener('awesomplete-selectcomplete', (event) => {
-            viewModel.populateMap("map1", map1, infoBox1, event.text.value).then((status) => 
-                viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
-                viewModel.populateTable("map1", table1));
-        });
-        document.getElementById("searchBar2").addEventListener('awesomplete-selectcomplete', (event)=>{
-            viewModel.populateMap("map2", map2, infoBox2, event.text.value).then((status) => 
-                viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
-                viewModel.populateTable("map2", table2));
+		document.getElementById("searchBar1").addEventListener('keyup', function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				document.getElementById("search1").click();
+			}
+		});
+		document.getElementById("search1").addEventListener('click', (event) => {
+			var var1 = document.getElementById("searchBar1").value;
+			if (var1 != "") {
+				viewModel.changeToLoad(document.getElementById("search1"));
+				viewModel.populateMap("map1", map1, infoBox1, var1).then((status) =>
+					viewModel.changeBack(document.getElementById("search1"))|
+					viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
+						viewModel.populateTable("map1", table1));
+            } 
+		});
+		document.getElementById("searchBar2").addEventListener('keyup', function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				document.getElementById("search2").click();
+			}
+		});
+       document.getElementById("search2").addEventListener('click', (event) => {
+			var var2 = document.getElementById("searchBar2").value;
+		   if (var2 != "") {
+			   viewModel.changeToLoad(document.getElementById("search2"));
+			   viewModel.populateMap("map2", map2, infoBox2, var2).then((status) =>
+				   viewModel.changeBack(document.getElementById("search2")) |
+				   viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
+					   viewModel.populateTable("map2", table2));
+		   }
         });
         
         document.getElementById("download1").addEventListener('click', () => {

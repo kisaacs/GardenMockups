@@ -64,6 +64,33 @@ class ViewModel {
         });
     }
 
+    /**
+    *
+    * Change the search button into a loading icon when clicked (only change when there is value in the search bar)
+    * 
+    * @param {*} btn the search btn
+    */
+    changeToLoad(btn) {
+        btn.innerHTML = "";
+        btn.className = "spinner-border text-info";
+    }
+
+    /**
+    *
+    * Change the search button's background back to original
+    * 
+    * @param {*} btn the search btn
+    */
+    changeBack(btn) {
+        var id = btn.id[btn.id.length - 1];
+        btn.innerHTML = "Search";
+        if (id == 1) {
+            btn.className = "btn btn-primary";
+        }
+        if (id == 2) {
+            btn.className = "btn btn-danger";
+        }
+    }
 
     /**
      * Downloads data from the specified map into a csv file

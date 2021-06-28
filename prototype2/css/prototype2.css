@@ -22,15 +22,15 @@
 }
 
 .viz.largeScreen {
-    height: 900px;
+    height: 1050px;
 }
 
 .viz.midScreen {
-    height: 650px;
+    height: 800px;
 }
 
 .viz.smallScreen {
-    height: 350px;
+    height: 500px;
 }
 
 .map {
