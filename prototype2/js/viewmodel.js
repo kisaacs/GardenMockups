@@ -19,7 +19,6 @@ class ViewModel {
       * @param {*} mapId The id of the div that the map will attach to
       */
     createMap(mapId) {
-        console.log("Populating Map");
         let mymap = L.map(mapId).setView([34.0489, -112.0937], 7);
 
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -162,14 +161,12 @@ class ViewModel {
     populateLegend(key, legend) {
         let colors = this.colors;
         legend.innerHTML = "";
-        console.log("Populating Legend");
         let legendWidth = 200;
         let legendHeight = 50;
         let counts = {};
         for (var i = 0; i < colors.length; i++) {
             counts[colors[i]] = 0;
         }
-        console.log(counts);
         let tractData = this.model.getTractData(key);
         let colorMapping = this.model.getColorMapping(colors, key);
         var maxCount = 0;
@@ -186,7 +183,6 @@ class ViewModel {
         for (var i = 0; i < colors.length; i++) {
             let div = document.createElement("div");
             div.style.width = width + "px";
-            console.log(counts[colors[i]]);
             div.style.height = (counts[colors[i]] / maxCount) * legendHeight + "px";
             div.style.left = width * i + "px";
             div.style.background = colors[i];
@@ -301,13 +297,23 @@ class ViewModel {
      * @param {*} variableName 
      */
     async populateMap(key, map, infoBox, variableName) {
-        console.log("Populating map");
         let old_geojson = this.model.getGeoJson(key);
         if (old_geojson !== null) {
             map.removeLayer(old_geojson);
         }
+        var now = new Date();
+        console.log("\n\nCURRENT TIME: " + now);
+        console.log("Start fetching from database after a variable is selected....");
+        var start1 = new Date();
         try {
             await this.model.fetchData(key, variableName).then((response) => {
+                var end1 = new Date();
+                var duration1 = end1.getTime() - start1.getTime();
+                console.log("Time recorded: " + duration1 + " milliseconds\n");
+
+                var start2 = new Date();
+                console.log("Start rendering the map after a variable is selected.....");
+
                 let colorMapping = this.model.getColorMapping(this.colors, key);
                 let tractData = this.model.getTractData(key);
                 let parseFeature = this._parseFeature(tractData, colorMapping);
@@ -323,11 +329,33 @@ class ViewModel {
                 let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature);
                 geojson = L.geoJson(censusBlockData, { style: style, onEachFeature: onEachFeature }).addTo(map);
                 this.model.setGeoJson(key, geojson);
+                var end2 = new Date();
+                var duration2 = end2.getTime() - start2.getTime();
+                var total = duration1 + duration2;
+                console.log("Time recorded: " + duration2 + " milliseconds\n");
+                console.log("Total time elapsed after a variable is selected: " + total + " milliseconds\n");
+
+                //let fs = require("fs");
+                //let data = "Learning how to write in a file."
+                //fs.writeFile('Output.txt', data, (err) => {
+                //    if (err) throw err;
+                //})
+
                 return 1;
             });
-
+           
         } catch (error) {
+            var end = new Date();
+            var duration = end.getTime() - start1.getTime();
             console.log("Could not load " + variableName + " data from scrutinizer");
+            console.log("Total time elapsed after a variable is selected: " + duration + " milliseconds\n");
+
+            //let fs = require("fs");
+            //let data = "Learning how to write in a file."
+            //fs.writeFile('Output.txt', data, (err) => {
+            //    if (err) throw err;
+            //})
+
             return -1;
         }
     }

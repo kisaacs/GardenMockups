@@ -24,7 +24,6 @@ class Model {
     }
 
     getUnits(variableName) {
-        console.log(this.variableMap[variableName]);
         return this.variableMap[variableName]['unit'];
     }
 
@@ -41,8 +40,6 @@ class Model {
     }
 
     getTractData(key) {
-        console.log("Getting tract data...");
-        console.log(this.tractDataMaps);
         if (key in this.tractDataMaps)
             return this.tractDataMaps[key];
         console.log("Tract data key " + key + " not found");
@@ -165,7 +162,6 @@ class Model {
      * @param {} key 
      */
     async _createTractDataMap(key, data) {
-        console.log("Creating Tract Data!");
         if (!(key in this.blockDataLists)) {
             console.log("Error in getBlockDataMap, " + key + " is not present.");
             return -1;
