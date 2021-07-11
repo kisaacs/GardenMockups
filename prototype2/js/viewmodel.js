@@ -47,7 +47,7 @@ class ViewModel {
             this.update();
             return this._div;
         };
-        info.update = function(props) { this._div.innerHTML = '<h6>No Data Present.</h6>'; }
+        info.update = function (props) { this._div.innerHTML = '<h6>No Data Present.</h6>'; }
         info.addTo(map);
         return info;
     }
@@ -103,15 +103,15 @@ class ViewModel {
             return;
         }
         let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Medium,Value\n";
-        for (let i=0; i<data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             let geoId = data[i]['location_name'];
-            csv += (i+1) + ',';
+            csv += (i + 1) + ',';
             csv += '="' + geoId + '",';
-            csv += '="' + geoId.slice(0,2) + '",';
-            csv += '="' + fipsToState[geoId.slice(0,2)] + '",';
-            csv += '="' + geoId.slice(2,5) + '",';
-            csv += '="' + fipsToCounty[geoId.slice(2,5)] + '",';
-            csv += '="' + geoId.slice(5,11) + '",';
+            csv += '="' + geoId.slice(0, 2) + '",';
+            csv += '="' + fipsToState[geoId.slice(0, 2)] + '",';
+            csv += '="' + geoId.slice(2, 5) + '",';
+            csv += '="' + fipsToCounty[geoId.slice(2, 5)] + '",';
+            csv += '="' + geoId.slice(5, 11) + '",';
             csv += '="' + geoId[11] + '",';
             csv += '="' + data[i]['medium'] + '",';
             csv += data[i]['value'] + "\n";
@@ -132,7 +132,7 @@ class ViewModel {
         let data = this.model.getBlockData(key);
         let id = key[key.length - 1];
         if (data.length === 0) {
-            alert("table"+id+" has no data to download.");
+            alert("table" + id + " has no data to download.");
             return;
         }
         let csv = "Name,Desc,Location Type,Location,Value\n";
@@ -142,7 +142,7 @@ class ViewModel {
             csv += data[i]['location_type'] + ',';
             csv += data[i]['location_name'] + ',';
             csv += data[i]['value'] + "\n";
-            
+
         }
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
@@ -246,14 +246,14 @@ class ViewModel {
 
         // let body = table.getElementsByTagName('tbody')[0];
         // body.innerHTML = "";
-        for (let i=0; i<data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             table.row.add(
                 [
-                data[i]['variable_name'],
-                data[i]['variable_desc'],
-                data[i]['location_type'],
-                data[i]['location_name'],
-                data[i]['value']
+                    data[i]['variable_name'],
+                    data[i]['variable_desc'],
+                    data[i]['location_type'],
+                    data[i]['location_name'],
+                    data[i]['value']
                 ]); // .draw();
             // let row = document.createElement('tr');
             // this._addColumnValue(row, data[i]['variable_name']);
@@ -343,7 +343,7 @@ class ViewModel {
 
                 return 1;
             });
-           
+
         } catch (error) {
             var end = new Date();
             var duration = end.getTime() - start1.getTime();
@@ -519,6 +519,41 @@ class ViewModel {
                 mouseout: resetHighlight,
                 click: zoomToFeature
             });
+        }
+    }
+
+    /**
+    *
+    * Automatically search for a random variable (without changing the map)
+    * This is use to create the first connection to the database so that subsequent queries will go through
+    * @param {*} key
+    * @param {*} variableName
+    */
+    async intialSearch(key, variableName) {
+        try {
+            await this.model.fetchData(key, variableName).then((response) => {
+                let colorMapping = this.model.getColorMapping(this.colors, key);
+                let tractData = this.model.getTractData(key);
+                let parseFeature = this._parseFeature(tractData, colorMapping);
+                let style = this._style(parseFeature);
+                //infoBox.update = this._update(tractData, this.model.getUnits(variableName));
+                //let highlightFeature = this._highlightFeature(infoBox);
+                //var geojson;
+                //let resetHighlight = function (e) {
+                //    geojson.resetStyle(e.target);
+                //    infoBox.update();
+                //}
+                //let zoomToFeature = this._zoomToFeature(map);
+                //let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature);
+                //geojson = L.geoJson(censusBlockData, { style: style, onEachFeature: onEachFeature }).addTo(map);
+                //this.model.setGeoJson(key, geojson);
+                console.log("Initial search completed");
+                return 1;
+            });
+
+        } catch (error) {
+            console.log("Could not load " + variableName + " data from scrutinizer");
+            return -1;
         }
     }
 }

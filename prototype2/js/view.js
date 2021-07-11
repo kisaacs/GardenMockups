@@ -17,6 +17,9 @@ document.addEventListener("DOMContentLoaded", function() {
         viewModel.createSearchBar(document.getElementById("searchBar2"));
         table1 = viewModel.createTable("table1", "tables");
         table2 = viewModel.createTable("table2", "tables");
+		
+		// initial search in the background
+		viewModel.intialSearch("map1", "barium");
 
         // View UI Listeners
 		document.getElementById("searchBar1").addEventListener('keyup', function (event) {
