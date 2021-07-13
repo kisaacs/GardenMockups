@@ -4,6 +4,9 @@ class ViewModel {
         this.colors = this.model.interpolate('yellow', 'firebrick');
         // the two colors passed into this function will be the two end colors of the legend
         // and map illustration (shows the greatest and lowest level)
+        this.output = "";
+        // this string will show how much time is needed for fetching data and rendering
+        // when populating map in each variable call
         try {
             this.model.fetchVariables();
         } catch (error) {
@@ -302,17 +305,18 @@ class ViewModel {
             map.removeLayer(old_geojson);
         }
         var now = new Date();
-        console.log("\n\nCURRENT TIME: " + now);
-        console.log("Start fetching from database after a variable is selected....");
+        var outStr = "\n\nCURRENT TIME: " + now + "\n\nStart fetching from database after" + variableName + " is selected....";
         var start1 = new Date();
+
         try {
             await this.model.fetchData(key, variableName).then((response) => {
+
                 var end1 = new Date();
                 var duration1 = end1.getTime() - start1.getTime();
-                console.log("Time recorded: " + duration1 + " milliseconds\n");
+                outStr += "\n\nTime recorded: " + duration1 + " milliseconds\n";
 
                 var start2 = new Date();
-                console.log("Start rendering the map after a variable is selected.....");
+                outStr += "\n\nStart rendering the map after" + variableName + " is selected.....";
 
                 let colorMapping = this.model.getColorMapping(this.colors, key);
                 let tractData = this.model.getTractData(key);
@@ -329,35 +333,35 @@ class ViewModel {
                 let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature);
                 geojson = L.geoJson(censusBlockData, { style: style, onEachFeature: onEachFeature }).addTo(map);
                 this.model.setGeoJson(key, geojson);
+
                 var end2 = new Date();
                 var duration2 = end2.getTime() - start2.getTime();
                 var total = duration1 + duration2;
-                console.log("Time recorded: " + duration2 + " milliseconds\n");
-                console.log("Total time elapsed after a variable is selected: " + total + " milliseconds\n");
-
-                //let fs = require("fs");
-                //let data = "Learning how to write in a file."
-                //fs.writeFile('Output.txt', data, (err) => {
-                //    if (err) throw err;
-                //})
-
+                outStr += "\n\nTime recorded: " + duration2 + " milliseconds\n";
+                outStr += "\n\nTotal time elapsed after" + variableName + " is selected: " + total + " milliseconds\n";
+                this.output = "";
+                this.output = outStr;
                 return 1;
             });
 
         } catch (error) {
             var end = new Date();
             var duration = end.getTime() - start1.getTime();
-            console.log("Could not load " + variableName + " data from scrutinizer");
-            console.log("Total time elapsed after a variable is selected: " + duration + " milliseconds\n");
-
-            //let fs = require("fs");
-            //let data = "Learning how to write in a file."
-            //fs.writeFile('Output.txt', data, (err) => {
-            //    if (err) throw err;
-            //})
-
+            outStr += "\n\nCould not load " + variableName + " data from scrutinizer";
+            outStr += "\n\nTotal time elapsed after" + variableName + " is selected: " + duration + " milliseconds\n";
+            this.output = outStr;
             return -1;
         }
+    }
+
+    /*
+    *
+    * Get the output from populating the map that records time 
+    *
+    */
+
+    getOutput() {
+        return this.output;
     }
 
     /**
@@ -521,39 +525,5 @@ class ViewModel {
             });
         }
     }
-
-    /**
-    *
-    * Automatically search for a random variable (without changing the map)
-    * This is use to create the first connection to the database so that subsequent queries will go through
-    * @param {*} key
-    * @param {*} variableName
-    */
-    async intialSearch(key, variableName) {
-        try {
-            await this.model.fetchData(key, variableName).then((response) => {
-                let colorMapping = this.model.getColorMapping(this.colors, key);
-                let tractData = this.model.getTractData(key);
-                let parseFeature = this._parseFeature(tractData, colorMapping);
-                let style = this._style(parseFeature);
-                //infoBox.update = this._update(tractData, this.model.getUnits(variableName));
-                //let highlightFeature = this._highlightFeature(infoBox);
-                //var geojson;
-                //let resetHighlight = function (e) {
-                //    geojson.resetStyle(e.target);
-                //    infoBox.update();
-                //}
-                //let zoomToFeature = this._zoomToFeature(map);
-                //let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature);
-                //geojson = L.geoJson(censusBlockData, { style: style, onEachFeature: onEachFeature }).addTo(map);
-                //this.model.setGeoJson(key, geojson);
-                console.log("Initial search completed");
-                return 1;
-            });
-
-        } catch (error) {
-            console.log("Could not load " + variableName + " data from scrutinizer");
-            return -1;
-        }
-    }
 }
+

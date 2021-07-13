@@ -18,9 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
         table1 = viewModel.createTable("table1", "tables");
         table2 = viewModel.createTable("table2", "tables");
 		
-		// initial search in the background
-		viewModel.intialSearch("map1", "barium");
-
         // View UI Listeners
 		document.getElementById("searchBar1").addEventListener('keyup', function (event) {
 			if (event.keyCode === 13) {
@@ -107,14 +104,32 @@ document.addEventListener("DOMContentLoaded", function() {
 			spacingPanel.className = "sizeable";
 			tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
 		}
-
 	
 		viewModel.resize();
 		map1.invalidateSize();
 		map2.invalidateSize();
-		
-		
-        
-        
-        
+
+	// initial background search 
+	startSearch("cadmium", 1000);
+
+	// automatic searches for recording time
+	//setTimeout(function () { startSearch("barium", 5000); }, 1000);	
+	//setTimeout(function () { startSearch("arsenic", 5000); }, 10000);
+	//setTimeout(function () { startSearch("copper", 5000); }, 20000);
 });
+
+
+/**
+* Start a search with a given variable name and print out the time taken for the search
+*
+* @param {*} varName
+* @param {*} timeOut start printing out stat after a certain period (in miliseconds)
+*/
+function startSearch(varName, timeOut) {
+	var value = " (" + varName + ")";
+	document.getElementById("searchBar1").value = value;
+	document.getElementById("search1").click();
+	setTimeout(function () { console.log(viewModel.getOutput()); }, timeOut);
+	document.getElementById("searchBar1").value = "";
+}
+
