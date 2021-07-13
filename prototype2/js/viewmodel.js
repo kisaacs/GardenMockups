@@ -355,13 +355,27 @@ class ViewModel {
     }
 
     /*
-    *
     * Get the output from populating the map that records time 
-    *
     */
-
     getOutput() {
         return this.output;
+    }
+
+    /*
+    * Query the DB for a given variable without changing the map
+    * @param {*} key
+    * @param {*} variableName
+    */
+    async fetchVariable(key, variableName) {
+        try {
+            await this.model.fetchData(key, variableName).then((response) => {
+                console.log("Successfully fetch " + variableName + " data from scrutinizer"); 
+                return 1;
+            });
+        } catch (error) {
+            console.log("Could not load " + variableName + " data from scrutinizer");
+            return -1;
+        }
     }
 
     /**

@@ -109,27 +109,27 @@ document.addEventListener("DOMContentLoaded", function() {
 		map1.invalidateSize();
 		map2.invalidateSize();
 
-	// initial background search 
-	startSearch("cadmium", 1000);
+	// initial background DB query
+	viewModel.fetchVariable("map1", " (cadmium)");
 
-	// automatic searches for recording time
-	//setTimeout(function () { startSearch("barium", 5000); }, 1000);	
-	//setTimeout(function () { startSearch("arsenic", 5000); }, 10000);
-	//setTimeout(function () { startSearch("copper", 5000); }, 20000);
+	//automatic searches for recording time
+	//setTimeout(function () { startSearch(" (barium)", 5000); }, 1000);	
+	//setTimeout(function () { startSearch(" (arsenic)", 5000); }, 10000);
+	//setTimeout(function () { startSearch(" (copper)", 5000); }, 20000);
 });
 
 
 /**
 * Start a search with a given variable name and print out the time taken for the search
 *
-* @param {*} varName
+* @param {*} variableName
 * @param {*} timeOut start printing out stat after a certain period (in miliseconds)
 */
-function startSearch(varName, timeOut) {
-	var value = " (" + varName + ")";
-	document.getElementById("searchBar1").value = value;
+function startSearch(variableName, timeOut) {
+	document.getElementById("searchBar1").value = variableName;
 	document.getElementById("search1").click();
 	setTimeout(function () { console.log(viewModel.getOutput()); }, timeOut);
 	document.getElementById("searchBar1").value = "";
 }
+
 
