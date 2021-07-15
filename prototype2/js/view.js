@@ -113,9 +113,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	viewModel.fetchVariable("map1", " (cadmium)");
 
 	//automatic searches for recording time
-	//setTimeout(function () { startSearch(" (barium)", 5000); }, 1000);	
-	//setTimeout(function () { startSearch(" (arsenic)", 5000); }, 10000);
-	//setTimeout(function () { startSearch(" (copper)", 5000); }, 20000);
+	setTimeout(function () { startSearch(" (arsenic)", 10000); }, 5000);
+	setTimeout(function () { startSearch(" (copper)", 10000); }, 25000);
+
 });
 
 
@@ -128,8 +128,21 @@ document.addEventListener("DOMContentLoaded", function() {
 function startSearch(variableName, timeOut) {
 	document.getElementById("searchBar1").value = variableName;
 	document.getElementById("search1").click();
-	setTimeout(function () { console.log(viewModel.getOutput()); }, timeOut);
-	document.getElementById("searchBar1").value = "";
+
+	setTimeout(function () {
+		download(variableName + ".txt", viewModel.getOutput());
+	}, timeOut);
 }
 
+function download(filename, text) {
+	var element = document.createElement('a');
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', filename);
 
+	element.style.display = 'none';
+	document.body.appendChild(element);
+
+	element.click();
+
+	document.body.removeChild(element);
+}
