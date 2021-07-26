@@ -111,38 +111,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// initial background DB query
 	viewModel.fetchVariable("map1", " (cadmium)");
-
-	//automatic searches for recording time
-	//setTimeout(function () { startSearch(" (arsenic)", 10000); }, 5000);
-	//setTimeout(function () { startSearch(" (copper)", 10000); }, 25000);
-
 });
-
-
-/**
-* Start a search with a given variable name and print out the time taken for the search
-*
-* @param {*} variableName
-* @param {*} timeOut start printing out stat after a certain period (in miliseconds)
-*/
-function startSearch(variableName, timeOut) {
-	document.getElementById("searchBar1").value = variableName;
-	document.getElementById("search1").click();
-
-	setTimeout(function () {
-		download(variableName + ".txt", viewModel.getOutput());
-	}, timeOut);
-}
-
-function download(filename, text) {
-	var element = document.createElement('a');
-	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-	element.setAttribute('download', filename);
-
-	element.style.display = 'none';
-	document.body.appendChild(element);
-
-	element.click();
-
-	document.body.removeChild(element);
-}
