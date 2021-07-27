@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
         viewModel.createSearchBar(document.getElementById("searchBar2"));
         table1 = viewModel.createTable("table1", "tables");
         table2 = viewModel.createTable("table2", "tables");
-
+		
         // View UI Listeners
 		document.getElementById("searchBar1").addEventListener('keyup', function (event) {
 			if (event.keyCode === 13) {
@@ -104,14 +104,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			spacingPanel.className = "sizeable";
 			tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
 		}
-
 	
 		viewModel.resize();
 		map1.invalidateSize();
 		map2.invalidateSize();
-		
-		
-        
-        
-        
+
+	// initial background DB query
+	viewModel.fetchVariable("map1", " (cadmium)");
 });
