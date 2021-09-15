@@ -42,12 +42,13 @@ class ViewModel {
     createInfoBox(map) {
         // Adding the Data Box
         var info = L.control();
+		info.m = this.model;
         info.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
             this.update();
             return this._div;
         };
-        info.update = function (props) { this._div.innerHTML = '<h6>No Data Present.</h6>'; }
+        info.update = function (props) { this._div.innerHTML = '<h6>'+this.m.LANG.NODATA+'</h6>'; }
         info.addTo(map);
         return info;
     }
@@ -82,7 +83,7 @@ class ViewModel {
     */
     changeBack(btn) {
         var id = btn.id[btn.id.length - 1];
-        btn.innerHTML = "Search";
+        btn.innerHTML = this.model.LANG.SEARCH;
         if (id == 1) {
             btn.className = "btn btn-primary";
         }
@@ -99,7 +100,7 @@ class ViewModel {
     downloadBlockData(key) {
         let data = this.model.getBlockData(key);
         if (data.length === 0) {
-            alert(key + " has no data to download.");
+            alert(key + " has no data to download.");// How does this get localized? ###################################
             return;
         }
         let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Medium,Value\n";
@@ -132,10 +133,10 @@ class ViewModel {
         let data = this.model.getBlockData(key);
         let id = key[key.length - 1];
         if (data.length === 0) {
-            alert("table" + id + " has no data to download.");
+            alert("table" + id + " has no data to download.");// How does this get localized? ##########################
             return;
         }
-        let csv = "Name,Desc,Location Type,Location,Value\n";
+        let csv = "Name,Desc,Location Type,Location,Value\n";// Localize downloaded files
         for (let i = 0; i < data.length; i++) {
             csv += data[i]['variable_name'] + ',';
             csv += data[i]['variable_desc'] + ',';
@@ -198,11 +199,11 @@ class ViewModel {
         let table = document.createElement("table");
         let row = document.createElement('tr');
         let head = document.createElement("thead");
-        this._addHeaderColumn(row, 'Name');
-        this._addHeaderColumn(row, 'Desc');
-        this._addHeaderColumn(row, 'Location Type');
-        this._addHeaderColumn(row, 'Location');
-        this._addHeaderColumn(row, 'Value');
+        this._addHeaderColumn(row, this.model.LANG.NAME_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.DESC_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.LOCATIONTYPE_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.LOCATION_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.VALUE_TABLE_LABEL);
         head.appendChild(row);
         table.appendChild(head);
         table.id = tableId;
@@ -213,7 +214,7 @@ class ViewModel {
         let btn = document.createElement('button');
         let id = tableId[tableId.length - 1];
         btn.id = "downloadTable" + id;
-        btn.innerHTML = "DOWNLOAD DATA";
+        btn.innerHTML = this.model.LANG.DOWNLOAD_DATA;
         if (id == "1") {
             btn.className = "btn btn-primary";
         }
@@ -225,7 +226,7 @@ class ViewModel {
 
         let dataTable = $(table).DataTable({
             "language": {
-                "search": "Filter: "
+                "search": "Filter: "// What does this do
             }
         });
         $('.dataTables_length').addClass('bs-select');
@@ -487,9 +488,9 @@ class ViewModel {
         return function (props) {
             if (props) {
                 let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
-                this._div.innerHTML = '<h6>Data Value</h6>' + (key in tractData ?
+                this._div.innerHTML = '<h6>'+this.model.LANG.DATA_VALUE+'</h6>' + (key in tractData ?
                     '<b>' + tractData[key][0].toFixed(2) + ' ' + units
-                    : 'Hover over a tract');
+                    : this.model.LANG.HOVER_TRACT);
             }
         };
     }

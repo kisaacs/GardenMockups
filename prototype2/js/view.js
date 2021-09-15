@@ -68,14 +68,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		document.getElementById("toggleMapButton").addEventListener('click', (event) => {
 			viewModel.toggleMap2();
-			viewModel.toggleValue(event.target, "Hide", "Show");
+			viewModel.toggleValue(event.target, viewModel.model.LANG.HIDE, viewModel.model.LANG.SHOW);
 			map1.invalidateSize();
 			map2.invalidateSize();
 		});
 		
 		document.getElementById("linkMapButton").addEventListener('click', (event) => {
 			viewModel.toggleSync();
-			viewModel.toggleValue(event.target, "Link", "Unlink");
+			viewModel.toggleValue(event.target, viewModel.model.LANG.LINK, viewModel.model.LANG.UNLINK);
 		});
 		
 		map1.addEventListener('moveend', () => {
@@ -89,6 +89,17 @@ document.addEventListener("DOMContentLoaded", function() {
 		window.addEventListener('resize', () => {
 			viewModel.resize();
 		});
+		
+		{// Edit plain text in index.html fields
+			for(s of document.getElementsByClassName("variable_search")){
+				s.innerHTML = viewModel.model.LANG.VARIABLE_SEARCH;
+			}
+			document.getElementById("search1").innerHTML = viewModel.model.LANG.SEARCH;
+			document.getElementById("search2").innerHTML = viewModel.model.LANG.SEARCH;
+			document.getElementById("download1").innerHTML = viewModel.model.LANG.Download_Data;
+			document.getElementById("download2").innerHTML = viewModel.model.LANG.Download_Data;
+			document.title = viewModel.model.LANG.TITLE;
+		}
 		
 		// I need to access the tables, but I'm not sure if I can directly edit any of that code, so this is going here temporarily
 		{

@@ -1,5 +1,25 @@
+let LANG_en = {
+	'NODATA': 'No Data Present.',
+	'SEARCH': 'Search',
+	'NAME_TABLE_LABEL': 'Name',
+	'DESC_TABLE_LABEL': 'Desc',
+	'LOCATIONTYPE_TABLE_LABEL': 'Location Type',
+	'LOCATION_TABLE_LABEL': 'Location',
+	'VALUE_TABLE_LABEL': 'Value',
+	'DOWNLOAD_DATA': 'DOWNLOAD DATA',
+	'DATA_VALUE': 'Data Value',
+	'HOVER_TRACT': 'Hover over a tract',
+	'HIDE': 'Hide',
+	'SHOW': 'Show',
+	'LINK': 'Link',
+	'UNLINK': 'Unlink',
+	'TITLE': 'Arizona Map',// The last three are used in index.html
+	'VARIABLE_SEARCH': 'Variable Search: ',
+	'Download_Data': 'Download Data'
+};
 class Model {
     constructor() {
+		this.LANG = LANG_en;//Should be some mechanism to set this
         this.variableMap = {};
         this.variableDesc = [];
         this.originalDataLists = {};
