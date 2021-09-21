@@ -172,22 +172,32 @@ hr {
     margin-right: 20px;
 }
 
-    #buttonTab.largeScreen, #placeholder.largeScreen {
-        width: 45px;
-        margin-top: 500px;
-    }
+#buttonTab.largeScreen, #placeholder.largeScreen {
+	width: 45px;
+	margin-top: 500px;
+}
 
-    #buttonTab.midScreen, #placeholder.midScreen {
-        width: 45px;
-        margin-top: 340px;
-    }
+#buttonTab.midScreen, #placeholder.midScreen {
+	width: 45px;
+	margin-top: 340px;
+}
 
-    #buttonTab.smallScreen, #placeholder.smallScreen {
-        width: 45px;
-        margin-top: 25px;
-        margin-bottom: 25px;
-        margin-left: 25px;
-    }
+#buttonTab.smallScreen, #placeholder.smallScreen {
+	width: 45px;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 25px;
+}
+
+#langSelect {
+    width: 30px;
+    height: 30px;
+    margin-left: 20px;
+    margin-top: 20px;
+    text-align: center;
+    position: fixed;
+    opacity: 0.6;
+}
 
 .disabled {
     display: none !important;

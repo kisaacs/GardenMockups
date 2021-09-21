@@ -1,4 +1,5 @@
 let LANG_en = {
+	'LangId': 'English',
 	'NODATA': 'No Data Present.',
 	'SEARCH': 'Search',
 	'NAME_TABLE_LABEL': 'Name',
@@ -17,9 +18,34 @@ let LANG_en = {
 	'VARIABLE_SEARCH': 'Variable Search: ',
 	'Download_Data': 'Download Data'
 };
+
+let LANG_pig = {
+	'LangId': 'Pig Latin',
+	'NODATA': 'onay ataday esentpray . ',
+	'SEARCH': 'earchsay',
+	'NAME_TABLE_LABEL': 'amenay',
+	'DESC_TABLE_LABEL': 'escday',
+	'LOCATIONTYPE_TABLE_LABEL': 'ocationlay etypay',
+	'LOCATION_TABLE_LABEL': 'ocationlay',
+	'VALUE_TABLE_LABEL': 'aluevay',
+	'DOWNLOAD_DATA': 'ownloadday ataday',
+	'DATA_VALUE': 'ataday aluevay',
+	'HOVER_TRACT': 'overhay overyay ayay acttray',
+	'HIDE': 'idehay',
+	'SHOW': 'owshay',
+	'LINK': 'inklay',
+	'UNLINK': 'unlinkyay',
+	'TITLE': 'arizonayay apmay',// The last three are used in index.html
+	'VARIABLE_SEARCH': 'ariablevay earchsay: ',
+	'Download_Data': 'ownloadday ataday'
+};
+
+let LANGS = [LANG_en, LANG_pig];
+
 class Model {
     constructor() {
-		this.LANG = LANG_en;//Should be some mechanism to set this
+		this.LANG = LANG_pig;//Should be some mechanism to set this
+		this.LANGS = LANGS;
         this.variableMap = {};
         this.variableDesc = [];
         this.originalDataLists = {};
