@@ -1,5 +1,6 @@
 let LANG_en = {
-	'LangId': 'English',
+	'LangName': 'English',
+	'LangId': 'en',
 	'NODATA': 'No Data Present.',
 	'SEARCH': 'Search',
 	'NAME_TABLE_LABEL': 'Name',
@@ -20,7 +21,8 @@ let LANG_en = {
 };
 
 let LANG_pig = {
-	'LangId': 'Pig Latin',
+	'LangName': 'Pig Latin',
+	'LangId': 'pig',
 	'NODATA': 'onay ataday esentpray . ',
 	'SEARCH': 'earchsay',
 	'NAME_TABLE_LABEL': 'amenay',
@@ -40,11 +42,15 @@ let LANG_pig = {
 	'Download_Data': 'ownloadday ataday'
 };
 
-let LANGS = [LANG_en, LANG_pig];
+let LANGS = {'en':LANG_en, 'pig':LANG_pig};
 
 class Model {
-    constructor() {
-		this.LANG = LANG_pig;//Should be some mechanism to set this
+    constructor(langId='en') {
+		if(langId in LANGS){
+			this.LANG = LANGS[langId];
+		} else {
+			this.LANG = LANGS['en'];
+		}
 		this.LANGS = LANGS;
         this.variableMap = {};
         this.variableDesc = [];

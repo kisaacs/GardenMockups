@@ -1,6 +1,6 @@
 class ViewModel {
-    constructor() {
-        this.model = new Model();
+    constructor(lang='en') {
+        this.model = new Model(lang);
         this.colors = this.model.interpolate('yellow', 'firebrick');
         // the two colors passed into this function will be the two end colors of the legend
         // and map illustration (shows the greatest and lowest level)
@@ -100,7 +100,7 @@ class ViewModel {
     downloadBlockData(key) {
         let data = this.model.getBlockData(key);
         if (data.length === 0) {
-            alert(key + " has no data to download.");// How does this get localized? ###################################
+            alert(key + " has no data to download.");// How does this get localized?
             return;
         }
         let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Medium,Value\n";
@@ -133,7 +133,7 @@ class ViewModel {
         let data = this.model.getBlockData(key);
         let id = key[key.length - 1];
         if (data.length === 0) {
-            alert("table" + id + " has no data to download.");// How does this get localized? ##########################
+            alert("table" + id + " has no data to download.");// How does this get localized?
             return;
         }
         let csv = "Name,Desc,Location Type,Location,Value\n";// Localize downloaded files

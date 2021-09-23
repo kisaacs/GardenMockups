@@ -6,9 +6,24 @@ var infoBox1 = null;
 var infoBox2 = null;
 var viewModel = null;
 
-
+function getQueryVar(varId)
+{
+	var vars = window.location.search.substring(1).split("&");
+	for (var i=0;i<vars.length;i++) {
+		var declaration = vars[i].split("=");
+		if(declaration[0] == varId){
+			return declaration[1];
+		}
+	}
+	return(false);
+}
 document.addEventListener("DOMContentLoaded", function() {
-	viewModel = new ViewModel();
+	langFromURL = getQueryVar('lang');
+	if(langFromURL){
+		viewModel=new ViewModel(langFromURL);
+	} else {
+		viewModel = new ViewModel();
+	}
 	map1 = viewModel.createMap("map1");
 	map2 = viewModel.createMap("map2");
 	infoBox1 = viewModel.createInfoBox(map1);
@@ -92,17 +107,22 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	let langSelector = document.getElementById("langSelect");
 
-	for(var i = 0; i < viewModel.model.LANGS.length; i++) {
-		var opt = viewModel.model.LANGS[i];
+	for(var opt of Object.values(viewModel.model.LANGS)) {
 		var el = document.createElement("option");
-		el.textContent = opt.LangId;
-		el.value = opt.LangId;
+		el.textContent = opt.LangName;
+		el.setAttribute('data-LangId',opt.LangId);
 		langSelector.appendChild(el);
-		let jkl = 5;
 	}
-	let lkj = 5;
+	if(langFromURL){
+		for(var i=0;i<langSelector.options.length;i++){
+			if(langSelector.options[i].getAttribute('data-LangId')==langFromURL){
+				langSelector.selectedIndex=i;
+				break;
+			}
+		}
+	}
 	langSelector.addEventListener('change',(e) => {
-		viewModel.model.LANG = viewModel.model.LANGS[e.target.selectedIndex];
+		window.location.href=window.location.href.split('?')[0]+"?lang="+e.target.options[e.target.selectedIndex].getAttribute('data-LangId');
 	});
 	
 	{// Edit plain text in index.html fields
