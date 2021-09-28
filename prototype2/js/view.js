@@ -6,21 +6,24 @@ var infoBox1 = null;
 var infoBox2 = null;
 var viewModel = null;
 
-function getQueryVar(varId)
+function getQueryFlags()
 {
+	let retVal = {};
 	var vars = window.location.search.substring(1).split("&");
 	for (var i=0;i<vars.length;i++) {
 		var declaration = vars[i].split("=");
-		if(declaration[0] == varId){
-			return declaration[1];
+		declaration[1] = declaration[1].replaceAll("%20"," ");
+		if(!isNaN(parseFloat(declaration[1]))){
+			declaration[1] = parseFloat(declaration[1]);
 		}
+		retVal[declaration[0]] = declaration[1];
 	}
-	return(false);
+	return retVal;
 }
 document.addEventListener("DOMContentLoaded", function() {
-	langFromURL = getQueryVar('lang');
-	if(langFromURL){
-		viewModel=new ViewModel(langFromURL);
+	queryFlags = getQueryFlags();
+	if("lang" in queryFlags){
+		viewModel=new ViewModel(queryFlags["lang"]);
 	} else {
 		viewModel = new ViewModel();
 	}
@@ -113,16 +116,28 @@ document.addEventListener("DOMContentLoaded", function() {
 		el.setAttribute('data-LangId',opt.LangId);
 		langSelector.appendChild(el);
 	}
-	if(langFromURL){
+	if("lang" in queryFlags){
 		for(var i=0;i<langSelector.options.length;i++){
-			if(langSelector.options[i].getAttribute('data-LangId')==langFromURL){
+			if(langSelector.options[i].getAttribute('data-LangId')==queryFlags["lang"]){
 				langSelector.selectedIndex=i;
 				break;
 			}
 		}
 	}
 	langSelector.addEventListener('change',(e) => {
-		window.location.href=window.location.href.split('?')[0]+"?lang="+e.target.options[e.target.selectedIndex].getAttribute('data-LangId');
+		var queryString = "?lang="+e.target.options[e.target.selectedIndex].getAttribute('data-LangId')+
+						  "&lat1="+map1.getCenter()["lat"]+
+						  "&lng1="+map1.getCenter()["lng"]+
+						  "&zoom1="+map1.getZoom()+
+						  "&lat2="+map2.getCenter()["lat"]+
+						  "&lng2="+map2.getCenter()["lng"]+
+						  "&zoom2="+map2.getZoom();
+		for(var k in viewModel.selectedData){
+			if(viewModel.selectedData[k]!=""){
+				queryString+="&"+k+"="+viewModel.selectedData[k];
+			}
+		}
+		window.location.href=window.location.href.split('?')[0]+queryString;
 	});
 	
 	{// Edit plain text in index.html fields
@@ -156,7 +171,28 @@ document.addEventListener("DOMContentLoaded", function() {
 	viewModel.resize();
 	map1.invalidateSize();
 	map2.invalidateSize();
-
+	if("lat1" in queryFlags && "lng1" in queryFlags && "zoom1" in queryFlags){
+		map1.setView({lat: queryFlags["lat1"], lng: queryFlags["lng1"]},queryFlags["zoom1"]);
+	}
+	if("lat2" in queryFlags && "lng2" in queryFlags && "zoom2" in queryFlags){
+		map2.setView({lat: queryFlags["lat2"], lng: queryFlags["lng2"]},queryFlags["zoom2"]);
+	}
+	map1.invalidateSize();
+	map2.invalidateSize();
 	// initial background DB query
 	viewModel.fetchVariable("map1", " (cadmium)");
+	if("map1" in queryFlags){
+		viewModel.changeToLoad(document.getElementById("search1"));
+		viewModel.populateMap("map1", map1, infoBox1, queryFlags["map1"]).then((status) =>
+			viewModel.changeBack(document.getElementById("search1"))|
+			viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
+			viewModel.populateTable("map1", table1));
+	}
+	if("map2" in queryFlags){
+		viewModel.changeToLoad(document.getElementById("search2"));
+		viewModel.populateMap("map2", map2, infoBox2, queryFlags["map2"]).then((status) =>
+			viewModel.changeBack(document.getElementById("search2"))|
+			viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
+			viewModel.populateTable("map2", table2));
+	}
 });

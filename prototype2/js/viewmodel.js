@@ -4,6 +4,7 @@ class ViewModel {
         this.colors = this.model.interpolate('yellow', 'firebrick');
         // the two colors passed into this function will be the two end colors of the legend
         // and map illustration (shows the greatest and lowest level)
+		this.selectedData = {};
         try {
             this.model.fetchVariables();
         } catch (error) {
@@ -20,7 +21,7 @@ class ViewModel {
       */
     createMap(mapId) {
         let mymap = L.map(mapId).setView([34.0489, -112.0937], 7);
-
+		this.selectedData[mapId] = "";
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
@@ -298,6 +299,7 @@ class ViewModel {
      * @param {*} variableName 
      */
     async populateMap(key, map, infoBox, variableName) {
+		this.selectedData[key] = variableName;
         let old_geojson = this.model.getGeoJson(key);
         if (old_geojson !== null) {
             map.removeLayer(old_geojson);

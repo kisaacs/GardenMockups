@@ -149,7 +149,7 @@ class Model {
      * scrutinizer
      */
     async fetchVariables() {
-        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables");
+        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables",{headers:{"Access-Control-Allow-Origin":true}});
         const variables = await response.json();
         for (let i=0; i<variables.length; i++) {
             let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
@@ -167,7 +167,7 @@ class Model {
      */
     async fetchData(key, variableName) {
         let variable = this.variableMap[variableName]['name'];
-        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + variable);
+        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + variable,{headers:{"Access-Control-Allow-Origin":true}});
         const data = await response.json();
         this.originalDataLists[key] = data;
         await this._createBlockData(key, data);
