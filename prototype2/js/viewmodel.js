@@ -6,7 +6,7 @@ class ViewModel {
         // and map illustration (shows the greatest and lowest level)
 		this.selectedData = {};
         try {
-            this.model.fetchVariables();
+            this.model.fetchVariables().then(()=>{document.getElementById('tempElement').dispatchEvent(new Event('fetched'));});
         } catch (error) {
             console.log("Error Requesting variables from scrutinizer");
             console.log(error);

@@ -17,7 +17,8 @@ let LANG_en = {
 	'UNLINK': 'Unlink',
 	'TITLE': 'Arizona Map',// The last three are used in index.html
 	'VARIABLE_SEARCH': 'Variable Search: ',
-	'Download_Data': 'Download Data'
+	'Download_Data': 'Download Data',
+	'COPYLINK': 'Copy Link'
 };
 
 let LANG_pig = {
@@ -39,7 +40,8 @@ let LANG_pig = {
 	'UNLINK': 'unlinkyay',
 	'TITLE': 'arizonayay apmay',// The last three are used in index.html
 	'VARIABLE_SEARCH': 'ariablevay earchsay: ',
-	'Download_Data': 'ownloadday ataday'
+	'Download_Data': 'ownloadday ataday',
+	'COPYLINK': 'opycay inklay'
 };
 
 let LANGS = {'en':LANG_en, 'pig':LANG_pig};
@@ -54,12 +56,14 @@ class Model {
 		this.LANGS = LANGS;
         this.variableMap = {};
         this.variableDesc = [];
+		this.variablePromise = null;
         this.originalDataLists = {};
         this.blockDataLists = {};
         this.tractDataMaps = {};
         this.geojsonInstances = {};
 		this.mapCount = 2; // Number of active maps
 		this.isLinked = false; // Whether the map views are currently linked
+		this.hasChanged = [false,false]; // Whether each map view has been changed by the user yet
 		// Whether you are setting the map's zoom via code
 		this.isSetByCode = false; // This should toggle to determine if an event is triggered by the map or by the code
     }
@@ -149,8 +153,8 @@ class Model {
      * scrutinizer
      */
     async fetchVariables() {
-        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables",{headers:{"Access-Control-Allow-Origin":true}});
-        const variables = await response.json();
+        this.variablePromise = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables",{headers:{"Access-Control-Allow-Origin":true}});
+        const variables = await this.variablePromise.json();
         for (let i=0; i<variables.length; i++) {
             let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
             this.variableDesc.push(desc);

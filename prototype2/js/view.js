@@ -6,9 +6,14 @@ var infoBox1 = null;
 var infoBox2 = null;
 var viewModel = null;
 
-function getQueryFlags()
+let getQueryFlags = function()
 {
 	let retVal = {};
+	searchString = window.location.search;
+	if(searchString==null || searchString.trim().length == 0)
+	{
+		return retVal;
+	}
 	var vars = window.location.search.substring(1).split("&");
 	for (var i=0;i<vars.length;i++) {
 		var declaration = vars[i].split("=");
@@ -19,6 +24,51 @@ function getQueryFlags()
 		retVal[declaration[0]] = declaration[1];
 	}
 	return retVal;
+}
+
+let constructQueryString = function(){
+	var queryString = "?";
+	let started = false;
+	if(viewModel.model.LANG.LangId!='en'){
+		started=true;
+		queryString += "lang="+viewModel.model.LANG.LangId;
+	}
+	if(viewModel.model.hasChanged[0]){
+		if(started){
+			queryString+="&";
+		}
+		started=true;
+		queryString+="lat1="+map1.getCenter()["lat"]+
+					 "&lng1="+map1.getCenter()["lng"]+
+					 "&zoom1="+map1.getZoom();
+	}
+	if(viewModel.model.hasChanged[1]){
+		if(started){
+			queryString+="&";
+		}
+		started=true;
+		queryString+="lat2="+map2.getCenter()["lat"]+
+					 "&lng2="+map2.getCenter()["lng"]+
+					 "&zoom2="+map2.getZoom();
+	}
+	if(viewModel.selectedData["map1"]!=""){
+		if(started){
+			queryString+="&";
+		}
+		started=true;
+		queryString+="map1="+viewModel.selectedData["map1"];
+	}
+	if(viewModel.selectedData["map2"]!=""){
+		if(started){
+			queryString+="&";
+		}
+		started=true;
+		queryString+="map2="+viewModel.selectedData["map2"];
+	}
+	if(!started){
+		return "";
+	}
+	return queryString;
 }
 document.addEventListener("DOMContentLoaded", function() {
 	queryFlags = getQueryFlags();
@@ -96,11 +146,23 @@ document.addEventListener("DOMContentLoaded", function() {
 		viewModel.toggleValue(event.target, viewModel.model.LANG.LINK, viewModel.model.LANG.UNLINK);
 	});
 	
+	document.getElementById("copyLinkButton").addEventListener('click', (event) => {
+		navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
+	});
+	
 	map1.addEventListener('moveend', () => {
+		viewModel.model.hasChanged[0] = true;
+		if(viewModel.model.isLinked){
+			viewModel.model.hasChanged[1] = true;
+		}
 		viewModel.syncMaps(map2,map1);
 	});
 	
 	map2.addEventListener('moveend', () => {
+		viewModel.model.hasChanged[1] = true;
+		if(viewModel.model.isLinked){
+			viewModel.model.hasChanged[0] = true;
+		}
 		viewModel.syncMaps(map1,map2);
 	});
 	
@@ -125,19 +187,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 	langSelector.addEventListener('change',(e) => {
-		var queryString = "?lang="+e.target.options[e.target.selectedIndex].getAttribute('data-LangId')+
-						  "&lat1="+map1.getCenter()["lat"]+
-						  "&lng1="+map1.getCenter()["lng"]+
-						  "&zoom1="+map1.getZoom()+
-						  "&lat2="+map2.getCenter()["lat"]+
-						  "&lng2="+map2.getCenter()["lng"]+
-						  "&zoom2="+map2.getZoom();
-		for(var k in viewModel.selectedData){
-			if(viewModel.selectedData[k]!=""){
-				queryString+="&"+k+"="+viewModel.selectedData[k];
-			}
-		}
-		window.location.href=window.location.href.split('?')[0]+queryString;
+		viewModel.model.LANG = viewModel.model.LANGS[e.target.options[e.target.selectedIndex].getAttribute('data-LangId')];
+		window.location.href=window.location.href.split('?')[0]+constructQueryString();
 	});
 	
 	{// Edit plain text in index.html fields
@@ -151,6 +202,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		document.title = viewModel.model.LANG.TITLE;
 		document.getElementById("toggleMapButton").value = viewModel.model.LANG.HIDE;
 		document.getElementById("linkMapButton").value = viewModel.model.LANG.LINK;
+		document.getElementById("copyLinkButton").value = viewModel.model.LANG.COPYLINK;
 	}
 	
 	// I need to access the tables, but I'm not sure if I can directly edit any of that code, so this is going here temporarily
@@ -171,28 +223,33 @@ document.addEventListener("DOMContentLoaded", function() {
 	viewModel.resize();
 	map1.invalidateSize();
 	map2.invalidateSize();
+	viewModel.model.hasChanged=[false,false];
 	if("lat1" in queryFlags && "lng1" in queryFlags && "zoom1" in queryFlags){
+		viewModel.model.hasChanged[0] = true;
 		map1.setView({lat: queryFlags["lat1"], lng: queryFlags["lng1"]},queryFlags["zoom1"]);
 	}
 	if("lat2" in queryFlags && "lng2" in queryFlags && "zoom2" in queryFlags){
+		viewModel.model.hasChanged[1] = true;
 		map2.setView({lat: queryFlags["lat2"], lng: queryFlags["lng2"]},queryFlags["zoom2"]);
 	}
-	map1.invalidateSize();
-	map2.invalidateSize();
 	// initial background DB query
 	viewModel.fetchVariable("map1", " (cadmium)");
-	if("map1" in queryFlags){
-		viewModel.changeToLoad(document.getElementById("search1"));
-		viewModel.populateMap("map1", map1, infoBox1, queryFlags["map1"]).then((status) =>
-			viewModel.changeBack(document.getElementById("search1"))|
-			viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
-			viewModel.populateTable("map1", table1));
-	}
-	if("map2" in queryFlags){
-		viewModel.changeToLoad(document.getElementById("search2"));
-		viewModel.populateMap("map2", map2, infoBox2, queryFlags["map2"]).then((status) =>
-			viewModel.changeBack(document.getElementById("search2"))|
-			viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
-			viewModel.populateTable("map2", table2));
-	}
+	document.getElementById('tempElement').addEventListener('fetched',(event) => { // This fires once variables are fetched in viewModel constructor
+		if("map1" in queryFlags){// need to wait until fetch variables is done
+			document.getElementById("searchBar1").value = queryFlags["map1"];
+			viewModel.changeToLoad(document.getElementById("search1"));
+			viewModel.populateMap("map1", map1, infoBox1, queryFlags["map1"]).then((status) =>
+				viewModel.changeBack(document.getElementById("search1"))|
+				viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
+				viewModel.populateTable("map1", table1));
+		}
+		if("map2" in queryFlags){
+			document.getElementById("searchBar2").value = queryFlags["map2"];
+			viewModel.changeToLoad(document.getElementById("search2"));
+			viewModel.populateMap("map2", map2, infoBox2, queryFlags["map2"]).then((status) =>
+				viewModel.changeBack(document.getElementById("search2"))|
+				viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
+				viewModel.populateTable("map2", table2));
+		}
+	});
 });
