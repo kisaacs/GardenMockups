@@ -233,7 +233,7 @@ class ViewModel {
 
         let dataTable = $(table).DataTable({
             "language": {
-                "search": "Filter: "// What does this do
+                "search": "Filter: "
             }
         });
         $('.dataTables_length').addClass('bs-select');

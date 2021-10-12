@@ -153,8 +153,8 @@ class Model {
      * scrutinizer
      */
     async fetchVariables() {
-        this.variablePromise = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables");
-        const variables = await this.variablePromise.json();
+        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables");
+        const variables = await response.json();
         for (let i=0; i<variables.length; i++) {
             let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
             this.variableDesc.push(desc);
