@@ -56,7 +56,6 @@ class Model {
 		this.LANGS = LANGS;
         this.variableMap = {};
         this.variableDesc = [];
-		this.variablePromise = null;
         this.originalDataLists = {};
         this.blockDataLists = {};
         this.tractDataMaps = {};
