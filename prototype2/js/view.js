@@ -6,26 +6,13 @@ var infoBox1 = null;
 var infoBox2 = null;
 var viewModel = null;
 
-let getQueryFlags = function()
-{
-	let retVal = {};
-	searchString = window.location.search;
-	if(searchString==null || searchString.trim().length == 0)
-	{
-		return retVal;
-	}
-	var vars = window.location.search.substring(1).split("&");
-	for (var i=0;i<vars.length;i++) {
-		var declaration = vars[i].split("=");
-		declaration[1] = declaration[1].replaceAll("%20"," ");
-		if(!isNaN(parseFloat(declaration[1]))){
-			declaration[1] = parseFloat(declaration[1]);
-		}
-		retVal[declaration[0]] = declaration[1];
-	}
-	return retVal;
-}
 
+/*
+* Constructs a new query string from the current state of the page
+* Maps in the default state and english language options are ignored
+* This should potentially be in the model, but it needs to reference
+*   the map objects which only exist in the view
+*/
 let constructQueryString = function(){
 	var queryString = "?";
 	let started = false;
@@ -70,13 +57,9 @@ let constructQueryString = function(){
 	}
 	return queryString;
 }
+
 document.addEventListener("DOMContentLoaded", function() {
-	queryFlags = getQueryFlags();
-	if("lang" in queryFlags){
-		viewModel=new ViewModel(queryFlags["lang"]);
-	} else {
-		viewModel = new ViewModel();
-	}
+	viewModel = new ViewModel();
 	map1 = viewModel.createMap("map1");
 	map2 = viewModel.createMap("map2");
 	infoBox1 = viewModel.createInfoBox(map1);
@@ -178,9 +161,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		el.setAttribute('data-LangId',opt.LangId);
 		langSelector.appendChild(el);
 	}
-	if("lang" in queryFlags){
+	if("lang" in viewModel.queryFlags){
 		for(var i=0;i<langSelector.options.length;i++){
-			if(langSelector.options[i].getAttribute('data-LangId')==queryFlags["lang"]){
+			if(langSelector.options[i].getAttribute('data-LangId')==viewModel.queryFlags["lang"]){
 				langSelector.selectedIndex=i;
 				break;
 			}
@@ -224,29 +207,30 @@ document.addEventListener("DOMContentLoaded", function() {
 	map1.invalidateSize();
 	map2.invalidateSize();
 	viewModel.model.hasChanged=[false,false];
-	if("lat1" in queryFlags && "lng1" in queryFlags && "zoom1" in queryFlags){
+	if("lat1" in viewModel.queryFlags && "lng1" in viewModel.queryFlags && "zoom1" in viewModel.queryFlags){
 		viewModel.model.hasChanged[0] = true;
-		map1.setView({lat: queryFlags["lat1"], lng: queryFlags["lng1"]},queryFlags["zoom1"]);
+		map1.setView({lat: viewModel.queryFlags["lat1"], lng: viewModel.queryFlags["lng1"]},viewModel.queryFlags["zoom1"]);
 	}
-	if("lat2" in queryFlags && "lng2" in queryFlags && "zoom2" in queryFlags){
+	if("lat2" in viewModel.queryFlags && "lng2" in viewModel.queryFlags && "zoom2" in viewModel.queryFlags){
 		viewModel.model.hasChanged[1] = true;
-		map2.setView({lat: queryFlags["lat2"], lng: queryFlags["lng2"]},queryFlags["zoom2"]);
+		map2.setView({lat: viewModel.queryFlags["lat2"], lng: viewModel.queryFlags["lng2"]},viewModel.queryFlags["zoom2"]);
 	}
 	// initial background DB query
 	viewModel.fetchVariable("map1", " (cadmium)");
 	document.getElementById('tempElement').addEventListener('fetched',(event) => { // This fires once variables are fetched in viewModel constructor
-		if("map1" in queryFlags){// need to wait until fetch variables is done
-			document.getElementById("searchBar1").value = queryFlags["map1"];
+		console.log("Data successfully fetched");
+		if("map1" in viewModel.queryFlags){// need to wait until fetch variables is done
+			document.getElementById("searchBar1").value = viewModel.queryFlags["map1"];
 			viewModel.changeToLoad(document.getElementById("search1"));
-			viewModel.populateMap("map1", map1, infoBox1, queryFlags["map1"]).then((status) =>
+			viewModel.populateMap("map1", map1, infoBox1, viewModel.queryFlags["map1"]).then((status) =>
 				viewModel.changeBack(document.getElementById("search1"))|
 				viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
 				viewModel.populateTable("map1", table1));
 		}
-		if("map2" in queryFlags){
-			document.getElementById("searchBar2").value = queryFlags["map2"];
+		if("map2" in viewModel.queryFlags){
+			document.getElementById("searchBar2").value = viewModel.queryFlags["map2"];
 			viewModel.changeToLoad(document.getElementById("search2"));
-			viewModel.populateMap("map2", map2, infoBox2, queryFlags["map2"]).then((status) =>
+			viewModel.populateMap("map2", map2, infoBox2, viewModel.queryFlags["map2"]).then((status) =>
 				viewModel.changeBack(document.getElementById("search2"))|
 				viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
 				viewModel.populateTable("map2", table2));

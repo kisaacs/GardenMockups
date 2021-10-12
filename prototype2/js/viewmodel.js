@@ -1,11 +1,17 @@
 class ViewModel {
-    constructor(lang='en') {
-        this.model = new Model(lang);
+    constructor() {
+        this.model = new Model();
+		this.queryFlags = this.model.getQueryFlags();
+		if("lang" in this.queryFlags){
+			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
+		}
         this.colors = this.model.interpolate('yellow', 'firebrick');
         // the two colors passed into this function will be the two end colors of the legend
         // and map illustration (shows the greatest and lowest level)
 		this.selectedData = {};
         try {
+			// I'm triggering a custom event here to notify the view when the variables have been successfully fetched.
+			// We have to wait for this to happen before making data requests
             this.model.fetchVariables().then(()=>{document.getElementById('tempElement').dispatchEvent(new Event('fetched'));});
         } catch (error) {
             console.log("Error Requesting variables from scrutinizer");

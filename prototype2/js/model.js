@@ -153,7 +153,7 @@ class Model {
      * scrutinizer
      */
     async fetchVariables() {
-        this.variablePromise = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables",{headers:{"Access-Control-Allow-Origin":true}});
+        this.variablePromise = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/variables");
         const variables = await this.variablePromise.json();
         for (let i=0; i<variables.length; i++) {
             let desc = variables[i]['desc'] + ' (' + variables[i]['name'] + ')';
@@ -171,7 +171,7 @@ class Model {
      */
     async fetchData(key, variableName) {
         let variable = this.variableMap[variableName]['name'];
-        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + variable,{headers:{"Access-Control-Allow-Origin":true}});
+        const response = await fetch("https://src.cals.arizona.edu/api/v1/scrutinizer/measurements?variable=" + variable);
         const data = await response.json();
         this.originalDataLists[key] = data;
         await this._createBlockData(key, data);
@@ -260,4 +260,27 @@ class Model {
         }
         return [min, max];
     }
+	
+	/**
+	* Returns an object containing the keys and values
+	* from the query string in the url
+	*/
+	getQueryFlags(){
+		let retVal = {};
+		let searchString = window.location.search;
+		if(searchString==null || searchString.trim().length == 0)
+		{
+			return retVal;
+		}
+		var vars = window.location.search.substring(1).split("&");
+		for (var i=0;i<vars.length;i++) {
+			var declaration = vars[i].split("=");
+			declaration[1] = declaration[1].replaceAll("%20"," ");
+			if(!isNaN(parseFloat(declaration[1]))){
+				declaration[1] = parseFloat(declaration[1]);
+			}
+			retVal[declaration[0]] = declaration[1];
+		}
+		return retVal;
+	}
 }
