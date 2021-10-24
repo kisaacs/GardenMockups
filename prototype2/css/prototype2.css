@@ -1,204 +1,113 @@
-#map1, #map2 {
-    height: auto;
-    width: 100%;
-    display: block;
-    z-index: 0;
+html {
+	height: 100%;
+	width: 100%;
 }
 
-#maps {
-    margin: auto;
+body {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+}
+.section {
+	height: 100%;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
 }
 
-.viz.largeScreen, .dataTables_wrapper.largeScreen {
-    width: 750px;
+.topBar {
+	height: min-content;
+	padding: 5px;
+	width: 100%;
+	background-color: #9A2C44;
 }
 
-
-.viz.midScreen, .dataTables_wrapper.midScreen{
-	width: 500px;
+.subBar {
+	height: min-content;
+	padding:3px;
+	width: 100%;
+	background-color: #E35F59;
 }
 
-.viz.smallScreen, .dataTables_wrapper.smallScreen {
-    width: 500px;
-}
-
-.viz.largeScreen {
-    height: 1050px;
-}
-
-.viz.midScreen {
-    height: 800px;
-}
-
-.viz.smallScreen {
-    height: 500px;
-}
-
-.map {
-    display: flex;
-    z-index: 0;
-    margin: 20px;
-    width: auto;
-}
-
-    .map.largeScreen {
-        height: 85%;
-    }
-
-    .map.midScreen {
-        height: 80%;
-    }
-
-    .map.smallScreen {
-        height: 60%;
-    }
-
-ul, li {
-    z-index: 1;
-}
-
-.viz {
-    display: inline-block;
-    margin: 20px;
-    padding: 10px;
-    flex-grow: 1;
-}
-
-#viz1 {
-    border-width: 2px;
-    border-color: blue;
-    border-style: solid;
-}
-
-#viz2 {
-    border-width: 2px;
-    border-color: red;
-    border-style: solid;
-}
-
-#tables {
-    margin: auto;
-    display: flex;
-}
-
-#maps, #tables {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.dataTables_wrapper {
-    display: inline-block;
-    margin: 20px;
-    padding: 5px;
-    vertical-align: top;
-    flex-grow: 1;
-}
-
-#table1_wrapper, #legend1 {
-    border-width: 2px;
-    border-color: blue;
-    border-style: solid;
-}
-
-#table2_wrapper, #legend2 {
-    border-width: 2px;
-    border-color: red;
-    border-style: solid;
-}
-
-.bottom-dash {
-    width: 100%;
-    display: flex;
-}
-
-#download1 {
-    /* display: inline-block; */
-}
-
-#legend1, #legend2 {
-    /* display: inline-block; */
-    position: relative;
-    height: 60px;
-    width: 200px;
-    margin-left: 50px;
-    /* margin-right: 100px;
-    margin-top: 10px; */
-}
-
-.legend {
-    display: flex;
-    width: 50%;
-}
-
-.legendDiv {
-    bottom: 0px;
-    position: absolute;
-    bottom: 0px;
-}
-
-h1 {
-    margin-bottom: 5px;
-}
-
-hr {
-    height: 1px;
-    border-width: 0px;
-    color: black;
-    background-color: black;
-    position: absolute;
-    bottom: 1px;
-    width: inherit;
-}
-
-.info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-
-    .info h4 {
-        margin: 0 0 5px;
-        color: #777;
-    }
-
-#buttonTab, #placeholder {
-    display: inline-block;
-    vertical-align: top;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-#buttonTab.largeScreen, #placeholder.largeScreen {
-	width: 45px;
-	margin-top: 500px;
-}
-
-#buttonTab.midScreen, #placeholder.midScreen {
-	width: 45px;
-	margin-top: 340px;
-}
-
-#buttonTab.smallScreen, #placeholder.smallScreen {
-	width: 45px;
-	margin-top: 25px;
-	margin-bottom: 25px;
-	margin-left: 25px;
-}
-
-#langSelect {
-    width: 100px;
-    height: 30px;
-    margin-left: 20px;
-    margin-top: 20px;
-    text-align: center;
-    position: absolute;
-    opacity: 0.6;
+#sectionContainer {
+	width: 100%;
+	display: flex;
+	flex-grow: 1;
 }
 
 .disabled {
     display: none !important;
 }
+
+#titleBar {
+	width: 100%;
+	margin: 0px;
+	background-color: #3D3A39;
+}
+
+#logo {
+	width: 240px;
+	height: 70px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: 20px;
+}
+
+#spacerDiv {
+	width: 2px;
+	height: 100%;
+	display: inline-block;
+}
+
+.selectButton {
+	background-color: #E35F59;
+	color: #ffffff;
+	border: none;
+	border-radius: 8px;
+	height: 25px;
+	line-height: 19px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 2px;
+	padding-right: 2px;
+	box-sizing: border-box;
+	margin-left: 15px;
+}
+
+.aboutData {
+	background-color: #F39A8C;
+	color: #ffffff;
+	border: none;
+	border-radius: 5px;
+	height: 15px;
+	line-height: 11px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 3px;
+	padding-right: 3px;
+	box-sizing: border-box;
+	font-size: 10px;
+	float: right;
+}
+
+.XButton, .QButton, .ShareButton, .DownloadButton, .LocButton, .GraphButton, .TableButton {
+	height: 25px;
+	border: solid 2px #E35F59;
+	border-radius: 8px;
+	padding: 3px;
+	box-sizing: border-box;
+}
+.TableButton, .GraphButton, .LocButton, .DownloadButton, .ShareButton {
+	float: right;
+	margin-right: 3px;
+}
+
+.mapDiv {
+	flex-grow: 1;
+}
+
+.tables {
+	display: none;
+}
+

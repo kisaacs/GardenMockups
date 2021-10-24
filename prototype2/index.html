@@ -46,77 +46,57 @@
 
 </head>
 <body>
-	<span id='tempElement'></span>
-	<select id="langSelect">
-	</select>
-	<div id="maps">
-		<div class="viz sizeable" id="viz1">
-			<span class="variable_search">Variable Search: </span><input id="searchBar1">
-			<button id="search1" class="btn btn-primary">Search</button>
-			<!-- <select name="variable1" id="variable1">
-				<option value="none">(none)</option>
-				<option value="aluminum">aluminum</option>
-				<option value="arsenic">arsenic</option>
-				<option value="barium">barium</option>
-				<option value="beryllium">beryllium</option>
-				<option value="cadmium">cadmium</option>
-				<option value="chromium">chromium</option>
-				<option value="copper">copper</option>
-				<option value="lead">lead</option>
-				<option value="manganese">manganese</option>
-				<option value="nickel">nickel</option>
-				<option value="zinc">zinc</option>
-			</select> -->
-			<div class="map sizeable">
-				<div id="map1"></div>
-			</div>
-
-			<div class="bottom-dash">
-				<button id="download1" class="btn btn-primary">Download Data</button>
-				<div id="legend1"></div>
-				<!-- <button id="table1" class="btn btn-primary">Table</button> -->
-			</div>
-
-		</div>
-		<div id="buttonTab" class="sizeable">
-			<input id="toggleMapButton" type="button" value="Hide">
-			<input id="linkMapButton" type="button" value="Link">
-			<input id="copyLinkButton" type="button" value="Copy Link">
-		</div>
-		<div class="viz sizeable" id="viz2">
-			<span class="variable_search">Variable Search: </span><input id="searchBar2">
-			<button id="search2" class="btn btn-danger">Search</button>
-			<!-- <select name="variable2" id="variable2">
-				<option value="none">(none)</option>
-				<option value="aluminum">aluminum</option>
-				<option value="arsenic">arsenic</option>
-				<option value="barium">barium</option>
-				<option value="beryllium">beryllium</option>
-				<option value="cadmium">cadmium</option>
-				<option value="chromium">chromium</option>
-				<option value="copper">copper</option>
-				<option value="lead">lead</option>
-				<option value="manganese">manganese</option>
-				<option value="nickel">nickel</option>
-				<option value="zinc">zinc</option>
-			</select> -->
-			<div class="map sizeable">
-				<div id="map2"></div>
-			</div>
-			<div class="bottom-dash">
-				<button id="download2" class="btn btn-danger">Download Data</button>
-				<div id="legend2"></div>
-				<!-- <button id="table2" class="btn btn-primary">Table</button> -->
-			</div>
-
-		</div>
+	<div id="tempElement"></div>
+	<div id="titleBar">
+		<img id="logo" src="logo.png">
 	</div>
-
-	<div id="tables">
-	</div>
-	<div class="legend viz">
-
-
+	<div id="sectionContainer">
+		<div id="left" class="section">
+			<div class="topBar">
+				<input type="button" class="selectButton" value="SELECT DATA">
+				<img class="XButton" src="XIcon.png">
+				<img class="QButton" src="QIcon.png">
+				<img class="TableButton" src="TableIcon.png">
+				<img class="GraphButton" src="GraphIcon.png">
+				<img class="LocButton" src="LocIcon.png">
+				<img class="DownloadButton" src="DownloadIcon.png">
+				<img class="ShareButton" src="ShareIcon.png">
+			</div>
+			<div class="subBar">
+				<input type="button" class="aboutData" value="ABOUT DATA">
+			</div>
+			<div class="mapDiv" id="map1">
+				<input type="text" class="searchBar" id="searchBar1">
+				<input type="button" class="search" id="search1">
+				<input type="button" class="downloadData" id="download1">
+			</div>
+			<div class="tables" id="table1Div">
+			</div>
+		</div>
+		<div id="spacerDiv">
+		</div>
+		<div id="right" class="section">
+			<div class="topBar">
+				<input type="button" class="selectButton" value="SELECT DATA">
+				<img class="XButton" src="XIcon.png">
+				<img class="QButton" src="QIcon.png">
+				<img class="TableButton" src="TableIcon.png">
+				<img class="GraphButton" src="GraphIcon.png">
+				<img class="LocButton" src="LocIcon.png">
+				<img class="DownloadButton" src="DownloadIcon.png">
+				<img class="ShareButton" src="ShareIcon.png">
+			</div>
+			<div class="subBar">
+				<input type="button" class="aboutData" value="ABOUT DATA">
+			</div>
+			<div class="mapDiv" id="map2">
+				<input type="text" class="searchBar" id="searchBar2">
+				<input type="button" class="search" id="search2">
+				<input type="button" class="downloadData" id="download2">
+			</div>
+			<div class="tables" id="table2Div">
+			</div>
+		</div>
 	</div>
 </body>
 </html>

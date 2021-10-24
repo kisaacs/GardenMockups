@@ -66,8 +66,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	infoBox2 = viewModel.createInfoBox(map2);
 	viewModel.createSearchBar(document.getElementById("searchBar1"));
 	viewModel.createSearchBar(document.getElementById("searchBar2"));
-	table1 = viewModel.createTable("table1", "tables");
-	table2 = viewModel.createTable("table2", "tables");
+	table1 = viewModel.createTable("table1", "table1Div");
+	table2 = viewModel.createTable("table2", "table2Div");
 	
 	// View UI Listeners
 	document.getElementById("searchBar1").addEventListener('keyup', function (event) {
