@@ -31,6 +31,24 @@ class ViewModel {
         }).addTo(mymap);
 
         L.control.scale().addTo(mymap);
+
+        L.control.browserPrint({
+            title: "Print Map",
+            documentTitle: "MAP " + mapId[mapId.length - 1],
+            printModes: [
+                L.control.browserPrint.mode.landscape("Current display", "A4"),
+                L.control.browserPrint.mode.custom("Select area to print", "A4")
+            ],
+            customPrintStyle: { color: "red", dashArray: "5, 10", pane: "customPrintPane" },
+            manualMode: false
+        }).addTo(mymap);
+
+
+        const search = new GeoSearch.GeoSearchControl({
+            provider: new GeoSearch.OpenStreetMapProvider(),
+        });
+        mymap.addControl(search);
+
         return mymap;
     }
 

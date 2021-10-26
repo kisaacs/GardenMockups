@@ -7,7 +7,7 @@ var infoBox2 = null;
 var viewModel = null;
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
         viewModel = new ViewModel();
         map1 = viewModel.createMap("map1");
         map2 = viewModel.createMap("map2");
@@ -50,8 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				   viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
 					   viewModel.populateTable("map2", table2));
 		   }
-        });
-        
+	   });		
         document.getElementById("download1").addEventListener('click', () => {
             viewModel.downloadBlockData("map1");
         });
@@ -59,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
             viewModel.downloadBlockData("map2");
 		});
 		document.getElementById("downloadTable1").addEventListener('click', () => {
-            viewModel.downloadTableData("map1");
+            viewModel.downloadTableData("map1", map1);
         });
         document.getElementById("downloadTable2").addEventListener('click', () => {
             viewModel.downloadTableData("map2");

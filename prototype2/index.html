@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Arizona Map</title>
 	<!-- Javascript files -->
@@ -22,7 +23,12 @@
 	<script src="js/fipsCodes.js"></script>
 	<!-- D3 library -->
 	<script src="https://d3js.org/d3.v6.min.js"></script>
-	<!-- MVVM -->
+	<!-- leaftlet browser-print plugin -->
+	<script src="../node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js"></script>
+	<!-- geosearch library -->
+	<script src="../node_modules/leaflet-geosearch/dist/geosearch.js"></script>
+	<script src="../node_modules/leaflet-geosearch/dist/geosearch.umd.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css" />	<!-- MVVM -->
 	<script src="js/model.js"></script>
 	<script src="js/viewmodel.js"></script>
 	<script src="js/view.js"></script>
@@ -45,33 +51,32 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
 
 </head>
+
 <body>
 	<div id="maps">
 		<div class="viz sizeable" id="viz1">
-			<span>Variable Search: </span><input id="searchBar1">
+			<div><span>Variable Search: </span><input id="searchBar1"></div>
 			<button id="search1" class="btn btn-primary">Search</button>
 			<!-- <select name="variable1" id="variable1">
-				<option value="none">(none)</option>
-				<option value="aluminum">aluminum</option>
-				<option value="arsenic">arsenic</option>
-				<option value="barium">barium</option>
-				<option value="beryllium">beryllium</option>
-				<option value="cadmium">cadmium</option>
-				<option value="chromium">chromium</option>
-				<option value="copper">copper</option>
-				<option value="lead">lead</option>
-				<option value="manganese">manganese</option>
-				<option value="nickel">nickel</option>
-				<option value="zinc">zinc</option>
-			</select> -->
+		<option value="none">(none)</option>
+		<option value="aluminum">aluminum</option>
+		<option value="arsenic">arsenic</option>
+		<option value="barium">barium</option>
+		<option value="beryllium">beryllium</option>
+		<option value="cadmium">cadmium</option>
+		<option value="chromium">chromium</option>
+		<option value="copper">copper</option>
+		<option value="lead">lead</option>
+		<option value="manganese">manganese</option>
+		<option value="nickel">nickel</option>
+		<option value="zinc">zinc</option>
+	</select> -->
 			<div class="map sizeable">
 				<div id="map1"></div>
 			</div>
-
 			<div class="bottom-dash">
 				<button id="download1" class="btn btn-primary">Download Data</button>
 				<div id="legend1"></div>
-				<!-- <button id="table1" class="btn btn-primary">Table</button> -->
 			</div>
 
 		</div>
@@ -115,4 +120,5 @@
 
 	</div>
 </body>
+
 </html>
