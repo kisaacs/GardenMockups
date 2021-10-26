@@ -34,6 +34,7 @@ body {
 	width: 100%;
 	display: flex;
 	flex-grow: 1;
+	position: relative;
 }
 
 .disabled {
@@ -105,9 +106,58 @@ body {
 
 .mapDiv {
 	flex-grow: 1;
+	position: relative;
 }
 
 .tables {
 	display: none;
 }
 
+#rightMapArrow, #leftMapArrow {
+	width: 25px;
+}
+
+#linkButton {
+	width: 20px;
+	background-color: #9A2C44;
+	border-radius: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	box-sizing: content-box;
+}
+
+#mapButtons {
+	z-index: 1000;
+	position: absolute;
+	bottom: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	justify-content: space-around;
+}
+
+.addressSearch {
+	background-image: url('../searchIcon.png');
+	background-position: right 3px bottom 50%;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-color: #D3DEDE;
+	padding-right: 30px;
+	padding-left: 10px;
+	position: absolute;
+	top: 10px;
+	right: 5px;
+	height: 25px;
+	width: 50%;
+	border: solid 2px #3E3C3A;
+	border-radius: 20px;
+	overflow: hidden;
+	z-index: 1000;
+}
+
+.leaflet-top.leaflet-right {
+	position:relative;
+	top:80px;
+}
