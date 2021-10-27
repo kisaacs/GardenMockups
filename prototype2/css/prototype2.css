@@ -45,6 +45,8 @@ body {
 	width: 100%;
 	margin: 0px;
 	background-color: #3D3A39;
+	display: flex;
+	justify-content: space-between;
 }
 
 #logo {
@@ -117,7 +119,7 @@ body {
 	width: 25px;
 }
 
-#linkButton {
+#linkMapButton {
 	width: 20px;
 	background-color: #9A2C44;
 	border-radius: 10px;
@@ -138,6 +140,14 @@ body {
 	justify-content: space-around;
 }
 
+#mapButtons.left {
+	left: 0%;
+}
+
+#mapButtons.right {
+	left: 100%;
+}
+
 .addressSearch {
 	background-image: url('../searchIcon.png');
 	background-position: right 3px bottom 50%;
@@ -150,11 +160,22 @@ body {
 	top: 10px;
 	right: 5px;
 	height: 25px;
-	width: 50%;
+	width: 450px;
 	border: solid 2px #3E3C3A;
 	border-radius: 20px;
 	overflow: hidden;
 	z-index: 1000;
+}
+
+#langSelect {
+	width: 150px;
+	background-color: black;
+	border-radius: 20px;
+	height: 25px;
+	margin-top: auto;
+	margin-bottom: auto;
+	color: white;
+	text-align: center;
 }
 
 .leaflet-top.leaflet-right {

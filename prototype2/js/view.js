@@ -103,12 +103,15 @@ document.addEventListener("DOMContentLoaded", function() {
 	   }
 	});
 	
-	document.getElementById("download1").addEventListener('click', () => {
-		viewModel.downloadBlockData("map1");
-	});
-	document.getElementById("download2").addEventListener('click', () => {
-		viewModel.downloadBlockData("map2");
-	});
+	for(const el of document.getElementsByClassName("DownloadButton")){
+		el.addEventListener('click', (e) => {
+			if(e.target.parentNode.parentNode.id=="left"){
+				viewModel.downloadBlockData("map1");
+			} else {
+				viewModel.downloadBlockData("map2");
+			}
+		});
+	}
 	document.getElementById("downloadTable1").addEventListener('click', () => {
 		viewModel.downloadTableData("map1");
 	});
@@ -117,21 +120,31 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 
-	document.getElementById("toggleMapButton").addEventListener('click', (event) => {
-		viewModel.toggleMap2();
-		viewModel.toggleValue(event.target, viewModel.model.LANG.HIDE, viewModel.model.LANG.SHOW);
+	document.getElementById("rightMapArrow").addEventListener('click', (event) => {
+		console.log("clicked right map arrow");
+		viewModel.toggleMap(2);
 		map1.invalidateSize();
 		map2.invalidateSize();
 	});
+	
+	document.getElementById("leftMapArrow").addEventListener('click', (event) => {
+		console.log("clicked left map arrow");
+		viewModel.toggleMap(1);
+		map1.invalidateSize();
+		map2.invalidateSize();
+	});
+	
 	
 	document.getElementById("linkMapButton").addEventListener('click', (event) => {
 		viewModel.toggleSync();
 		viewModel.toggleValue(event.target, viewModel.model.LANG.LINK, viewModel.model.LANG.UNLINK);
 	});
 	
-	document.getElementById("copyLinkButton").addEventListener('click', (event) => {
-		navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
-	});
+	for( const el of document.getElementsByClassName("ShareButton")){
+		el.addEventListener('click', (event) => {
+			navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
+		});
+	}
 	
 	map1.addEventListener('moveend', () => {
 		viewModel.model.hasChanged[0] = true;
@@ -183,9 +196,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		document.getElementById("download1").innerHTML = viewModel.model.LANG.Download_Data;
 		document.getElementById("download2").innerHTML = viewModel.model.LANG.Download_Data;
 		document.title = viewModel.model.LANG.TITLE;
-		document.getElementById("toggleMapButton").value = viewModel.model.LANG.HIDE;
-		document.getElementById("linkMapButton").value = viewModel.model.LANG.LINK;
-		document.getElementById("copyLinkButton").value = viewModel.model.LANG.COPYLINK;
 	}
 	
 	// I need to access the tables, but I'm not sure if I can directly edit any of that code, so this is going here temporarily
@@ -195,12 +205,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		for(var i=0;i<tableWrappers.length;i++){
 			tableWrappers[i].classList.add("sizeable");
 		}
-		
-		// Add empty panel between tables to match the gap between maps
-		let spacingPanel = document.createElement('div');
-		spacingPanel.id = "placeholder";
-		spacingPanel.className = "sizeable";
-		tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
 	}
 
 	viewModel.resize();

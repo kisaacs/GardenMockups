@@ -413,17 +413,41 @@ class ViewModel {
 	/**
 	* Toggles the disabled class on the second map
 	*/
-	toggleMap2(){
-		let mapElement = document.getElementById("viz2");
-		let tableElement = document.getElementById("table2_wrapper");
+	toggleMap(i){
+		let mapElement = null;
+		let tableElement = null;
+		if(i==1){
+			mapElement = document.getElementById("left");
+			tableElement = document.getElementById("table1_wrapper");
+		} else if(i==2){
+			mapElement = document.getElementById("right");
+			tableElement = document.getElementById("table2_wrapper");
+		}
 		if(tableElement.classList.contains("disabled")){
 			tableElement.classList.remove("disabled");
 			mapElement.classList.remove("disabled");
-			this.model.mapCount = 2;
+			this.model.mapCount += 1;
 		} else {
-			tableElement.classList.add("disabled");
-			mapElement.classList.add("disabled");
-			this.model.mapCount = 1;
+			if(this.model.mapCount==1){
+				if(i==1){
+					this.toggleMap(2);
+				} else {
+					this.toggleMap(1);
+				}
+			} else {
+				tableElement.classList.add("disabled");
+				mapElement.classList.add("disabled");
+				this.model.mapCount -= 1;
+			}
+		}
+		let buttons = document.getElementById("mapButtons");
+		if(this.model.mapCount == 2){
+			buttons.classList.remove("left");
+			buttons.classList.remove("right");
+		} else if(i==1) {
+			buttons.classList.add("left");
+		} else {
+			buttons.classList.add("right");
 		}
 		this.resize();
 	}
@@ -440,6 +464,14 @@ class ViewModel {
 			object.value = value2
 		} else {
 			object.value = value1
+		}
+	}
+	
+	toggleSrc(object, value1, value2){
+		if(object.src == value1){
+			object.src = value2
+		} else {
+			object.src = value1
 		}
 	}
 	
