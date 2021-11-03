@@ -528,9 +528,9 @@ class ViewModel {
         return function (props) {
             if (props) {
                 let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
-                this._div.innerHTML = '<h6>'+this.model.LANG.DATA_VALUE+'</h6>' + (key in tractData ?
+                this._div.innerHTML = '<h6>'+this.m.LANG.DATA_VALUE+'</h6>' + (key in tractData ?
                     '<b>' + tractData[key][0].toFixed(2) + ' ' + units
-                    : this.model.LANG.HOVER_TRACT);
+                    : this.m.LANG.HOVER_TRACT);
             }
         };
     }
