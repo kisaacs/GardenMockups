@@ -1,11 +1,18 @@
 class ViewModel {
     constructor() {
         this.model = new Model();
+		this.queryFlags = this.model.getQueryFlags();
+		if("lang" in this.queryFlags){
+			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
+		}
         this.colors = this.model.interpolate('yellow', 'firebrick');
         // the two colors passed into this function will be the two end colors of the legend
         // and map illustration (shows the greatest and lowest level)
+		this.selectedData = {};
         try {
-            this.model.fetchVariables();
+			// I'm triggering a custom event here to notify the view when the variables have been successfully fetched.
+			// We have to wait for this to happen before making data requests
+            this.model.fetchVariables().then(()=>{document.getElementById('tempElement').dispatchEvent(new Event('fetched'));});
         } catch (error) {
             console.log("Error Requesting variables from scrutinizer");
             console.log(error);
@@ -20,7 +27,7 @@ class ViewModel {
       */
     createMap(mapId) {
         let mymap = L.map(mapId).setView([34.0489, -112.0937], 7);
-
+		this.selectedData[mapId] = "";
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
@@ -42,12 +49,13 @@ class ViewModel {
     createInfoBox(map) {
         // Adding the Data Box
         var info = L.control();
+		info.m = this.model;
         info.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
             this.update();
             return this._div;
         };
-        info.update = function (props) { this._div.innerHTML = '<h6>No Data Present.</h6>'; }
+        info.update = function (props) { this._div.innerHTML = '<h6>'+this.m.LANG.NODATA+'</h6>'; }
         info.addTo(map);
         return info;
     }
@@ -82,7 +90,7 @@ class ViewModel {
     */
     changeBack(btn) {
         var id = btn.id[btn.id.length - 1];
-        btn.innerHTML = "Search";
+        btn.innerHTML = this.model.LANG.SEARCH;
         if (id == 1) {
             btn.className = "btn btn-primary";
         }
@@ -99,7 +107,7 @@ class ViewModel {
     downloadBlockData(key) {
         let data = this.model.getBlockData(key);
         if (data.length === 0) {
-            alert(key + " has no data to download.");
+            alert(key + " has no data to download.");// How does this get localized?
             return;
         }
         let csv = "Row,GeoId,StateFP,StateName,CountyFP,CountyName,TractCE,BlockgroupCE,Medium,Value\n";
@@ -132,10 +140,10 @@ class ViewModel {
         let data = this.model.getBlockData(key);
         let id = key[key.length - 1];
         if (data.length === 0) {
-            alert("table" + id + " has no data to download.");
+            alert("table" + id + " has no data to download.");// How does this get localized?
             return;
         }
-        let csv = "Name,Desc,Location Type,Location,Value\n";
+        let csv = "Name,Desc,Location Type,Location,Value\n";// Localize downloaded files
         for (let i = 0; i < data.length; i++) {
             csv += data[i]['variable_name'] + ',';
             csv += data[i]['variable_desc'] + ',';
@@ -198,11 +206,11 @@ class ViewModel {
         let table = document.createElement("table");
         let row = document.createElement('tr');
         let head = document.createElement("thead");
-        this._addHeaderColumn(row, 'Name');
-        this._addHeaderColumn(row, 'Desc');
-        this._addHeaderColumn(row, 'Location Type');
-        this._addHeaderColumn(row, 'Location');
-        this._addHeaderColumn(row, 'Value');
+        this._addHeaderColumn(row, this.model.LANG.NAME_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.DESC_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.LOCATIONTYPE_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.LOCATION_TABLE_LABEL);
+        this._addHeaderColumn(row, this.model.LANG.VALUE_TABLE_LABEL);
         head.appendChild(row);
         table.appendChild(head);
         table.id = tableId;
@@ -213,7 +221,7 @@ class ViewModel {
         let btn = document.createElement('button');
         let id = tableId[tableId.length - 1];
         btn.id = "downloadTable" + id;
-        btn.innerHTML = "DOWNLOAD DATA";
+        btn.innerHTML = this.model.LANG.DOWNLOAD_DATA;
         if (id == "1") {
             btn.className = "btn btn-primary";
         }
@@ -297,6 +305,7 @@ class ViewModel {
      * @param {*} variableName 
      */
     async populateMap(key, map, infoBox, variableName) {
+		this.selectedData[key] = variableName;
         let old_geojson = this.model.getGeoJson(key);
         if (old_geojson !== null) {
             map.removeLayer(old_geojson);
@@ -364,95 +373,95 @@ class ViewModel {
             return -1;
         }
     }
-
-    /**
-    * Resizes maps and tables based on window size
-    * Currently only depends on screen width
-    * Recognizes small(<1250px), medium(1250-1700px), and large(>1700px)
-    *
-    * The maps and tables will also expand to fill the screen,
-    * This just sets the initial sizes of the containers so they can't get too small
-    */
-    resize() {
-        let x_size = window.innerWidth;
-        let sizeClasses = ["smallScreen", "midScreen", "largeScreen"]
-        let sizeClass = "midScreen";
-        if (x_size < 1250) {
-            sizeClass = "smallScreen";
-        } else if (x_size < 1700) {
-            sizeClass = "midScreen";
-        } else if (x_size >= 1700) {
-            sizeClass = "largeScreen";
-        }
-        // My current plan here is to mark all elements that need to be resized with the "sizeable" class
-        // Then it's easy to go through and change the class that designates the actual size
-        let sizedElements = document.getElementsByClassName("sizeable");
-        for (var i = 0; i < sizedElements.length; i++) {
-            // Clear previous size
-            for (var j = 0; j < sizeClasses.length; j++) {
-                sizedElements[i].classList.remove(sizeClasses[j]);
-            }
-            sizedElements[i].classList.remove("singleMap");
-            // Add new size
-            sizedElements[i].classList.add(sizeClass);
-            if (this.model.mapCount == 1) {
-                sizedElements[i].classList.add("singleMap");
-            }
-        }
-    }
-
-    /**
-    * Toggles the disabled class on the second map
-    */
-    toggleMap2() {
-        let mapElement = document.getElementById("viz2");
-        let tableElement = document.getElementById("table2_wrapper");
-        if (tableElement.classList.contains("disabled")) {
-            tableElement.classList.remove("disabled");
-            mapElement.classList.remove("disabled");
-            this.model.mapCount = 2;
-        } else {
-            tableElement.classList.add("disabled");
-            mapElement.classList.add("disabled");
-            this.model.mapCount = 1;
-        }
-        this.resize();
-    }
-
-    /**
-    * Toggles the value parameter of the given object between value1 and value2
-    *
-    * @param {*} object Element with value parameter
-    * @param {*} value1 First value to toggle between
-    * @param {*} value2 Second value to toggle between
-    */
-    toggleValue(object, value1, value2) {
-        if (object.value == value1) {
-            object.value = value2
-        } else {
-            object.value = value1
-        }
-    }
-
-    toggleSync() {
-        this.model.isLinked = !this.model.isLinked;
-    }
-
-    /**
-    * Sync maps
-    */
-    syncMaps(map1, map2) {
-        if (this.model.isLinked && !this.model.isSetByCode) {
-            // When map1 changes to reflect map2, it will register that change
-            // This will trigger map2 to change to reflect map1 and so on
-            // The isSetByCode flag makes it ignore every other change to avoid this
-            // infinite recursion problem
-            this.model.isSetByCode = true;
-            map1.flyTo(map2.getCenter(), map2.getZoom());
-        } else {
-            this.model.isSetByCode = false;
-        }
-    }
+	
+	/**
+	* Resizes maps and tables based on window size
+	* Currently only depends on screen width
+	* Recognizes small(<1200px), medium(1200-1700px), and large(>1700px)
+	*
+	* The maps and tables will also expand to fill the screen,
+	* This just sets the initial sizes of the containers so they can't get too small
+	*/
+	resize(){
+		let x_size = window.innerWidth;
+		let sizeClasses = ["smallScreen","midScreen","largeScreen"]
+		let sizeClass = "midScreen";
+		if(x_size<1200){
+			sizeClass = "smallScreen";
+		} else if(x_size<1700){
+			sizeClass = "midScreen";
+		} else if(x_size>=1700){
+			sizeClass = "largeScreen";
+		}
+		// My current plan here is to mark all elements that need to be resized with the "sizeable" class
+		// Then it's easy to go through and change the class that designates the actual size
+		let sizedElements = document.getElementsByClassName("sizeable");
+		for(var i=0;i<sizedElements.length;i++){
+			// Clear previous size
+			for(var j=0;j<sizeClasses.length;j++){
+				sizedElements[i].classList.remove(sizeClasses[j]);
+			}
+			sizedElements[i].classList.remove("singleMap");
+			// Add new size
+			sizedElements[i].classList.add(sizeClass);
+			if(this.model.mapCount==1){
+				sizedElements[i].classList.add("singleMap");
+			}
+		}
+	}
+	
+	/**
+	* Toggles the disabled class on the second map
+	*/
+	toggleMap2(){
+		let mapElement = document.getElementById("viz2");
+		let tableElement = document.getElementById("table2_wrapper");
+		if(tableElement.classList.contains("disabled")){
+			tableElement.classList.remove("disabled");
+			mapElement.classList.remove("disabled");
+			this.model.mapCount = 2;
+		} else {
+			tableElement.classList.add("disabled");
+			mapElement.classList.add("disabled");
+			this.model.mapCount = 1;
+		}
+		this.resize();
+	}
+	
+	/**
+	* Toggles the value parameter of the given object between value1 and value2
+	*
+	* @param {*} object Element with value parameter
+	* @param {*} value1 First value to toggle between
+	* @param {*} value2 Second value to toggle between
+	*/
+	toggleValue(object, value1, value2){
+		if(object.value == value1){
+			object.value = value2
+		} else {
+			object.value = value1
+		}
+	}
+	
+	toggleSync(){
+		this.model.isLinked = !this.model.isLinked;
+	}
+	
+	/**
+	* Sync maps
+	*/
+	syncMaps(map1, map2){
+		if(this.model.isLinked && !this.model.isSetByCode){
+			// When map1 changes to reflect map2, it will register that change
+			// This will trigger map2 to change to reflect map1 and so on
+			// The isSetByCode flag makes it ignore every other change to avoid this
+			// infinite recursion problem
+			this.model.isSetByCode = true;
+			map1.flyTo(map2.getCenter(), map2.getZoom());
+		} else {
+			this.model.isSetByCode = false;
+		}
+	}
 
     /*
      * 
@@ -487,9 +496,9 @@ class ViewModel {
         return function (props) {
             if (props) {
                 let key = props['STATE'] + props['COUNTY'] + props['TRACT'];
-                this._div.innerHTML = '<h6>Data Value</h6>' + (key in tractData ?
+                this._div.innerHTML = '<h6>'+this.m.LANG.DATA_VALUE+'</h6>' + (key in tractData ?
                     '<b>' + tractData[key][0].toFixed(2) + ' ' + units
-                    : 'Hover over a tract');
+                    : this.m.LANG.HOVER_TRACT);
             }
         };
     }
