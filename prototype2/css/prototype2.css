@@ -12,6 +12,7 @@ body {
 .section {
 	height: 100%;
 	flex-grow: 1;
+	max-width: 50%;
 	display: flex;
 	flex-direction: column;
 }
@@ -112,7 +113,9 @@ body {
 }
 
 .tables {
-	display: none;
+	margin: 10px;
+	flex-grow: 1;
+	position: relative;
 }
 
 #rightMapArrow, #leftMapArrow {

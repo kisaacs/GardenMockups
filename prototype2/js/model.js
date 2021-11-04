@@ -60,6 +60,7 @@ class Model {
         this.blockDataLists = {};
         this.tractDataMaps = {};
         this.geojsonInstances = {};
+		this.activeView = [0,0]; // Which view (map or table) is active on each side
 		this.mapCount = 2; // Number of active maps
 		this.isLinked = false; // Whether the map views are currently linked
 		this.hasChanged = [false,false]; // Whether each map view has been changed by the user yet

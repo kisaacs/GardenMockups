@@ -158,6 +158,26 @@ class ViewModel {
         hiddenElement.download = "table" + id + ".csv";
         hiddenElement.click();
     }
+	
+	/**
+	* Downloads the appropriate map or table data depending on whether
+	* the map or table is currently in view
+	*/
+	downloadData(side){
+		if(side==1){
+			if(this.model.activeView[side-1]==0){
+				this.downloadBlockData("map1");
+			} else {
+				this.downloadTableData("map1");
+			}
+		} else {
+			if(this.model.activeView[side-1]==0){
+				this.downloadBlockData("map2");
+			} else {
+				this.downloadTableData("map2");
+			}
+		}
+	}
 
     /**
      * Populates the legend with the colormapping being used by the specified visualiztion
@@ -450,6 +470,21 @@ class ViewModel {
 			buttons.classList.add("right");
 		}
 		this.resize();
+	}
+	
+	/**
+	* Toggle between map and table on the given side
+	*/
+	toggleTable(side){
+		if(this.model.activeView[side-1]==0){
+			this.model.activeView[side-1] = 1;
+			document.getElementById("map"+side).classList.add("disabled");
+			document.getElementById("table"+side+"Div").classList.remove("disabled");
+		} else {
+			this.model.activeView[side-1] = 0;
+			document.getElementById("map"+side).classList.remove("disabled");
+			document.getElementById("table"+side+"Div").classList.add("disabled");
+		}
 	}
 	
 	/**

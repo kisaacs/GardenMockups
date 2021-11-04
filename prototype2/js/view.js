@@ -104,11 +104,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	
 	for(const el of document.getElementsByClassName("DownloadButton")){
-		el.addEventListener('click', (e) => {
-			if(e.target.parentNode.parentNode.id=="left"){
-				viewModel.downloadBlockData("map1");
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.downloadData(1);
 			} else {
-				viewModel.downloadBlockData("map2");
+				viewModel.downloadData(2);
 			}
 		});
 	}
@@ -118,7 +118,22 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("downloadTable2").addEventListener('click', () => {
 		viewModel.downloadTableData("map2");
 	});
-
+	
+	for( const el of document.getElementsByClassName("ShareButton")){
+		el.addEventListener('click', (event) => {
+			navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("TableButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.toggleTable(1);
+			} else {
+				viewModel.toggleTable(2);
+			}
+		});
+	}
 
 	document.getElementById("rightMapArrow").addEventListener('click', (event) => {
 		console.log("clicked right map arrow");
@@ -139,12 +154,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		viewModel.toggleSync();
 		viewModel.toggleValue(event.target, viewModel.model.LANG.LINK, viewModel.model.LANG.UNLINK);
 	});
-	
-	for( const el of document.getElementsByClassName("ShareButton")){
-		el.addEventListener('click', (event) => {
-			navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
-		});
-	}
 	
 	map1.addEventListener('moveend', () => {
 		viewModel.model.hasChanged[0] = true;
