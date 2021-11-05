@@ -37,6 +37,23 @@ class ViewModel {
         }
         L.simpleMapScreenshoter(pluginOptions).addTo(mymap);
 
+        var poly = null;
+        var geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false
+        }).on('markgeocode', function (e) {
+            if (poly) {
+                poly.remove();
+            }
+            var bbox = e.geocode.bbox;
+            poly = L.polygon([
+                bbox.getSouthEast(),
+                bbox.getNorthEast(),
+                bbox.getNorthWest(),
+                bbox.getSouthWest()
+            ]).addTo(mymap);
+            mymap.fitBounds(poly.getBounds());
+            }).addTo(mymap);
+
         return mymap;
     }
 
