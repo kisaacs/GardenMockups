@@ -17,18 +17,14 @@
 	<!-- awesomplete -->
 	<script type="text/javascript" src="awesomplete/awesomplete.min.js"></script>
 	<!-- leaflet -->
-	<script type="text/javascript" src="js/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet"></script>
+	<script src="https://unpkg.com/leaflet-simple-map-screenshoter"></script>
 	<!-- constants -->
 	<script src="js/arizona_census_blocks.js"></script>
 	<script src="js/fipsCodes.js"></script>
 	<!-- D3 library -->
 	<script src="https://d3js.org/d3.v6.min.js"></script>
-	<!-- leaftlet browser-print plugin -->
-	<script src="../node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js"></script>
-	<!-- geosearch library -->
-	<script src="../node_modules/leaflet-geosearch/dist/geosearch.js"></script>
-	<script src="../node_modules/leaflet-geosearch/dist/geosearch.umd.js"></script>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css" />	<!-- MVVM -->
+	<!-- MVVM -->
 	<script src="js/model.js"></script>
 	<script src="js/viewmodel.js"></script>
 	<script src="js/view.js"></script>
@@ -57,20 +53,6 @@
 		<div class="viz sizeable" id="viz1">
 			<div><span>Variable Search: </span><input id="searchBar1"></div>
 			<button id="search1" class="btn btn-primary">Search</button>
-			<!-- <select name="variable1" id="variable1">
-		<option value="none">(none)</option>
-		<option value="aluminum">aluminum</option>
-		<option value="arsenic">arsenic</option>
-		<option value="barium">barium</option>
-		<option value="beryllium">beryllium</option>
-		<option value="cadmium">cadmium</option>
-		<option value="chromium">chromium</option>
-		<option value="copper">copper</option>
-		<option value="lead">lead</option>
-		<option value="manganese">manganese</option>
-		<option value="nickel">nickel</option>
-		<option value="zinc">zinc</option>
-	</select> -->
 			<div class="map sizeable">
 				<div id="map1"></div>
 			</div>
@@ -84,32 +66,18 @@
 			<input id="toggleMapButton" type="button" value="Hide">
 			<input id="linkMapButton" type="button" value="Link">
 		</div>
+
+
 		<div class="viz sizeable" id="viz2">
 			<span>Variable Search: </span><input id="searchBar2">
 			<button id="search2" class="btn btn-danger">Search</button>
-			<!-- <select name="variable2" id="variable2">
-				<option value="none">(none)</option>
-				<option value="aluminum">aluminum</option>
-				<option value="arsenic">arsenic</option>
-				<option value="barium">barium</option>
-				<option value="beryllium">beryllium</option>
-				<option value="cadmium">cadmium</option>
-				<option value="chromium">chromium</option>
-				<option value="copper">copper</option>
-				<option value="lead">lead</option>
-				<option value="manganese">manganese</option>
-				<option value="nickel">nickel</option>
-				<option value="zinc">zinc</option>
-			</select> -->
 			<div class="map sizeable">
 				<div id="map2"></div>
 			</div>
 			<div class="bottom-dash">
 				<button id="download2" class="btn btn-danger">Download Data</button>
 				<div id="legend2"></div>
-				<!-- <button id="table2" class="btn btn-primary">Table</button> -->
 			</div>
-
 		</div>
 	</div>
 

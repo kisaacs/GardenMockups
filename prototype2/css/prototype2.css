@@ -14,7 +14,7 @@
 }
 
 .viz.midScreen, .dataTables_wrapper.midScreen {
-    width: 550px;
+    width: 600px;
 }
 
 .viz.smallScreen, .dataTables_wrapper.smallScreen {
@@ -22,11 +22,11 @@
 }
 
 .viz.largeScreen {
-    height: 1050px;
+    height: 1200px;
 }
 
 .viz.midScreen {
-    height: 800px;
+    height: 1000px;
 }
 
 .viz.smallScreen {
