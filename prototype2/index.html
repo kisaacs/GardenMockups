@@ -57,54 +57,62 @@
 			<img id="linkMapButton" src="link.png">
 			<img id="rightMapArrow" src="rightArrow.png">
 		</div>
-		<div id="left" class="section">
+		<div id="left" class="section split">
 			<div class="topBar">
-				<input type="button" class="selectButton" value="SELECT DATA">
-				<img class="XButton" src="XIcon.png">
-				<img class="QButton" src="QIcon.png">
-				<img class="TableButton" src="TableIcon.png">
-				<img class="GraphButton" src="GraphIcon.png">
-				<img class="LocButton" src="LocIcon.png">
-				<img class="DownloadButton" src="DownloadIcon.png">
-				<img class="ShareButton" src="ShareIcon.png">
+				<button class="selectButton" id="selectButton1">SELECT DATA</button>
+				<img class="XButton" id="XButton1" src="XIcon.png">
+				<img class="QButton" id="QButton1" src="QIcon.png">
+				<img class="TableButton" id="TableButton1" src="TableIcon.png">
+				<img class="GraphButton" id="GraphButton1" src="GraphIcon.png">
+				<img class="LocButton selected" id="LocButton1" src="LocIcon.png">
+				<img class="DownloadButton" id="DownloadButton1" src="DownloadIcon.png">
+				<img class="ShareButton" id="ShareButton1" src="ShareIcon.png">
 			</div>
 			<div class="subBar">
-				<input type="button" class="aboutData" value="ABOUT DATA">
+				<button class="aboutData">ABOUT DATA</button>
 			</div>
 			<div class="mapDiv" id="map1">
-				<input type="text" class="addressSearch" id="addressSearch1">
-				<input type="text" class="searchBar" id="searchBar1">
-				<input type="button" class="search" id="search1">
-				<input type="button" class="downloadData" id="download1">
+				<input type="text" class="addressSearch" id="addressSearch1" placeholder="Type an address">
+				<button class="downloadData" id="download1"></button>
 				<div id="legend1"></div>
 			</div>
 			<div class="tables disabled" id="table1Div">
 			</div>
+			<div class="charts disabled" id="chart1">
+			</div>
+			<div class="queryPanel disabled" id="queryPanel1">
+				<input type="text" class="searchBar" id="searchBar1">
+				<button class="search" id="search1"></button>
+			</div>
 		</div>
 		<div id="spacerDiv">
 		</div>
-		<div id="right" class="section">
+		<div id="right" class="section split">
 			<div class="topBar">
-				<input type="button" class="selectButton" value="SELECT DATA">
-				<img class="XButton" src="XIcon.png">
-				<img class="QButton" src="QIcon.png">
-				<img class="TableButton" src="TableIcon.png">
-				<img class="GraphButton" src="GraphIcon.png">
-				<img class="LocButton" src="LocIcon.png">
-				<img class="DownloadButton" src="DownloadIcon.png">
-				<img class="ShareButton" src="ShareIcon.png">
+				<button class="selectButton" id="selectButton2">SELECT DATA</button>
+				<img class="XButton" id="XButton2" src="XIcon.png">
+				<img class="QButton" id="QButton2" src="QIcon.png">
+				<img class="TableButton" id="TableButton2" src="TableIcon.png">
+				<img class="GraphButton" id="GraphButton2" src="GraphIcon.png">
+				<img class="LocButton selected" id="LocButton2" src="LocIcon.png">
+				<img class="DownloadButton" id="DownloadButton2" src="DownloadIcon.png">
+				<img class="ShareButton" id="ShareButton2" src="ShareIcon.png">
 			</div>
 			<div class="subBar">
-				<input type="button" class="aboutData" value="ABOUT DATA">
+				<button class="aboutData">ABOUT DATA</button>
 			</div>
 			<div class="mapDiv" id="map2">
-				<input type="text" class="addressSearch" id="addressSearch2">
-				<input type="text" class="searchBar" id="searchBar2">
-				<input type="button" class="search" id="search2">
-				<input type="button" class="downloadData" id="download2">
+				<input type="text" class="addressSearch" id="addressSearch2" placeholder="Type an address">
+				<button class="downloadData" id="download2"></button>
 				<div id="legend2"></div>
 			</div>
 			<div class="tables disabled" id="table2Div">
+			</div>
+			<div class="charts disabled" id="chart2">
+			</div>
+			<div class="queryPanel disabled" id="queryPanel2">
+				<input type="text" class="searchBar" id="searchBar2">
+				<button class="search" id="search2"></button>
 			</div>
 		</div>
 	</div>

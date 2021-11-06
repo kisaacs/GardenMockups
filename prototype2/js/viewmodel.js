@@ -435,16 +435,12 @@ class ViewModel {
 	*/
 	toggleMap(i){
 		let mapElement = null;
-		let tableElement = null;
 		if(i==1){
 			mapElement = document.getElementById("left");
-			tableElement = document.getElementById("table1_wrapper");
 		} else if(i==2){
 			mapElement = document.getElementById("right");
-			tableElement = document.getElementById("table2_wrapper");
 		}
-		if(tableElement.classList.contains("disabled")){
-			tableElement.classList.remove("disabled");
+		if(mapElement.classList.contains("disabled")){
 			mapElement.classList.remove("disabled");
 			this.model.mapCount += 1;
 		} else {
@@ -455,9 +451,19 @@ class ViewModel {
 					this.toggleMap(1);
 				}
 			} else {
-				tableElement.classList.add("disabled");
 				mapElement.classList.add("disabled");
 				this.model.mapCount -= 1;
+			}
+		}
+		if(this.model.mapCount==2){
+			for(const el of document.getElementsByClassName("section")){
+				el.classList.add("split");
+				el.classList.remove("solo");
+			}
+		} else {
+			for(const el of document.getElementsByClassName("section")){
+				el.classList.add("solo");
+				el.classList.remove("split");
 			}
 		}
 		let buttons = document.getElementById("mapButtons");
@@ -473,17 +479,39 @@ class ViewModel {
 	}
 	
 	/**
-	* Toggle between map and table on the given side
+	* Toggle between map, table, and chart on the given side
+	* newView = 0 for map, 1 for table, 2 for chart
 	*/
-	toggleTable(side){
-		if(this.model.activeView[side-1]==0){
-			this.model.activeView[side-1] = 1;
-			document.getElementById("map"+side).classList.add("disabled");
-			document.getElementById("table"+side+"Div").classList.remove("disabled");
-		} else {
-			this.model.activeView[side-1] = 0;
+	toggleView(side, newView){
+		this.model.activeView[side-1] = newView;
+		document.getElementById("LocButton"+side).classList.remove("selected");
+		document.getElementById("GraphButton"+side).classList.remove("selected");
+		document.getElementById("TableButton"+side).classList.remove("selected");
+		document.getElementById("map"+side).classList.add("disabled");
+		document.getElementById("table"+side+"Div").classList.add("disabled");
+		document.getElementById("chart"+side).classList.add("disabled");
+		if(newView==0){
 			document.getElementById("map"+side).classList.remove("disabled");
-			document.getElementById("table"+side+"Div").classList.add("disabled");
+			document.getElementById("LocButton"+side).classList.add("selected");
+		} else if(newView==1){
+			document.getElementById("table"+side+"Div").classList.remove("disabled");
+			document.getElementById("TableButton"+side).classList.add("selected");
+		} else if(newView==2){
+			document.getElementById("chart"+side).classList.remove("disabled");
+			document.getElementById("GraphButton"+side).classList.add("selected");
+		}
+	}
+	
+	openQueryPanel(side){
+		document.getElementById("queryPanel"+side).classList.remove("disabled");
+	}
+	
+	closeQueryPanel(side){
+		let pan = document.getElementById("queryPanel"+side);
+		if(pan.classList.contains("disabled")){
+			// Clear Data
+		} else {
+			pan.classList.add("disabled");
 		}
 	}
 	

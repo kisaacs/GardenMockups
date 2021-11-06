@@ -128,10 +128,60 @@ document.addEventListener("DOMContentLoaded", function() {
 	for( const el of document.getElementsByClassName("TableButton")){
 		el.addEventListener('click', (event) => {
 			if(event.target.parentNode.parentNode.id=="left"){
-				viewModel.toggleTable(1);
+				viewModel.toggleView(1,1);
 			} else {
-				viewModel.toggleTable(2);
+				viewModel.toggleView(2,1);
 			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("LocButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.toggleView(1,0);
+			} else {
+				viewModel.toggleView(2,0);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("GraphButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.toggleView(1,2);
+			} else {
+				viewModel.toggleView(2,2);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("selectButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.openQueryPanel(1);
+			} else {
+				viewModel.openQueryPanel(2);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("XButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.closeQueryPanel(1);
+			} else {
+				viewModel.closeQueryPanel(2);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
 		});
 	}
 

@@ -12,9 +12,17 @@ body {
 .section {
 	height: 100%;
 	flex-grow: 1;
-	max-width: 50%;
 	display: flex;
 	flex-direction: column;
+	position: relative;
+}
+
+.section.split {
+	max-width: 50%;
+}
+
+.section.solo {
+	
 }
 
 .topBar {
@@ -118,6 +126,16 @@ body {
 	position: relative;
 }
 
+.charts {
+	margin: 10px;
+	flex-grow: 1;
+	position: relative;
+}
+
+.LocButton.selected, .GraphButton.selected, .TableButton.selected {
+	border: solid 2px #FFFFFF;
+}
+
 #rightMapArrow, #leftMapArrow {
 	width: 25px;
 }
@@ -181,7 +199,44 @@ body {
 	text-align: center;
 }
 
+.legendDiv, #legend1, #legend2 {
+	z-index: 2222;
+    position: absolute;
+    left: 10px;
+    bottom: 19px;
+}
+
 .leaflet-top.leaflet-right {
 	position:relative;
 	top:80px;
+}
+
+.queryPanel {
+	background-color: #D3DEDE;
+	border: solid 2px #3E3C3A;
+	border-radius: 10px;
+	position: absolute;
+	left: 50%;
+	bottom: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 1000;
+	padding: 5px;
+	width: 70%;
+	height: 10%;
+}
+
+.queryPanel div {
+	width: 60%;
+	margin-left: 15%;
+	margin-top: 3%;
+}
+
+.queryPanel input.searchBar {
+	width: 100%;
+	text-align: center;
+}
+
+.queryPanel #search1, .queryPanel #search2 {
+	background-color: #9A2C44 !important;
+	color: #D3DEDE;
 }
