@@ -29,30 +29,27 @@ class ViewModel {
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiYmxhcmEiLCJhIjoiY2tnNzFrNmo2MDMweDJ5cW0zaXJwbWQ1ZyJ9.WydwzOibe0497pQbasuF-A'
         }).addTo(mymap);
-
         L.control.scale().addTo(mymap);
-
-        let pluginOptions = {
-            screenName: mapId
-        }
-        L.simpleMapScreenshoter(pluginOptions).addTo(mymap);
+    
+        L.simpleMapScreenshoter().addTo(mymap)
 
         var poly = null;
         var geocoder = L.Control.geocoder({
-            defaultMarkGeocode: false
-        }).on('markgeocode', function (e) {
-            if (poly) {
-                poly.remove();
-            }
-            var bbox = e.geocode.bbox;
-            poly = L.polygon([
-                bbox.getSouthEast(),
-                bbox.getNorthEast(),
-                bbox.getNorthWest(),
-                bbox.getSouthWest()
-            ]).addTo(mymap);
-            mymap.fitBounds(poly.getBounds());
-            }).addTo(mymap);
+            defaultMarkGeocode: true
+        }).addTo(mymap);
+            //.on('markgeocode', function (e) {
+            //if (poly) {
+            //    poly.remove();
+            //}
+            //var bbox = e.geocode.bbox;
+            //poly = L.polygon([
+            //    bbox.getSouthEast(),
+            //    bbox.getNorthEast(),
+            //    bbox.getNorthWest(),
+            //    bbox.getSouthWest()
+            //]).addTo(mymap);
+            //mymap.fitBounds(poly.getBounds());
+          
 
         return mymap;
     }
