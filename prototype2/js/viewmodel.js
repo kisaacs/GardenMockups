@@ -91,13 +91,36 @@ class ViewModel {
     changeBack(btn) {
         var id = btn.id[btn.id.length - 1];
         btn.innerHTML = this.model.LANG.SEARCH;
-        if (id == 1) {
-            btn.className = "btn btn-primary";
-        }
-        if (id == 2) {
-            btn.className = "btn btn-danger";
-        }
+        btn.className = "search";
     }
+	
+	/**
+	* Remoce query panel from the screen once the search has been complete
+	*/
+	endSearch(side){
+		for(const el of document.getElementsByClassName("queryPanel")){
+			if(side==1 && el.parentNode.id=="left"){
+				el.classList.add("disabled");
+			} else if(side==2 && el.parentNode.id=="right"){
+				el.classList.add("disabled");
+			}
+		}
+	}
+	
+	/**
+	* Update the details subBar with the new data type
+	*/
+	updateDetails(side){
+		let section = document.getElementById("left");
+		if(side==2){
+			section = document.getElementById("right");
+		}
+		for(const el of section.childNodes){
+			if(el.classList && el.classList.contains("subBar")){
+				el.childNodes[1].innerHTML = document.getElementById("searchBar"+side).value;
+			}
+		}
+	}
 
     /**
      * Downloads data from the specified map into a csv file

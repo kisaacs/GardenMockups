@@ -83,7 +83,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			viewModel.populateMap("map1", map1, infoBox1, var1).then((status) =>
 				viewModel.changeBack(document.getElementById("search1"))|
 				viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
-					viewModel.populateTable("map1", table1));
+				viewModel.populateTable("map1", table1)).then((status) =>
+				viewModel.endSearch(1)).then((status) =>
+				viewModel.updateDetails(1));
 		} 
 	});
 	document.getElementById("searchBar2").addEventListener('keyup', function (event) {
@@ -97,9 +99,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	   if (var2 != "") {
 		   viewModel.changeToLoad(document.getElementById("search2"));
 		   viewModel.populateMap("map2", map2, infoBox2, var2).then((status) =>
-			   viewModel.changeBack(document.getElementById("search2")) |
-			   viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
-				   viewModel.populateTable("map2", table2));
+			    viewModel.changeBack(document.getElementById("search2")) |
+			    viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
+				viewModel.populateTable("map2", table2)).then((status) =>
+				viewModel.endSearch(2)).then((status) =>
+				viewModel.updateDetails(2));
 	   }
 	});
 	
@@ -288,7 +292,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			viewModel.populateMap("map1", map1, infoBox1, viewModel.queryFlags["map1"]).then((status) =>
 				viewModel.changeBack(document.getElementById("search1"))|
 				viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
-				viewModel.populateTable("map1", table1));
+				viewModel.populateTable("map1", table1)).then((status) =>
+				viewModel.endSearch(1)).then((status) =>
+				viewModel.updateDetails(1));
 		}
 		if("map2" in viewModel.queryFlags){
 			document.getElementById("searchBar2").value = viewModel.queryFlags["map2"];
@@ -296,7 +302,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			viewModel.populateMap("map2", map2, infoBox2, viewModel.queryFlags["map2"]).then((status) =>
 				viewModel.changeBack(document.getElementById("search2"))|
 				viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
-				viewModel.populateTable("map2", table2));
+				viewModel.populateTable("map2", table2)).then((status) =>
+				viewModel.endSearch(2)).then((status) =>
+				viewModel.updateDetails(2));
 		}
 	});
 });

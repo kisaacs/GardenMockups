@@ -33,10 +33,11 @@ body {
 }
 
 .subBar {
-	height: min-content;
-	padding:3px;
+	height: 25px;
+	padding:0px;
 	width: 100%;
 	background-color: #E35F59;
+	text-align: center;
 }
 
 #sectionContainer {
@@ -101,6 +102,8 @@ body {
 	box-sizing: border-box;
 	font-size: 10px;
 	float: right;
+	margin-top: 5px;
+	margin-right: 5px;
 }
 
 .XButton, .QButton, .ShareButton, .DownloadButton, .LocButton, .GraphButton, .TableButton {
@@ -239,4 +242,13 @@ body {
 .queryPanel #search1, .queryPanel #search2 {
 	background-color: #9A2C44 !important;
 	color: #D3DEDE;
+}
+
+.dataType {
+	font-size: 12px;
+	font-family: sans-serif;
+	margin: 0px;
+	padding: 0px;
+	color: #D3DEDE;
+	font-weight: bold;
 }
