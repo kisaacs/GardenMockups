@@ -261,17 +261,6 @@ class ViewModel {
         let body = document.createElement("tbody");
         table.appendChild(body);
         container.appendChild(table);
-        let btn = document.createElement('button');
-        let id = tableId[tableId.length - 1];
-        btn.id = "downloadTable" + id;
-        btn.innerHTML = this.model.LANG.DOWNLOAD_DATA;
-        if (id == "1") {
-            btn.className = "btn btn-primary";
-        }
-        if (id == "2") {
-            btn.className = "btn btn-danger";
-        }
-        table.appendChild(btn);
         container.appendChild(table);
 
         let dataTable = $(table).DataTable({
@@ -579,6 +568,20 @@ class ViewModel {
 		} else {
 			this.model.isSetByCode = false;
 		}
+	}
+	
+	createInfoPanel(parentDivId){
+		let pan = document.createElement("div");
+		pan.className = "infoPanel";
+		let exitButton = document.createElement("img");
+		exitButton.className = "panelExitButton";
+		exitButton.setAttribute("src","XIcon.png");
+		exitButton.addEventListener("click",(event)=>{
+			event.target.parentNode.remove();
+		});
+		pan.appendChild(exitButton);
+		document.getElementById(parentDivId).appendChild(pan);
+		return pan;
 	}
 
     /*

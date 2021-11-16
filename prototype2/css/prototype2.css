@@ -33,11 +33,20 @@ body {
 }
 
 .subBar {
-	height: 25px;
+	height: 20px;
 	padding:0px;
 	width: 100%;
 	background-color: #E35F59;
 	text-align: center;
+	display: flex;
+	justify-content: space-between;
+	align-content: flex-end;
+	gap: 0px;
+}
+
+.subBar.full {
+	height: min-content;
+	min-height: 20px;
 }
 
 #sectionContainer {
@@ -93,17 +102,16 @@ body {
 	color: #ffffff;
 	border: none;
 	border-radius: 5px;
-	height: 15px;
-	line-height: 11px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-left: 3px;
-	padding-right: 3px;
+	height: min-content;
 	box-sizing: border-box;
 	font-size: 10px;
 	float: right;
-	margin-top: 5px;
-	margin-right: 5px;
+	align-self: flex-end;
+	margin: auto 5px auto auto;
+	line-height: normal;
+	gap: 0px;
+	max-height: 15px;
+	width: 80px;
 }
 
 .XButton, .QButton, .ShareButton, .DownloadButton, .LocButton, .GraphButton, .TableButton {
@@ -221,7 +229,7 @@ body {
 	position: absolute;
 	left: 50%;
 	bottom: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, 50%);
 	z-index: 1000;
 	padding: 5px;
 	width: 70%;
@@ -247,8 +255,43 @@ body {
 .dataType {
 	font-size: 12px;
 	font-family: sans-serif;
-	margin: 0px;
+	margin: auto;
 	padding: 0px;
 	color: #D3DEDE;
 	font-weight: bold;
+	flex-grow: 1;
+}
+
+.infoPanel {
+	position: absolute;
+	left: 50%;
+	bottom: 50%;
+	transform: translate(-50%,50%);
+	width: 60%;
+	height: 50%;
+	z-index: 1000;
+	display: block;
+	background-color: #D3DEDE;
+	border: solid 2px #3E3C3A;
+	border-radius: 10px;
+}
+
+.panelExitButton {
+	background-color: #9A2C44;
+	height: 22px;
+	width: 22px;
+	border: solid 2px #3E3C3A;
+	border-radius: 5px;
+	padding: 3px;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+
+.expandButton {
+	height: 20px;
+	width: 20px;
+	float: right;
+	align-self: flex-end;
+	margin: auto;
 }

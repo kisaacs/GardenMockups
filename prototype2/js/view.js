@@ -116,12 +116,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 		});
 	}
-	document.getElementById("downloadTable1").addEventListener('click', () => {
-		viewModel.downloadTableData("map1");
-	});
-	document.getElementById("downloadTable2").addEventListener('click', () => {
-		viewModel.downloadTableData("map2");
-	});
 	
 	for( const el of document.getElementsByClassName("ShareButton")){
 		el.addEventListener('click', (event) => {
@@ -183,6 +177,47 @@ document.addEventListener("DOMContentLoaded", function() {
 				viewModel.closeQueryPanel(1);
 			} else {
 				viewModel.closeQueryPanel(2);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("QButton")){
+		el.addEventListener('click', (event) => {
+			let newPanel = null;
+			if(event.target.parentNode.parentNode.id=="left"){
+				newPanel = viewModel.createInfoPanel("left");
+			} else {
+				newPanel = viewModel.createInfoPanel("right");
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("aboutData")){
+		el.addEventListener('click', (event) => {
+			let newPanel = null;
+			if(event.target.parentNode.parentNode.id=="left"){
+				newPanel = viewModel.createInfoPanel("left");
+			} else {
+				newPanel = viewModel.createInfoPanel("right");
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("expandButton")){
+		el.addEventListener('click', (event) => {
+			let newPanel = null;
+			if(event.target.getAttribute("src")=="expand.png"){
+				event.target.setAttribute("src","retract.png");
+				event.target.parentNode.classList.add("full");
+			} else {
+				event.target.setAttribute("src","expand.png");
+				event.target.parentNode.classList.remove("full");
 			}
 			map1.invalidateSize();
 			map2.invalidateSize();
