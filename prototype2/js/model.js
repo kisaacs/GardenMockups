@@ -11,12 +11,11 @@ let LANG_en = {
 	'DOWNLOAD_DATA': 'DOWNLOAD DATA',
 	'DATA_VALUE': 'Data Value',
 	'HOVER_TRACT': 'Hover over a tract',
-	'HIDE': 'Hide',
-	'SHOW': 'Show',
-	'LINK': 'Link',
-	'UNLINK': 'Unlink',
-	'TITLE': 'Arizona Map',// The last three are used in index.html
-	'VARIABLE_SEARCH': 'Variable Search: ',
+	'TITLE': 'Arizona Map',// The last ones are used in index.html
+	'ABOUT_DATA': 'ABOUT DATA',
+	'SELECT_DATA': 'SELECT DATA',
+	'VARIABLE_SEARCH': 'Search for a Variable',
+	'ADDRESS_SEARCH': 'Type an Address',
 	'Download_Data': 'Download Data',
 	'COPYLINK': 'Copy Link'
 };
@@ -31,15 +30,14 @@ let LANG_pig = {
 	'LOCATIONTYPE_TABLE_LABEL': 'ocationlay etypay',
 	'LOCATION_TABLE_LABEL': 'ocationlay',
 	'VALUE_TABLE_LABEL': 'aluevay',
-	'DOWNLOAD_DATA': 'ownloadday ataday',
+	'DOWNLOAD_DATA': 'OWNLOADDAY ATADAY',
 	'DATA_VALUE': 'ataday aluevay',
 	'HOVER_TRACT': 'overhay overyay ayay acttray',
-	'HIDE': 'idehay',
-	'SHOW': 'owshay',
-	'LINK': 'inklay',
-	'UNLINK': 'unlinkyay',
-	'TITLE': 'arizonayay apmay',// The last three are used in index.html
-	'VARIABLE_SEARCH': 'ariablevay earchsay: ',
+	'TITLE': 'arizonayay apmay',// The last ones are used in index.html
+	'ABOUT_DATA': 'ABOUTYAY ATADAY',
+	'SELECT_DATA': 'ELECTSAY ATADAY',
+	'VARIABLE_SEARCH': 'earchsay orfay ayay ariablevay',
+	'ADDRESS_SEARCH': 'etypay anyay addressyay',
 	'Download_Data': 'ownloadday ataday',
 	'COPYLINK': 'opycay inklay'
 };

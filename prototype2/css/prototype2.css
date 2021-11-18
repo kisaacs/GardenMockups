@@ -34,7 +34,7 @@ body {
 
 .subBar {
 	height: 20px;
-	padding:0px;
+	padding: 0px 0px 0px 2px;
 	width: 100%;
 	background-color: #E35F59;
 	text-align: center;
@@ -42,6 +42,7 @@ body {
 	justify-content: space-between;
 	align-content: flex-end;
 	gap: 0px;
+	min-width: fit-content;
 }
 
 .subBar.full {
@@ -91,8 +92,8 @@ body {
 	line-height: 19px;
 	padding-top: 3px;
 	padding-bottom: 3px;
-	padding-left: 2px;
-	padding-right: 2px;
+	padding-left: 5px;
+	padding-right: 5px;
 	box-sizing: border-box;
 	margin-left: 15px;
 }
@@ -111,7 +112,7 @@ body {
 	line-height: normal;
 	gap: 0px;
 	max-height: 15px;
-	width: 80px;
+	min-width: fit-content;
 }
 
 .XButton, .QButton, .ShareButton, .DownloadButton, .LocButton, .GraphButton, .TableButton {
@@ -135,6 +136,9 @@ body {
 	margin: 10px;
 	flex-grow: 1;
 	position: relative;
+	margin-top: 0px;
+	padding-top: 10px;
+	background-color: white;
 }
 
 .charts {

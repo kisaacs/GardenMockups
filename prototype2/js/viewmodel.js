@@ -518,10 +518,31 @@ class ViewModel {
 		document.getElementById("queryPanel"+side).classList.remove("disabled");
 	}
 	
-	closeQueryPanel(side){
+	closeQueryPanel(side,map1,map2){
 		let pan = document.getElementById("queryPanel"+side);
 		if(pan.classList.contains("disabled")){
-			// Clear Data
+			let retObj = {}
+			let center;
+			let zoom;
+			if(side==1){
+				center = map1.getCenter();
+				zoom = map1.getZoom();
+				map1.remove();
+				retObj["map1"] = this.createMap("map1");
+				retObj["box1"] = this.createInfoBox(retObj["map1"]);
+				retObj["map1"].setView({lat: center.lat, lng: center.lng},zoom,{animate: false});
+			} else {
+				center = map2.getCenter();
+				zoom = map2.getZoom();
+				map2.remove();
+				retObj["map2"] = this.createMap("map2");
+				retObj["box2"] = this.createInfoBox(retObj["map2"]);
+				retObj["map2"].setView({lat: center.lat, lng: center.lng},zoom,{animate: false});
+			}
+			document.getElementById("dataType"+side).innerHTML = "";
+			document.getElementById("searchBar"+side).value = "";
+			this.selectedData["map"+side] = "";
+			return retObj;
 		} else {
 			pan.classList.add("disabled");
 		}
@@ -571,6 +592,9 @@ class ViewModel {
 	}
 	
 	createInfoPanel(parentDivId){
+		for(s of document.getElementsByClassName("infoPanel")){
+			s.remove();
+		}
 		let pan = document.createElement("div");
 		pan.className = "infoPanel";
 		let exitButton = document.createElement("img");

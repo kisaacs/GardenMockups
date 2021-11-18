@@ -173,10 +173,34 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	for( const el of document.getElementsByClassName("XButton")){
 		el.addEventListener('click', (event) => {
+			let newMaps;
 			if(event.target.parentNode.parentNode.id=="left"){
-				viewModel.closeQueryPanel(1);
+				newMaps = viewModel.closeQueryPanel(1,map1,map2);
+				if(newMaps["map1"]){
+					map1 = newMaps["map1"];
+					infoBox1 = newMaps["box1"];
+					map1.addEventListener('moveend', () => {
+						viewModel.model.hasChanged[0] = true;
+						if(viewModel.model.isLinked){
+							viewModel.model.hasChanged[1] = true;
+						}
+						viewModel.syncMaps(map2,map1);
+					});
+				}
 			} else {
-				viewModel.closeQueryPanel(2);
+				newMaps = viewModel.closeQueryPanel(2,map1,map2);
+				if(newMaps["map2"]){
+					map2 = newMaps["map2"];
+					infoBox2 = newMaps["box2"];
+					map2.addEventListener('moveend', () => {
+						viewModel.model.hasChanged[1] = true;
+						if(viewModel.model.isLinked){
+							viewModel.model.hasChanged[0] = true;
+						}
+						viewModel.syncMaps(map1,map2);
+					});
+				}
+				
 			}
 			map1.invalidateSize();
 			map2.invalidateSize();
@@ -241,7 +265,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	document.getElementById("linkMapButton").addEventListener('click', (event) => {
 		viewModel.toggleSync();
-		viewModel.toggleValue(event.target, viewModel.model.LANG.LINK, viewModel.model.LANG.UNLINK);
 	});
 	
 	map1.addEventListener('moveend', () => {
@@ -286,8 +309,17 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	
 	{// Edit plain text in index.html fields
-		for(s of document.getElementsByClassName("variable_search")){
-			s.innerHTML = viewModel.model.LANG.VARIABLE_SEARCH;
+		for(s of document.getElementsByClassName("searchBar")){
+			s.setAttribute("placeholder",viewModel.model.LANG.VARIABLE_SEARCH);
+		}
+		for(s of document.getElementsByClassName("addressSearch")){
+			s.setAttribute("placeholder",viewModel.model.LANG.ADDRESS_SEARCH);
+		}
+		for(s of document.getElementsByClassName("aboutData")){
+			s.innerHTML = viewModel.model.LANG.ABOUT_DATA;
+		}
+		for(s of document.getElementsByClassName("selectButton")){
+			s.innerHTML = viewModel.model.LANG.SELECT_DATA;
 		}
 		document.getElementById("search1").innerHTML = viewModel.model.LANG.SEARCH;
 		document.getElementById("search2").innerHTML = viewModel.model.LANG.SEARCH;
