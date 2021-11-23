@@ -222,11 +222,17 @@ body {
 	text-align: center;
 }
 
-.legendDiv, #legend1, #legend2 {
+#legend1, #legend2 {
 	z-index: 2222;
-    position: absolute;
-    left: 10px;
-    bottom: 19px;
+	margin: auto;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	flex-grow: 1;
+	min-width: 250px;
+	align-items: flex-end;
+	width: 90%;
+	height: 90%;
 }
 
 .leaflet-top.leaflet-right {
@@ -306,4 +312,43 @@ body {
 	float: right;
 	align-self: flex-end;
 	margin: auto;
+}
+
+.legendPanel {
+	z-index: 2222;
+	position: absolute;
+	left: 10px;
+	bottom: 60px;
+	width: 150px;
+	background-color: rgba(0,0,0,0.6);
+	border: solid 2px black;
+	border-radius: 20px;
+	max-height: fit-content;
+	display: flex;
+	flex-direction: row;
+	overflow: hidden;
+	flex-wrap: nowrap;
+}
+
+.legendDiv {
+	display: inline-block;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+#key1, #key2 {
+	flex-grow: 1;
+	min-width: 150px;
+}
+
+.legendPanel.open {
+	width: min-content;
+}
+
+#key1 p, #key2 p {
+	text-align: center;
+	color: white;
+	opacity: 1;
+	display: inline-block;
+	width: 100%;
 }

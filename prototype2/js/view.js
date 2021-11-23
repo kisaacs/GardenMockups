@@ -250,6 +250,19 @@ document.addEventListener("DOMContentLoaded", function() {
 			map2.invalidateSize();
 		});
 	}
+	
+	for( const el of document.getElementsByClassName("legendLabel")){
+		el.addEventListener('click', (event) => {
+			if(event.target.innerHTML==viewModel.model.LANG.LEGENDLABEL+": &gt;&gt;"){
+				event.target.innerHTML=viewModel.model.LANG.LEGENDLABEL+": <<";
+				event.target.parentNode.parentNode.classList.add("open");
+			}
+			else {
+				event.target.innerHTML=viewModel.model.LANG.LEGENDLABEL+": >>";
+				event.target.parentNode.parentNode.classList.remove("open");
+			}
+		});
+	}
 
 	document.getElementById("rightMapArrow").addEventListener('click', (event) => {
 		console.log("clicked right map arrow");
@@ -323,6 +336,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 		for(s of document.getElementsByClassName("selectButton")){
 			s.innerHTML = viewModel.model.LANG.SELECT_DATA;
+		}
+		for(s of document.getElementsByClassName("legendLabel")){
+			s.innerHTML = viewModel.model.LANG.LEGENDLABEL+": >>";
 		}
 		document.getElementById("search1").innerHTML = viewModel.model.LANG.SEARCH;
 		document.getElementById("search2").innerHTML = viewModel.model.LANG.SEARCH;
