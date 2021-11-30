@@ -8,6 +8,7 @@ body {
 	flex-direction: column;
 	height: 100%;
 	width: 100%;
+	background-color: #606161;
 }
 .section {
 	height: 100%;
@@ -229,7 +230,7 @@ body {
 	flex-direction: row;
 	flex-wrap: nowrap;
 	flex-grow: 1;
-	min-width: 250px;
+	min-width: 200px;
 	align-items: flex-end;
 	width: 90%;
 	height: 90%;
@@ -257,17 +258,22 @@ body {
 .queryPanel div {
 	width: 60%;
 	margin-left: 15%;
-	margin-top: 3%;
+	margin-top: auto;
+	margin-bottom: auto;
+	height: 30px;
 }
 
 .queryPanel input.searchBar {
 	width: 100%;
 	text-align: center;
+	height: 100%;
 }
 
 .queryPanel #search1, .queryPanel #search2 {
 	background-color: #9A2C44 !important;
 	color: #D3DEDE;
+	height: 90%;
+	margin: auto;
 }
 
 .dataType {
@@ -328,6 +334,7 @@ body {
 	flex-direction: row;
 	overflow: hidden;
 	flex-wrap: nowrap;
+	padding: 5px;
 }
 
 .legendDiv {
@@ -345,10 +352,35 @@ body {
 	width: min-content;
 }
 
+#legendPanel2.legendPanel {
+	left: unset;
+	right: 10px;
+}
+
 #key1 p, #key2 p {
 	text-align: center;
 	color: white;
 	opacity: 1;
 	display: inline-block;
 	width: 100%;
+}
+
+.legendEntry {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.colorSquare {
+	display: inline-block;
+	flex-grow: 0;
+}
+
+.legendText {
+	display: inline-block;
+	color: white;
+	vertical-align: middle;
+	flex-grow: 1;
+	max-width: 120px;
 }

@@ -281,17 +281,47 @@ class ViewModel {
         let tractData = this.model.getTractData(key);
         let colorMapping = this.model.getColorMapping(colors, key);
         var maxCount = 0;
-
+		let cutoffs = {};
         for (let tractId in tractData) {
-            let color = colorMapping(tractData[tractId][0] / tractData[tractId][1]);
+			let num = tractData[tractId][0] / tractData[tractId][1];
+			let num2 = tractData[tractId][0];
+            let color = colorMapping(num);
+			if(color in cutoffs){
+				if(num2<cutoffs[color][0]){
+					cutoffs[color][0] = num2;
+				}
+				if(num2>cutoffs[color][1]){
+					cutoffs[color][1] = num2;
+				}
+			} else {
+				//cutoffs[color] = [tractData[tractId][0] / tractData[tractId][1],tractData[tractId][0] / tractData[tractId][1]];
+				cutoffs[color] = [tractData[tractId][0],tractData[tractId][0]];
+			}
             counts[color] += 1;
             if (maxCount < counts[color])
                 maxCount = counts[color];
         }
-
+		while(legend.parentNode.children[0].children.length>1){
+			legend.parentNode.children[0].lastChild.remove();
+		}
         var convertHeight = (count) => (count / maxCount) * legendHeight;
         let width = (legendWidth - 20) / 8;
         for (var i = 0; i < colors.length; i++) {
+			if(colors[i] in cutoffs){
+				let lEntry = document.createElement("div");
+				lEntry.className = "legendEntry";
+				let colorSquare = document.createElement("div");
+				colorSquare.style.width = width+"px";
+				colorSquare.style.height = width+"px";
+				colorSquare.style.background = colors[i];
+				colorSquare.className = "colorSquare";
+				let lLabel = document.createElement("span");
+				lLabel.className = "legendText";
+				lLabel.innerHTML = cutoffs[colors[i]][0]+" - "+cutoffs[colors[i]][1];
+				lEntry.appendChild(colorSquare);
+				lEntry.appendChild(lLabel);
+				legend.parentNode.children[0].appendChild(lEntry);
+			}
             let div = document.createElement("div");
             div.style.width = width + "px";
             div.style.height = (counts[colors[i]] / maxCount) * legendHeight + "px";
@@ -695,7 +725,7 @@ class ViewModel {
                 fillColor: parseFeature(feature),
                 weight: 1,
                 opacity: 1,
-                color: 'white',
+                color: '#606161',
                 dashArray: '3',
                 fillOpacity: 0.7
             };
@@ -718,7 +748,7 @@ class ViewModel {
             var layer = e.target;
             layer.setStyle({
                 weight: 2,
-                color: '#666',
+                color: '#000',
                 dashArray: '',
                 fillOpacity: 0.7
             });

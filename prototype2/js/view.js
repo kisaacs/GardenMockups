@@ -189,6 +189,14 @@ document.addEventListener("DOMContentLoaded", function() {
 						}
 						viewModel.syncMaps(map2,map1);
 					});
+					let KEY = document.getElementById("key1");
+					while(KEY.children.length>1){
+						KEY.lastChild.remove();
+					}
+					let LEG = document.getElementById("legend1");
+					while(LEG.children.length>0){
+						LEG.firstChild.remove();
+					}
 				}
 			} else {
 				newMaps = viewModel.closeQueryPanel(2,map1,map2);
@@ -202,6 +210,14 @@ document.addEventListener("DOMContentLoaded", function() {
 						}
 						viewModel.syncMaps(map1,map2);
 					});
+					let KEY = document.getElementById("key2");
+					while(KEY.children.length>1){
+						KEY.lastChild.remove();
+					}
+					let LEG = document.getElementById("legend2");
+					while(LEG.children.length>0){
+						LEG.firstChild.remove();
+					}
 				}
 				
 			}
@@ -261,6 +277,11 @@ document.addEventListener("DOMContentLoaded", function() {
 				event.target.innerHTML=viewModel.model.LANG.LEGENDLABEL+": >>";
 				event.target.parentNode.parentNode.classList.remove("open");
 			}
+		});
+		el.addEventListener('dblclick', (event) => {
+			console.log("double clicked");
+			event.stopImmediatePropagation();
+			event.preventDefault();
 		});
 	}
 
