@@ -59,6 +59,9 @@
 </head>
 
 <body>
+	<span id='tempElement'></span>
+	<select id="langSelect">
+	</select>
 	<div id="maps">
 		<div class="viz sizeable" id="viz1">
 			<div><span>Variable Search: </span><input id="searchBar1"></div>
@@ -75,11 +78,12 @@
 		<div id="buttonTab" class="sizeable">
 			<input id="toggleMapButton" type="button" value="Hide">
 			<input id="linkMapButton" type="button" value="Link">
+			<input id="copyLinkButton" type="button" value="Copy Link">
 		</div>
 
 
 		<div class="viz sizeable" id="viz2">
-			<span>Variable Search: </span><input id="searchBar2">
+			<span class="variable_search">Variable Search: </span><input id="searchBar2">
 			<button id="search2" class="btn btn-danger">Search</button>
 			<div class="map sizeable">
 				<div id="map2"></div>

@@ -1,5 +1,59 @@
+let LANG_en = {
+	'LangName': 'English',
+	'LangId': 'en',
+	'NODATA': 'No Data Present.',
+	'SEARCH': 'Search',
+	'NAME_TABLE_LABEL': 'Name',
+	'DESC_TABLE_LABEL': 'Desc',
+	'LOCATIONTYPE_TABLE_LABEL': 'Location Type',
+	'LOCATION_TABLE_LABEL': 'Location',
+	'VALUE_TABLE_LABEL': 'Value',
+	'DOWNLOAD_DATA': 'DOWNLOAD DATA',
+	'DATA_VALUE': 'Data Value',
+	'HOVER_TRACT': 'Hover over a tract',
+	'HIDE': 'Hide',
+	'SHOW': 'Show',
+	'LINK': 'Link',
+	'UNLINK': 'Unlink',
+	'TITLE': 'Arizona Map',// The last three are used in index.html
+	'VARIABLE_SEARCH': 'Variable Search: ',
+	'Download_Data': 'Download Data',
+	'COPYLINK': 'Copy Link'
+};
+
+let LANG_pig = {
+	'LangName': 'Pig Latin',
+	'LangId': 'pig',
+	'NODATA': 'onay ataday esentpray . ',
+	'SEARCH': 'earchsay',
+	'NAME_TABLE_LABEL': 'amenay',
+	'DESC_TABLE_LABEL': 'escday',
+	'LOCATIONTYPE_TABLE_LABEL': 'ocationlay etypay',
+	'LOCATION_TABLE_LABEL': 'ocationlay',
+	'VALUE_TABLE_LABEL': 'aluevay',
+	'DOWNLOAD_DATA': 'ownloadday ataday',
+	'DATA_VALUE': 'ataday aluevay',
+	'HOVER_TRACT': 'overhay overyay ayay acttray',
+	'HIDE': 'idehay',
+	'SHOW': 'owshay',
+	'LINK': 'inklay',
+	'UNLINK': 'unlinkyay',
+	'TITLE': 'arizonayay apmay',// The last three are used in index.html
+	'VARIABLE_SEARCH': 'ariablevay earchsay: ',
+	'Download_Data': 'ownloadday ataday',
+	'COPYLINK': 'opycay inklay'
+};
+
+let LANGS = {'en':LANG_en, 'pig':LANG_pig};
+
 class Model {
-    constructor() {
+    constructor(langId='en') {
+		if(langId in LANGS){
+			this.LANG = LANGS[langId];
+		} else {
+			this.LANG = LANGS['en'];
+		}
+		this.LANGS = LANGS;
         this.variableMap = {};
         this.variableDesc = [];
         this.originalDataLists = {};
@@ -8,6 +62,7 @@ class Model {
         this.geojsonInstances = {};
 		this.mapCount = 2; // Number of active maps
 		this.isLinked = false; // Whether the map views are currently linked
+		this.hasChanged = [false,false]; // Whether each map view has been changed by the user yet
 		// Whether you are setting the map's zoom via code
 		this.isSetByCode = false; // This should toggle to determine if an event is triggered by the map or by the code
     }
@@ -204,4 +259,27 @@ class Model {
         }
         return [min, max];
     }
+	
+	/**
+	* Returns an object containing the keys and values
+	* from the query string in the url
+	*/
+	getQueryFlags(){
+		let retVal = {};
+		let searchString = window.location.search;
+		if(searchString==null || searchString.trim().length == 0)
+		{
+			return retVal;
+		}
+		var vars = window.location.search.substring(1).split("&");
+		for (var i=0;i<vars.length;i++) {
+			var declaration = vars[i].split("=");
+			declaration[1] = declaration[1].replaceAll("%20"," ");
+			if(!isNaN(parseFloat(declaration[1]))){
+				declaration[1] = parseFloat(declaration[1]);
+			}
+			retVal[declaration[0]] = declaration[1];
+		}
+		return retVal;
+	}
 }
