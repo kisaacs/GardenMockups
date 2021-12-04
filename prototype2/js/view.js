@@ -60,12 +60,16 @@ let constructQueryString = function(){
 
 document.addEventListener("DOMContentLoaded", function() {
         viewModel = new ViewModel();
-        map1 = viewModel.createMap("map1");
-        map2 = viewModel.createMap("map2");
+		map1 = viewModel.createMap("map1");
+
+		map2 = viewModel.createMap("map2");
+
         infoBox1 = viewModel.createInfoBox(map1);
-        infoBox2 = viewModel.createInfoBox(map2);
+		infoBox2 = viewModel.createInfoBox(map2);
+
         viewModel.createSearchBar(document.getElementById("searchBar1"));
-        viewModel.createSearchBar(document.getElementById("searchBar2"));
+		viewModel.createSearchBar(document.getElementById("searchBar2"));
+
         table1 = viewModel.createTable("table1", "tables");
         table2 = viewModel.createTable("table2", "tables");
 		

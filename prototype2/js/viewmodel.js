@@ -6,7 +6,7 @@ class ViewModel {
 		if("lang" in this.queryFlags){
 			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
 		}
-        this.colors = this.model.interpolate('yellow', 'firebrick');
+        this.colors = this.model.interpolate("yellow", "firebrick");
         // the two colors passed into this function will be the two end colors of the legend
         // and map illustration (shows the greatest and lowest level)
 		this.selectedData = {};
@@ -20,6 +20,7 @@ class ViewModel {
             alert("Variables Were Not Loaded from Scrutinizer");
         }
     }
+
 
     /**
       * Creates an empty map using the leaflet API
@@ -184,6 +185,7 @@ class ViewModel {
      */
     populateLegend(key, legend) {
         let colors = this.colors;
+
         legend.innerHTML = "";
         let legendWidth = 200;
         let legendHeight = 50;
@@ -213,8 +215,6 @@ class ViewModel {
             div.className = "legendDiv";
             legend.appendChild(div);
         }
-        // let hr = document.createElement("hr");
-        // legend.appendChild(hr);
     }
 
     createTable(tableId, divId) {
@@ -321,6 +321,13 @@ class ViewModel {
      * @param {*} variableName 
      */
     async populateMap(key, map, infoBox, variableName) {
+
+        if (key == "map1") {
+            this.colors = ["#EFF8FB", "#B4CDE1", "#8D97C4", "#875AA5", "#7E287B"];
+        } else {
+            this.colors = ["#F1F7EA", "#BCDFBE", "#7ECDC4", "#47A3C8", "#F6BAB"];
+        }
+
 		this.selectedData[key] = variableName;
         let old_geojson = this.model.getGeoJson(key);
         if (old_geojson !== null) {

@@ -116,7 +116,11 @@ class Model {
             return this.geojsonInstances[key];
         }
         return null;
-    } 
+    }
+
+    getColor(key) {
+        console.log(key);
+    }
 
     setGeoJson(key, geojson) {
         this.geojsonInstances[key] = geojson;
