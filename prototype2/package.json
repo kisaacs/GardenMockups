@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "leaflet-easyprint": "^2.1.9",
-    "leaflet-easyprint-bbox": "^0.2.20",
-    "leaflet-image": "^0.4.0",
-    "leaflet.bigimage": "^1.0.1"
-  }
-}
