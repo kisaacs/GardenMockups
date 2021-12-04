@@ -112,18 +112,12 @@ ul, li {
     display: flex;
 }
 
-#download1 {
-    /* display: inline-block; */
-}
 
 #legend1, #legend2 {
-    /* display: inline-block; */
     position: relative;
     height: 60px;
     width: 200px;
-    margin-left: 50px;
-    /* margin-right: 100px;
-    margin-top: 10px; */
+    margin-left: 20px;
 }
 
 .legend {
