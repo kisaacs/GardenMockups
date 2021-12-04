@@ -50,20 +50,26 @@
 	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
+	<!-- leaflet big image -->
 	<link rel="stylesheet" href="node_modules/leaflet.bigimage/src/Leaflet.BigImage.css">
 	<script src="node_modules/leaflet.bigimage/src/Leaflet.BigImage.js"></script>
 
-
+	<!-- js pdf -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+			integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
+			crossorigin="anonymous"></script>
 </head>
 
 <body>
+	<div id="container">
+
 	<span id='tempElement'></span>
 	<select id="langSelect">
 	</select>
 	<div id="maps">
 		<div class="viz sizeable" id="viz1">
 			<div><span>Variable Search: </span><input id="searchBar1"></div>
-			<button id="search1" class="btn btn-primary">Search</button>			
+			<button id="search1" class="btn btn-primary">Search</button>
 			<div class="map sizeable">
 				<div id="map1"></div>
 			</div>
@@ -96,6 +102,8 @@
 	<div class="legend viz">
 	</div>
 	<div id="output"></div>
+
+	</div>
 </body>
 
 </html>
