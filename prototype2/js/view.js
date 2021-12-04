@@ -107,18 +107,24 @@ document.addEventListener("DOMContentLoaded", function() {
 		   }
         });
         
-        document.getElementById("download1").addEventListener('click', () => {
-            viewModel.downloadBlockData("map1");
-        });
-        document.getElementById("download2").addEventListener('click', () => {
-            viewModel.downloadBlockData("map2");
-		});
 		document.getElementById("downloadTable1").addEventListener('click', () => {
             viewModel.downloadTableData("map1");
         });
         document.getElementById("downloadTable2").addEventListener('click', () => {
             viewModel.downloadTableData("map2");
-        });
+		});
+
+		// download block data from map
+		var csvBtn1 = document.getElementById("CSVmap1");
+		csvBtn1.addEventListener('click', (event) => {
+			viewModel.downloadBlockData("map1");
+		});
+
+		var csvBtn2 = document.getElementById("CSVmap2");
+		csvBtn2.addEventListener('click', (event) => {
+			viewModel.downloadBlockData("map2");
+		});
+
 
 
 	document.getElementById("toggleMapButton").addEventListener('click', (event) => {
@@ -184,8 +190,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 		document.getElementById("search1").innerHTML = viewModel.model.LANG.SEARCH;
 		document.getElementById("search2").innerHTML = viewModel.model.LANG.SEARCH;
-		document.getElementById("download1").innerHTML = viewModel.model.LANG.Download_Data;
-		document.getElementById("download2").innerHTML = viewModel.model.LANG.Download_Data;
 		document.title = viewModel.model.LANG.TITLE;
 		document.getElementById("toggleMapButton").value = viewModel.model.LANG.HIDE;
 		document.getElementById("linkMapButton").value = viewModel.model.LANG.LINK;

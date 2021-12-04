@@ -50,11 +50,9 @@ class ViewModel {
         }).addTo(mymap);
 
         var bigimage = L.control.BigImage({
-            printControlTitle: 'Download map as image',
+            printControlTitle: 'Export map',
             mapName: mapId
         }).addTo(mymap);
-
-
         return mymap;
     }
 
@@ -185,7 +183,6 @@ class ViewModel {
      */
     populateLegend(key, legend) {
         let colors = this.colors;
-
         legend.innerHTML = "";
         let legendWidth = 200;
         let legendHeight = 50;
