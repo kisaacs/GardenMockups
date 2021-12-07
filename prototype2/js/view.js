@@ -59,88 +59,212 @@ let constructQueryString = function(){
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-        viewModel = new ViewModel();
-		map1 = viewModel.createMap("map1");
-
-		map2 = viewModel.createMap("map2");
-
-        infoBox1 = viewModel.createInfoBox(map1);
-		infoBox2 = viewModel.createInfoBox(map2);
-
-        viewModel.createSearchBar(document.getElementById("searchBar1"));
-		viewModel.createSearchBar(document.getElementById("searchBar2"));
-
-        table1 = viewModel.createTable("table1", "tables");
-        table2 = viewModel.createTable("table2", "tables");
-		
-        // View UI Listeners
-		document.getElementById("searchBar1").addEventListener('keyup', function (event) {
-			if (event.keyCode === 13) {
-				event.preventDefault();
-				document.getElementById("search1").click();
-			}
-		});
-		document.getElementById("search1").addEventListener('click', (event) => {
-			var var1 = document.getElementById("searchBar1").value;
-			if (var1 != "") {
-				viewModel.changeToLoad(document.getElementById("search1"));
-				viewModel.populateMap("map1", map1, infoBox1, var1).then((status) =>
-					viewModel.changeBack(document.getElementById("search1"))|
-					viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
-						viewModel.populateTable("map1", table1));
-            } 
-		});
-		document.getElementById("searchBar2").addEventListener('keyup', function (event) {
-			if (event.keyCode === 13) {
-				event.preventDefault();
-				document.getElementById("search2").click();
-			}
-		});
-       document.getElementById("search2").addEventListener('click', (event) => {
-			var var2 = document.getElementById("searchBar2").value;
-		   if (var2 != "") {
-			   viewModel.changeToLoad(document.getElementById("search2"));
-			   viewModel.populateMap("map2", map2, infoBox2, var2).then((status) =>
-				   viewModel.changeBack(document.getElementById("search2")) |
-				   viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
-					   viewModel.populateTable("map2", table2));
-		   }
-        });
-        
-		document.getElementById("downloadTable1").addEventListener('click', () => {
-            viewModel.downloadTableData("map1");
-        });
-        document.getElementById("downloadTable2").addEventListener('click', () => {
-            viewModel.downloadTableData("map2");
-		});
-
-		// download block data from map
-		var csvBtn1 = document.getElementById("CSVmap1");
+	viewModel = new ViewModel();
+	map1 = viewModel.createMap("map1");
+	map2 = viewModel.createMap("map2");
+	infoBox1 = viewModel.createInfoBox(map1);
+	infoBox2 = viewModel.createInfoBox(map2);
+	viewModel.createSearchBar(document.getElementById("searchBar1"));
+	viewModel.createSearchBar(document.getElementById("searchBar2"));
+	table1 = viewModel.createTable("table1", "table1Div");
+	table2 = viewModel.createTable("table2", "table2Div");
+	
+	// View UI Listeners
+	document.getElementById("searchBar1").addEventListener('keyup', function (event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			document.getElementById("search1").click();
+		}
+	});
+	document.getElementById("search1").addEventListener('click', (event) => {
+		var var1 = document.getElementById("searchBar1").value;
+		if (var1 != "") {
+			viewModel.changeToLoad(document.getElementById("search1"));
+			viewModel.populateMap("map1", map1, infoBox1, var1).then((status) =>
+				viewModel.changeBack(document.getElementById("search1"))|
+				viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
+				viewModel.populateTable("map1", table1)).then((status) =>
+				viewModel.endSearch(1)).then((status) =>
+				viewModel.updateDetails(1));
+		} 
+	});
+	document.getElementById("searchBar2").addEventListener('keyup', function (event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			document.getElementById("search2").click();
+		}
+	});
+   document.getElementById("search2").addEventListener('click', (event) => {
+		var var2 = document.getElementById("searchBar2").value;
+	   if (var2 != "") {
+		   viewModel.changeToLoad(document.getElementById("search2"));
+		   viewModel.populateMap("map2", map2, infoBox2, var2).then((status) =>
+			    viewModel.changeBack(document.getElementById("search2")) |
+			    viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
+				viewModel.populateTable("map2", table2)).then((status) =>
+				viewModel.endSearch(2)).then((status) =>
+				viewModel.updateDetails(2));
+	   }
+	});
+	
+	var csvBtn1 = document.getElementById("CSVmap1");
 		csvBtn1.addEventListener('click', (event) => {
 			viewModel.downloadBlockData("map1");
-		});
-
-		var csvBtn2 = document.getElementById("CSVmap2");
+	});
+	
+	var csvBtn2 = document.getElementById("CSVmap2");
 		csvBtn2.addEventListener('click', (event) => {
 			viewModel.downloadBlockData("map2");
+	});
+	
+	for( const el of document.getElementsByClassName("ShareButton")){
+		el.addEventListener('click', (event) => {
+			navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
 		});
+	}
+	
+	for( const el of document.getElementsByClassName("TableButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.toggleView(1,1);
+			} else {
+				viewModel.toggleView(2,1);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("LocButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.toggleView(1,0);
+			} else {
+				viewModel.toggleView(2,0);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("GraphButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.toggleView(1,2);
+			} else {
+				viewModel.toggleView(2,2);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("selectButton")){
+		el.addEventListener('click', (event) => {
+			if(event.target.parentNode.parentNode.id=="left"){
+				viewModel.openQueryPanel(1);
+			} else {
+				viewModel.openQueryPanel(2);
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("XButton")){
+		el.addEventListener('click', (event) => {
+			let newMaps;
+			if(event.target.parentNode.parentNode.id=="left"){
+				newMaps = viewModel.closeQueryPanel(1,map1,map2);
+				if(newMaps["map1"]){
+					map1 = newMaps["map1"];
+					infoBox1 = newMaps["box1"];
+					map1.addEventListener('moveend', () => {
+						viewModel.model.hasChanged[0] = true;
+						if(viewModel.model.isLinked){
+							viewModel.model.hasChanged[1] = true;
+						}
+						viewModel.syncMaps(map2,map1);
+					});
+				}
+			} else {
+				newMaps = viewModel.closeQueryPanel(2,map1,map2);
+				if(newMaps["map2"]){
+					map2 = newMaps["map2"];
+					infoBox2 = newMaps["box2"];
+					map2.addEventListener('moveend', () => {
+						viewModel.model.hasChanged[1] = true;
+						if(viewModel.model.isLinked){
+							viewModel.model.hasChanged[0] = true;
+						}
+						viewModel.syncMaps(map1,map2);
+					});
+				}
+				
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("QButton")){
+		el.addEventListener('click', (event) => {
+			let newPanel = null;
+			if(event.target.parentNode.parentNode.id=="left"){
+				newPanel = viewModel.createInfoPanel("left");
+			} else {
+				newPanel = viewModel.createInfoPanel("right");
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("aboutData")){
+		el.addEventListener('click', (event) => {
+			let newPanel = null;
+			if(event.target.parentNode.parentNode.id=="left"){
+				newPanel = viewModel.createInfoPanel("left");
+			} else {
+				newPanel = viewModel.createInfoPanel("right");
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
+	
+	for( const el of document.getElementsByClassName("expandButton")){
+		el.addEventListener('click', (event) => {
+			let newPanel = null;
+			if(event.target.getAttribute("src")=="expand.png"){
+				event.target.setAttribute("src","retract.png");
+				event.target.parentNode.classList.add("full");
+			} else {
+				event.target.setAttribute("src","expand.png");
+				event.target.parentNode.classList.remove("full");
+			}
+			map1.invalidateSize();
+			map2.invalidateSize();
+		});
+	}
 
-
-
-	document.getElementById("toggleMapButton").addEventListener('click', (event) => {
-		viewModel.toggleMap2();
-		viewModel.toggleValue(event.target, viewModel.model.LANG.HIDE, viewModel.model.LANG.SHOW);
+	document.getElementById("rightMapArrow").addEventListener('click', (event) => {
+		console.log("clicked right map arrow");
+		viewModel.toggleMap(2);
 		map1.invalidateSize();
 		map2.invalidateSize();
 	});
 	
-	document.getElementById("linkMapButton").addEventListener('click', (event) => {
-		viewModel.toggleSync();
-		viewModel.toggleValue(event.target, viewModel.model.LANG.LINK, viewModel.model.LANG.UNLINK);
+	document.getElementById("leftMapArrow").addEventListener('click', (event) => {
+		console.log("clicked left map arrow");
+		viewModel.toggleMap(1);
+		map1.invalidateSize();
+		map2.invalidateSize();
 	});
 	
-	document.getElementById("copyLinkButton").addEventListener('click', (event) => {
-		navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
+	
+	document.getElementById("linkMapButton").addEventListener('click', (event) => {
+		viewModel.toggleSync();
 	});
 	
 	map1.addEventListener('moveend', () => {
@@ -185,15 +309,21 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	
 	{// Edit plain text in index.html fields
-		for(s of document.getElementsByClassName("variable_search")){
-			s.innerHTML = viewModel.model.LANG.VARIABLE_SEARCH;
+		for(s of document.getElementsByClassName("searchBar")){
+			s.setAttribute("placeholder",viewModel.model.LANG.VARIABLE_SEARCH);
+		}
+		for(s of document.getElementsByClassName("addressSearch")){
+			s.setAttribute("placeholder",viewModel.model.LANG.ADDRESS_SEARCH);
+		}
+		for(s of document.getElementsByClassName("aboutData")){
+			s.innerHTML = viewModel.model.LANG.ABOUT_DATA;
+		}
+		for(s of document.getElementsByClassName("selectButton")){
+			s.innerHTML = viewModel.model.LANG.SELECT_DATA;
 		}
 		document.getElementById("search1").innerHTML = viewModel.model.LANG.SEARCH;
 		document.getElementById("search2").innerHTML = viewModel.model.LANG.SEARCH;
 		document.title = viewModel.model.LANG.TITLE;
-		document.getElementById("toggleMapButton").value = viewModel.model.LANG.HIDE;
-		document.getElementById("linkMapButton").value = viewModel.model.LANG.LINK;
-		document.getElementById("copyLinkButton").value = viewModel.model.LANG.COPYLINK;
 	}
 	
 	// I need to access the tables, but I'm not sure if I can directly edit any of that code, so this is going here temporarily
@@ -203,12 +333,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		for(var i=0;i<tableWrappers.length;i++){
 			tableWrappers[i].classList.add("sizeable");
 		}
-		
-		// Add empty panel between tables to match the gap between maps
-		let spacingPanel = document.createElement('div');
-		spacingPanel.id = "placeholder";
-		spacingPanel.className = "sizeable";
-		tableWrappers[0].parentNode.insertBefore(spacingPanel, tableWrappers[1]);
 	}
 
 	viewModel.resize();
@@ -233,7 +357,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			viewModel.populateMap("map1", map1, infoBox1, viewModel.queryFlags["map1"]).then((status) =>
 				viewModel.changeBack(document.getElementById("search1"))|
 				viewModel.populateLegend("map1", document.getElementById("legend1"))).then((status) =>
-				viewModel.populateTable("map1", table1));
+				viewModel.populateTable("map1", table1)).then((status) =>
+				viewModel.endSearch(1)).then((status) =>
+				viewModel.updateDetails(1));
 		}
 		if("map2" in viewModel.queryFlags){
 			document.getElementById("searchBar2").value = viewModel.queryFlags["map2"];
@@ -241,7 +367,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			viewModel.populateMap("map2", map2, infoBox2, viewModel.queryFlags["map2"]).then((status) =>
 				viewModel.changeBack(document.getElementById("search2"))|
 				viewModel.populateLegend("map2", document.getElementById("legend2"))).then((status) =>
-				viewModel.populateTable("map2", table2));
+				viewModel.populateTable("map2", table2)).then((status) =>
+				viewModel.endSearch(2)).then((status) =>
+				viewModel.updateDetails(2));
 		}
 	});
 });

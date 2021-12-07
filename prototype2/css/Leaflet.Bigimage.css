@@ -6,7 +6,6 @@ a.polyline-measure-controlOnBgColor, a.polyline-measure-controlOnBgColor:hover {
     font-size: 19px;
     font-weight: bold;
     display: block;
-    border-radius: 4px;
     cursor: pointer;
 }
 

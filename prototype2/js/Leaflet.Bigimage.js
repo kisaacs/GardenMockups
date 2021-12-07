@@ -1,6 +1,8 @@
 /*
  Leaflet.BigImage (https://github.com/pasichnykvasyl/Leaflet.BigImage).
  (c) 2020, Vasyl Pasichnyk, pasichnykvasyl (Oswald)
+
+ The code has been modified to fit this prototype
 */
 
 (function (factory, window) {
@@ -22,7 +24,6 @@
 
     L.Control.BigImage = L.Control.extend({
         options: {
-            position: 'topright',
             title: 'Get image',
             printControlLabel: '&#128438;',
             printControlClasses: [],
@@ -31,7 +32,7 @@
             maxScale: 10,
             minScale: 1,
             inputTitle: 'Choose scale:',
-            mapName: 'mymap'
+            mapName: 'mymap1'
         },
 
         onAdd: function (map) {
@@ -52,6 +53,7 @@
         },
 
         _createControl: function (label, title, classesToAdd, fn, context) {
+            let downloadDiv = document.getElementById("DownloadContainer" + this.options.mapName.slice(-1));
 
             this._container = document.createElement('div');
             this._container.id = 'print-container';
@@ -76,7 +78,6 @@
             this._container.appendChild(this._containerParams);
 
             this._createControlPanel(classesToAdd, context, label, title, fn);
-
             return this._container;
         },
 
@@ -95,7 +96,6 @@
                     }
 
                     this._containerParams.classList.add('print-disabled');
-                    this._loader.style.display = 'block';
                     this._print(downloadTitle);
                 });
             }
@@ -128,21 +128,16 @@
             this._containerParams.appendChild(span);
         },
 
-        _createControlPanel: function (classesToAdd, context, label, title, fn) {
-            let controlPanel = document.createElement('a');
-            controlPanel.innerHTML = label;
-            controlPanel.id = 'print-btn';
-            controlPanel.setAttribute('title', title);
+        _createControlPanel: function (classesToAdd, context, label, title, fn) {    
+            let controlPanel = document.getElementById("DownloadButton" + this.options.mapName.slice(-1));
+
             classesToAdd.forEach(function (c) {
                 controlPanel.classList.add(c);
             });
+
             L.DomEvent.on(controlPanel, 'click', fn, context);
             this._container.appendChild(controlPanel);
             this._controlPanel = controlPanel;
-
-            this._loader = document.createElement('div');
-            this._loader.id = 'print-loading';
-            this._container.appendChild(this._loader);
         },
 
         _getLayers: function (resolve) {
@@ -414,7 +409,6 @@
 
                 }
                 self._containerParams.classList.remove('print-disabled');
-                self._loader.style.display = 'none';
             });
         }
     });

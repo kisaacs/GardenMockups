@@ -61,48 +61,79 @@
 </head>
 
 <body>
-	<div id="container">
-
-	<span id='tempElement'></span>
-	<select id="langSelect">
-	</select>
-	<div id="maps">
-		<div class="viz sizeable" id="viz1">
-			<div><span>Variable Search: </span><input id="searchBar1"></div>
-			<button id="search1" class="btn btn-primary">Search</button>
-			<div class="map sizeable">
-				<div id="map1"></div>
+	<div id="tempElement"></div>
+	<div id="titleBar">
+		<img id="logo" src="logo.png">
+		<select id="langSelect"></select>
+	</div>
+	<div id="sectionContainer">
+		<div id="mapButtons">
+			<img id="leftMapArrow" src="leftArrow.png">
+			<img id="linkMapButton" src="link.png">
+			<img id="rightMapArrow" src="rightArrow.png">
+		</div>
+		<div id="left" class="section split">
+			<div class="topBar">
+				<button class="selectButton" id="selectButton1">SELECT DATA</button>
+				<img class="XButton" id="XButton1" src="XIcon.png">
+				<img class="QButton" id="QButton1" src="QIcon.png">
+				<img class="TableButton" id="TableButton1" src="TableIcon.png">
+				<img class="GraphButton" id="GraphButton1" src="GraphIcon.png">
+				<img class="LocButton selected" id="LocButton1" src="LocIcon.png">
+				<span id="DownloadContainer1"><img class="DownloadButton" id="DownloadButton1" src="DownloadIcon.png"></span>
+				<img class="ShareButton" id="ShareButton1" src="ShareIcon.png">
 			</div>
-			<div class="bottom-dash">
+			<div class="subBar">
+				<span class="dataType" id="dataType1"></span>
+				<img class="expandButton" src="expand.png">
+				<button class="aboutData">ABOUT DATA</button>
+			</div>
+			<div class="mapDiv" id="map1">
+				<input type="text" class="addressSearch" id="addressSearch1" placeholder="Type an address">
+				<button class="downloadData" id="download1"></button>
 				<div id="legend1"></div>
 			</div>
-
-		</div>
-		<div id="buttonTab" class="sizeable">
-			<input id="toggleMapButton" type="button" value="Hide">
-			<input id="linkMapButton" type="button" value="Link">
-			<input id="copyLinkButton" type="button" value="Copy Link">
-		</div>
-
-
-		<div class="viz sizeable" id="viz2">
-			<span class="variable_search">Variable Search: </span><input id="searchBar2">
-			<button id="search2" class="btn btn-danger">Search</button>
-			<div class="map sizeable">
-				<div id="map2"></div>
+			<div class="tables disabled" id="table1Div">
 			</div>
-			<div class="bottom-dash">
+			<div class="charts disabled" id="chart1">
+			</div>
+			<div class="queryPanel disabled" id="queryPanel1">
+				<input type="text" class="searchBar" id="searchBar1" placeholder="Search for data type">
+				<button class="search" id="search1"></button>
+			</div>
+		</div>
+		<div id="spacerDiv">
+		</div>
+		<div id="right" class="section split">
+			<div class="topBar">
+				<button class="selectButton" id="selectButton2">SELECT DATA</button>
+				<img class="XButton" id="XButton2" src="XIcon.png">
+				<img class="QButton" id="QButton2" src="QIcon.png">
+				<img class="TableButton" id="TableButton2" src="TableIcon.png">
+				<img class="GraphButton" id="GraphButton2" src="GraphIcon.png">
+				<img class="LocButton selected" id="LocButton2" src="LocIcon.png">
+				<span id="DownloadContainer2"><img class="DownloadButton" id="DownloadButton2" src="DownloadIcon.png"></span>
+				<img class="ShareButton" id="ShareButton2" src="ShareIcon.png">
+			</div>
+			<div class="subBar">
+				<span class="dataType" id="dataType2"></span>
+				<img class="expandButton" src="expand.png">
+				<button class="aboutData">ABOUT DATA</button>
+			</div>
+			<div class="mapDiv" id="map2">
+				<input type="text" class="addressSearch" id="addressSearch2" placeholder="Type an address">
+				<button class="downloadData" id="download2"></button>
 				<div id="legend2"></div>
 			</div>
+			<div class="tables disabled" id="table2Div">
+			</div>
+			<div class="charts disabled" id="chart2">
+			</div>
+			<div class="queryPanel disabled" id="queryPanel2">
+				<input type="text" class="searchBar" id="searchBar2" placeholder="Search for data type">
+				<button class="search" id="search2"></button>
+			</div>
 		</div>
-	</div>
-
-	<div id="tables">
-	</div>
-	<div class="legend viz">
-	</div>
-	<div id="output"></div>
-
 	</div>
 </body>
 
