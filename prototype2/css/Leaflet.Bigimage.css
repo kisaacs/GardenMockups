@@ -44,7 +44,7 @@ a.polyline-measure-controlOnBgColor, a.polyline-measure-controlOnBgColor:hover {
     font-weight: bold;
     position: absolute;
     top: 0;
-    right: 5px;
+    right: 20px;
 }
 
 .close:hover,

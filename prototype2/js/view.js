@@ -68,7 +68,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	viewModel.createSearchBar(document.getElementById("searchBar2"));
 	table1 = viewModel.createTable("table1", "table1Div");
 	table2 = viewModel.createTable("table2", "table2Div");
-	
+	searchAddr1 = viewModel.createSearchAddress(map1, "addressSearch1");
+	searchAddr2 = viewModel.createSearchAddress(map2, "addressSearch2");
+
 	// View UI Listeners
 	document.getElementById("searchBar1").addEventListener('keyup', function (event) {
 		if (event.keyCode === 13) {
@@ -116,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		csvBtn2.addEventListener('click', (event) => {
 			viewModel.downloadBlockData("map2");
 	});
+
 	
 	for( const el of document.getElementsByClassName("ShareButton")){
 		el.addEventListener('click', (event) => {

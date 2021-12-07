@@ -45,9 +45,9 @@ class ViewModel {
         L.control.scale().addTo(mymap);
 
         // locate address
-        var geocoder = L.Control.geocoder({
-            defaultMarkGeocode: true
-        }).addTo(mymap);
+        //var geocoder = L.Control.geocoder({
+        //    defaultMarkGeocode: true
+        //}).addTo(mymap);
 
         var bigimage = L.control.BigImage({
             printControlTitle: 'Export map',
@@ -86,6 +86,50 @@ class ViewModel {
             list: this.model.getVariables()
         });
     }
+
+
+    /**
+     *  Creates a search address bar
+     * 
+     * @param {*} map The map of the search
+     * @param {*} bar The input object that will become a search bar
+     */
+    createSearchAddress(map, barDiv) {
+        var markers = L.layerGroup().addTo(map);
+        var bar = document.getElementById(barDiv);  
+
+        bar.addEventListener('keyup', function (event) {
+            if (event.keyCode === 13) {
+                markers.clearLayers();
+
+                var query_addr = bar.value;
+                const provider = new window.GeoSearch.OpenStreetMapProvider()
+                var query_promise = provider.search({ query: query_addr});
+                
+                query_promise.then(value => {
+                    value = value[0];
+                    //for(var i=0; i < value.length; i++){
+                        var x_coor = value.x;
+                        var y_coor = value.y;
+                        var label = value.label;
+
+                        var icon = L.icon({
+                            iconUrl: "marker.png",
+                            iconSize:     [50, 50],
+                        });
+                        var marker = L.marker([y_coor,x_coor], {icon: icon}).addTo(map);
+                        marker.addTo(markers);
+
+                        marker.bindPopup("<b>Found location</b><br>"+label).openPopup();
+                    //};
+                    }, reason => {
+                        console.log(reason);
+                    } 
+                );
+            }
+        });
+    }
+
 
     /**
     *
