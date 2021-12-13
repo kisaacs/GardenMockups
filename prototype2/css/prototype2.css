@@ -250,7 +250,7 @@ body {
 	bottom: 50%;
 	transform: translate(-50%, 50%);
 	z-index: 1000;
-	padding: 5px;
+	padding: 2.3% 5px 5px 5px;
 	width: 70%;
 	height: 10%;
 }
@@ -272,7 +272,6 @@ body {
 .queryPanel #search1, .queryPanel #search2 {
 	background-color: #9A2C44 !important;
 	color: #D3DEDE;
-	height: 90%;
 	margin: auto;
 }
 
