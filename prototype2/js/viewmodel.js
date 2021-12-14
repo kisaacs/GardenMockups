@@ -1,3 +1,4 @@
+
 class ViewModel {
     constructor() {
         this.model = new Model();
@@ -5,7 +6,7 @@ class ViewModel {
 		if("lang" in this.queryFlags){
 			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
 		}
-        this.colors = this.model.interpolate('yellow', 'firebrick');
+        this.colors = this.model.interpolate("yellow", "firebrick");
         // the two colors passed into this function will be the two end colors of the legend
         // and map illustration (shows the greatest and lowest level)
 		this.selectedData = {};
@@ -20,24 +21,39 @@ class ViewModel {
         }
     }
 
+
     /**
       * Creates an empty map using the leaflet API
       * 
       * @param {*} mapId The id of the div that the map will attach to
       */
     createMap(mapId) {
+
         let mymap = L.map(mapId).setView([34.0489, -112.0937], 7);
-		this.selectedData[mapId] = "";
+
+        this.selectedData[mapId] = "";
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
             id: 'mapbox/streets-v11',
             tileSize: 512,
             zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoiYmxhcmEiLCJhIjoiY2tnNzFrNmo2MDMweDJ5cW0zaXJwbWQ1ZyJ9.WydwzOibe0497pQbasuF-A'
+            accessToken: 'pk.eyJ1IjoiYmxhcmEiLCJhIjoiY2tnNzFrNmo2MDMweDJ5cW0zaXJwbWQ1ZyJ9.WydwzOibe0497pQbasuF-A',
+        }
+            
+        ).addTo(mymap);
+        L.control.scale().addTo(mymap);
+
+        // locate address
+        //var geocoder = L.Control.geocoder({
+        //    defaultMarkGeocode: true
+        //}).addTo(mymap);
+
+        var bigimage = L.control.BigImage({
+            printControlTitle: 'Export map',
+            mapName: mapId
         }).addTo(mymap);
 
-        L.control.scale().addTo(mymap);
         return mymap;
     }
 
@@ -70,6 +86,50 @@ class ViewModel {
             list: this.model.getVariables()
         });
     }
+
+
+    /**
+     *  Creates a search address bar
+     * 
+     * @param {*} map The map of the search
+     * @param {*} bar The input object that will become a search bar
+     */
+    createSearchAddress(map, barDiv) {
+        var markers = L.layerGroup().addTo(map);
+        var bar = document.getElementById(barDiv);  
+
+        bar.addEventListener('keyup', function (event) {
+            if (event.keyCode === 13) {
+                markers.clearLayers();
+
+                var query_addr = bar.value;
+                const provider = new window.GeoSearch.OpenStreetMapProvider()
+                var query_promise = provider.search({ query: query_addr});
+                
+                query_promise.then(value => {
+                    value = value[0];
+                    //for(var i=0; i < value.length; i++){
+                        var x_coor = value.x;
+                        var y_coor = value.y;
+                        var label = value.label;
+
+                        var icon = L.icon({
+                            iconUrl: "marker.png",
+                            iconSize:     [50, 50],
+                        });
+                        var marker = L.marker([y_coor,x_coor], {icon: icon}).addTo(map);
+                        marker.addTo(markers);
+
+                        marker.bindPopup("<b>Found location</b><br>"+label).openPopup();
+                    //};
+                    }, reason => {
+                        console.log(reason);
+                    } 
+                );
+            }
+        });
+    }
+
 
     /**
     *
@@ -240,8 +300,6 @@ class ViewModel {
             div.className = "legendDiv";
             legend.appendChild(div);
         }
-        // let hr = document.createElement("hr");
-        // legend.appendChild(hr);
     }
 
     createTable(tableId, divId) {
@@ -337,6 +395,13 @@ class ViewModel {
      * @param {*} variableName 
      */
     async populateMap(key, map, infoBox, variableName) {
+
+        if (key == "map1") {
+            this.colors = ["#EFF8FB", "#B4CDE1", "#8D97C4", "#875AA5", "#7E287B"];
+        } else {
+            this.colors = ["#F1F7EA", "#BCDFBE", "#7ECDC4", "#47A3C8", "#F6BAB"];
+        }
+
 		this.selectedData[key] = variableName;
         let old_geojson = this.model.getGeoJson(key);
         if (old_geojson !== null) {
