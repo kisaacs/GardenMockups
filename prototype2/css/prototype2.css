@@ -127,6 +127,14 @@ body {
 	margin-right: 3px;
 }
 
+#DownloadButton1, #DownloadButton2{
+	background: #9A2C44;
+}
+
+#print-container{
+	border: None;
+}
+
 .mapDiv {
 	flex-grow: 1;
 	position: relative;
