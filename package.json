@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "dom-to-image": "^2.6.0",
+    "leaflet.bigimage": "^1.0.1"
+  }
+}
