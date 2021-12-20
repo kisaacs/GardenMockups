@@ -91,13 +91,36 @@ class ViewModel {
     changeBack(btn) {
         var id = btn.id[btn.id.length - 1];
         btn.innerHTML = this.model.LANG.SEARCH;
-        if (id == 1) {
-            btn.className = "btn btn-primary";
-        }
-        if (id == 2) {
-            btn.className = "btn btn-danger";
-        }
+        btn.className = "search";
     }
+	
+	/**
+	* Remoce query panel from the screen once the search has been complete
+	*/
+	endSearch(side){
+		for(const el of document.getElementsByClassName("queryPanel")){
+			if(side==1 && el.parentNode.id=="left"){
+				el.classList.add("disabled");
+			} else if(side==2 && el.parentNode.id=="right"){
+				el.classList.add("disabled");
+			}
+		}
+	}
+	
+	/**
+	* Update the details subBar with the new data type
+	*/
+	updateDetails(side){
+		let section = document.getElementById("left");
+		if(side==2){
+			section = document.getElementById("right");
+		}
+		for(const el of section.childNodes){
+			if(el.classList && el.classList.contains("subBar")){
+				el.childNodes[1].innerHTML = document.getElementById("searchBar"+side).value;
+			}
+		}
+	}
 
     /**
      * Downloads data from the specified map into a csv file
@@ -158,6 +181,26 @@ class ViewModel {
         hiddenElement.download = "table" + id + ".csv";
         hiddenElement.click();
     }
+	
+	/**
+	* Downloads the appropriate map or table data depending on whether
+	* the map or table is currently in view
+	*/
+	downloadData(side){
+		if(side==1){
+			if(this.model.activeView[side-1]==0){
+				this.downloadBlockData("map1");
+			} else {
+				this.downloadTableData("map1");
+			}
+		} else {
+			if(this.model.activeView[side-1]==0){
+				this.downloadBlockData("map2");
+			} else {
+				this.downloadTableData("map2");
+			}
+		}
+	}
 
     /**
      * Populates the legend with the colormapping being used by the specified visualiztion
@@ -218,17 +261,6 @@ class ViewModel {
         let body = document.createElement("tbody");
         table.appendChild(body);
         container.appendChild(table);
-        let btn = document.createElement('button');
-        let id = tableId[tableId.length - 1];
-        btn.id = "downloadTable" + id;
-        btn.innerHTML = this.model.LANG.DOWNLOAD_DATA;
-        if (id == "1") {
-            btn.className = "btn btn-primary";
-        }
-        if (id == "2") {
-            btn.className = "btn btn-danger";
-        }
-        table.appendChild(btn);
         container.appendChild(table);
 
         let dataTable = $(table).DataTable({
@@ -413,19 +445,107 @@ class ViewModel {
 	/**
 	* Toggles the disabled class on the second map
 	*/
-	toggleMap2(){
-		let mapElement = document.getElementById("viz2");
-		let tableElement = document.getElementById("table2_wrapper");
-		if(tableElement.classList.contains("disabled")){
-			tableElement.classList.remove("disabled");
+	toggleMap(i){
+		let mapElement = null;
+		if(i==1){
+			mapElement = document.getElementById("left");
+		} else if(i==2){
+			mapElement = document.getElementById("right");
+		}
+		if(mapElement.classList.contains("disabled")){
 			mapElement.classList.remove("disabled");
-			this.model.mapCount = 2;
+			this.model.mapCount += 1;
 		} else {
-			tableElement.classList.add("disabled");
-			mapElement.classList.add("disabled");
-			this.model.mapCount = 1;
+			if(this.model.mapCount==1){
+				if(i==1){
+					this.toggleMap(2);
+				} else {
+					this.toggleMap(1);
+				}
+			} else {
+				mapElement.classList.add("disabled");
+				this.model.mapCount -= 1;
+			}
+		}
+		if(this.model.mapCount==2){
+			for(const el of document.getElementsByClassName("section")){
+				el.classList.add("split");
+				el.classList.remove("solo");
+			}
+		} else {
+			for(const el of document.getElementsByClassName("section")){
+				el.classList.add("solo");
+				el.classList.remove("split");
+			}
+		}
+		let buttons = document.getElementById("mapButtons");
+		if(this.model.mapCount == 2){
+			buttons.classList.remove("left");
+			buttons.classList.remove("right");
+		} else if(i==1) {
+			buttons.classList.add("left");
+		} else {
+			buttons.classList.add("right");
 		}
 		this.resize();
+	}
+	
+	/**
+	* Toggle between map, table, and chart on the given side
+	* newView = 0 for map, 1 for table, 2 for chart
+	*/
+	toggleView(side, newView){
+		this.model.activeView[side-1] = newView;
+		document.getElementById("LocButton"+side).classList.remove("selected");
+		document.getElementById("GraphButton"+side).classList.remove("selected");
+		document.getElementById("TableButton"+side).classList.remove("selected");
+		document.getElementById("map"+side).classList.add("disabled");
+		document.getElementById("table"+side+"Div").classList.add("disabled");
+		document.getElementById("chart"+side).classList.add("disabled");
+		if(newView==0){
+			document.getElementById("map"+side).classList.remove("disabled");
+			document.getElementById("LocButton"+side).classList.add("selected");
+		} else if(newView==1){
+			document.getElementById("table"+side+"Div").classList.remove("disabled");
+			document.getElementById("TableButton"+side).classList.add("selected");
+		} else if(newView==2){
+			document.getElementById("chart"+side).classList.remove("disabled");
+			document.getElementById("GraphButton"+side).classList.add("selected");
+		}
+	}
+	
+	openQueryPanel(side){
+		document.getElementById("queryPanel"+side).classList.remove("disabled");
+	}
+	
+	closeQueryPanel(side,map1,map2){
+		let pan = document.getElementById("queryPanel"+side);
+		if(pan.classList.contains("disabled")){
+			let retObj = {}
+			let center;
+			let zoom;
+			if(side==1){
+				center = map1.getCenter();
+				zoom = map1.getZoom();
+				map1.remove();
+				retObj["map1"] = this.createMap("map1");
+				retObj["box1"] = this.createInfoBox(retObj["map1"]);
+				retObj["map1"].setView({lat: center.lat, lng: center.lng},zoom,{animate: false});
+			} else {
+				center = map2.getCenter();
+				zoom = map2.getZoom();
+				map2.remove();
+				retObj["map2"] = this.createMap("map2");
+				retObj["box2"] = this.createInfoBox(retObj["map2"]);
+				retObj["map2"].setView({lat: center.lat, lng: center.lng},zoom,{animate: false});
+			}
+			document.getElementById("dataType"+side).innerHTML = "";
+			document.getElementById("searchBar"+side).value = "";
+			this.selectedData["map"+side] = "";
+			return retObj;
+		} else {
+			pan.classList.add("disabled");
+		}
 	}
 	
 	/**
@@ -440,6 +560,14 @@ class ViewModel {
 			object.value = value2
 		} else {
 			object.value = value1
+		}
+	}
+	
+	toggleSrc(object, value1, value2){
+		if(object.src == value1){
+			object.src = value2
+		} else {
+			object.src = value1
 		}
 	}
 	
@@ -461,6 +589,23 @@ class ViewModel {
 		} else {
 			this.model.isSetByCode = false;
 		}
+	}
+	
+	createInfoPanel(parentDivId){
+		for(s of document.getElementsByClassName("infoPanel")){
+			s.remove();
+		}
+		let pan = document.createElement("div");
+		pan.className = "infoPanel";
+		let exitButton = document.createElement("img");
+		exitButton.className = "panelExitButton";
+		exitButton.setAttribute("src","XIcon.png");
+		exitButton.addEventListener("click",(event)=>{
+			event.target.parentNode.remove();
+		});
+		pan.appendChild(exitButton);
+		document.getElementById(parentDivId).appendChild(pan);
+		return pan;
 	}
 
     /*
