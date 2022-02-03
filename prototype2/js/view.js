@@ -387,10 +387,11 @@ document.addEventListener("DOMContentLoaded", function() {
 		viewModel.model.hasChanged[1] = true;
 		map2.setView({lat: viewModel.queryFlags["lat2"], lng: viewModel.queryFlags["lng2"]},viewModel.queryFlags["zoom2"]);
 	}
-	// initial background DB query
-	viewModel.fetchVariable("map1", " (cadmium)");
+	
 	document.getElementById('tempElement').addEventListener('fetched',(event) => { // This fires once variables are fetched in viewModel constructor
 		console.log("Data successfully fetched");
+		// initial background DB query
+		viewModel.fetchVariable("map1", " (cadmium)"); // I moved this in here to occur only after the variables have been fetched. Otherwise it seems to fail - JW
 		if("map1" in viewModel.queryFlags){// need to wait until fetch variables is done
 			document.getElementById("searchBar1").value = viewModel.queryFlags["map1"];
 			viewModel.changeToLoad(document.getElementById("search1"));

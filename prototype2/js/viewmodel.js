@@ -463,7 +463,8 @@ class ViewModel {
                     infoBox.update();
                 }
                 let zoomToFeature = this._zoomToFeature(map);
-                let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature);
+				let openTileInfo = this._openTileInfo(map);
+                let onEachFeature = this._onEachFeature(highlightFeature, resetHighlight, zoomToFeature,openTileInfo);
                 geojson = L.geoJson(censusBlockData, { style: style, onEachFeature: onEachFeature }).addTo(map);
                 this.model.setGeoJson(key, geojson);
 
@@ -620,6 +621,11 @@ class ViewModel {
 			let center;
 			let zoom;
 			if(side==1){
+				let newDownload = document.createElement("img");
+				newDownload.setAttribute("id","DownloadButton1");
+				newDownload.setAttribute("class","DownloadButton");
+				newDownload.setAttribute("src","DownloadIcon.png");
+				document.getElementById("DownloadContainer1").appendChild(newDownload);
 				center = map1.getCenter();
 				zoom = map1.getZoom();
 				map1.remove();
@@ -627,6 +633,11 @@ class ViewModel {
 				retObj["box1"] = this.createInfoBox(retObj["map1"]);
 				retObj["map1"].setView({lat: center.lat, lng: center.lng},zoom,{animate: false});
 			} else {
+				let newDownload = document.createElement("img");
+				newDownload.setAttribute("id","DownloadButton2");
+				newDownload.setAttribute("class","DownloadButton");
+				newDownload.setAttribute("src","DownloadIcon.png");
+				document.getElementById("DownloadContainer2").appendChild(newDownload);
 				center = map2.getCenter();
 				zoom = map2.getZoom();
 				map2.remove();
@@ -688,7 +699,9 @@ class ViewModel {
 	
 	createInfoPanel(parentDivId){
 		for(s of document.getElementsByClassName("infoPanel")){
-			s.remove();
+			if(s.parentNode.id==parentDivId){
+				s.remove();
+			}
 		}
 		let pan = document.createElement("div");
 		pan.className = "infoPanel";
@@ -765,13 +778,25 @@ class ViewModel {
             map.fitBounds(e.target.getBounds());
         }
     }
+	
+	_openTileInfo(map) {
+		let temp=this;
+		return function (e) {
+			let newPanel=temp.createInfoPanel(map._container.parentNode.id);
+		}
+	}
 
-    _onEachFeature(highlightFeature, resetHighlight, zoomToFeature) {
+    _onEachFeature(highlightFeature, resetHighlight, zoomToFeature, openTileInfo) {
+		let zoomAndOpen = function(e){
+			zoomToFeature(e);
+			openTileInfo(e);
+		}
         return function (feature, layer) {
             layer.on({
                 mouseover: highlightFeature,
                 mouseout: resetHighlight,
-                click: zoomToFeature
+                click: zoomToFeature,
+				contextmenu: openTileInfo
             });
         }
     }
