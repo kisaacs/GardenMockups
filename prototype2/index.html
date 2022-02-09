@@ -61,6 +61,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
 			integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
 			crossorigin="anonymous"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
 </head>
 
 <body>
@@ -70,11 +72,6 @@
 		<select id="langSelect"></select>
 	</div>
 	<div id="sectionContainer">
-		<div id="mapButtons">
-			<img id="leftMapArrow" src="leftArrow.png">
-			<img id="linkMapButton" src="link.png">
-			<img id="rightMapArrow" src="rightArrow.png">
-		</div>
 		<div id="left" class="section split">
 			<div class="topBar">
 				<button class="selectButton" id="selectButton1">SELECT DATA</button>
@@ -111,6 +108,11 @@
 			</div>
 		</div>
 		<div id="spacerDiv">
+			<div id="mapButtons">
+				<img id="leftMapArrow" src="leftArrow.png">
+				<img id="linkMapButton" src="link.png">
+				<img id="rightMapArrow" src="rightArrow.png">
+			</div>
 		</div>
 		<div id="right" class="section split">
 			<div class="topBar">

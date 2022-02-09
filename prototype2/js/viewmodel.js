@@ -19,6 +19,7 @@ class ViewModel {
             console.log(error);
             alert("Variables Were Not Loaded from Scrutinizer");
         }
+        this.screenWidth = document.getElementById("sectionContainer").getBoundingClientRect().width
     }
 
 
@@ -536,6 +537,7 @@ class ViewModel {
 				sizedElements[i].classList.add("singleMap");
 			}
 		}
+        this.screenWidth = document.getElementById("sectionContainer").getBoundingClientRect().width
 	}
 	
 	/**

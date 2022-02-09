@@ -58,6 +58,8 @@ let constructQueryString = function(){
 	return queryString;
 }
 
+
+
 document.addEventListener("DOMContentLoaded", function() {
 	viewModel = new ViewModel();
 	map1 = viewModel.createMap("map1");
@@ -413,4 +415,24 @@ document.addEventListener("DOMContentLoaded", function() {
 				viewModel.updateDetails(2));
 		}
 	});
+
+var centerDragHandler = d3.drag()
+    .on('drag', centerDragged)
+	.on('end', function(){map1.invalidateSize();map2.invalidateSize()})
+
+
+var d3Center = d3.select("#spacerDiv")
+
+centerDragHandler(d3Center);
+
+
+function centerDragged() {
+	var x = d3.event.x
+	if(x<0){x=0}else if(x>viewModel.screenWidth){x=viewModel.screenWidth}
+	document.getElementById("left").style.flexGrow=x/viewModel.screenWidth
+	document.getElementById("left").style.flexShrink=x/viewModel.screenWidth
+	document.getElementById("right").style.flexGrow=(viewModel.screenWidth-x)/viewModel.screenWidth
+	document.getElementById("right").style.flexShrink=(viewModel.screenWidth-x)/viewModel.screenWidth
+	console.log(d3.event.x+", "+d3.event.y)
+}
 });
