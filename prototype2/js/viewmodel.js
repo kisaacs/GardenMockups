@@ -1,5 +1,5 @@
 var colors1 = ["#EFF8FB", "#B4CDE1", "#8D97C4", "#875AA5", "#7E287B"];
-var colors2 = ["#F1F7EA", "#BCDFBE", "#7ECDC4", "#47A3C8", "#F6BAB"];
+var colors2 = ["#F1F7EA", "#BCDFBE", "#7ECDC4", "#47A3C8", "#0F6BAB"];
 // colors for map 1 and 2
 
 class ViewModel {
