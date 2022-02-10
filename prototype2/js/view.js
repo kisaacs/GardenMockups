@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				viewModel.updateDetails(2));
 	   }
 	});
-	
+
 	var csvBtn1 = document.getElementById("CSVmap1");
 		csvBtn1.addEventListener('click', (event) => {
 			viewModel.downloadBlockData("map1");
