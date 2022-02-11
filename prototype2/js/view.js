@@ -109,16 +109,20 @@ document.addEventListener("DOMContentLoaded", function() {
 	   }
 	});
 
-	var csvBtn1 = document.getElementById("CSVmap1");
-		csvBtn1.addEventListener('click', (event) => {
-			viewModel.downloadBlockData("map1");
-	});
-	
-	var csvBtn2 = document.getElementById("CSVmap2");
-		csvBtn2.addEventListener('click', (event) => {
-			viewModel.downloadBlockData("map2");
-	});
-
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("DownloadButton1");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
 	
 	for( const el of document.getElementsByClassName("ShareButton")){
 		el.addEventListener('click', (event) => {

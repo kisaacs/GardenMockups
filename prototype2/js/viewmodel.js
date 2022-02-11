@@ -41,12 +41,6 @@ class ViewModel {
             
         ).addTo(mymap);
         L.control.scale().addTo(mymap);
-
-        var bigimage = L.control.BigImage({
-            printControlTitle: 'Export map',
-            mapName: mapId
-        }).addTo(mymap);
-
         return mymap;
     }
 
@@ -678,11 +672,11 @@ class ViewModel {
 
     _parseFeature(tractData, colorMapping) {
         return function (feature) {
-            let string = "" + feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
+            let string = feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
             if (string in tractData) {
                 return colorMapping(tractData[string][0] / tractData[string][1]);
             }
-            return 0;
+            return colorMapping();
         }
     }
 
@@ -692,8 +686,7 @@ class ViewModel {
                 fillColor: parseFeature(feature),
                 weight: 1,
                 opacity: 1,
-                color: 'white',
-                dashArray: '3',
+                color: null,
                 fillOpacity: 0.7
             };
         }
@@ -715,8 +708,8 @@ class ViewModel {
             var layer = e.target;
             layer.setStyle({
                 weight: 2,
-                color: '#666',
-                dashArray: '',
+                color: 'white',
+                dashArray: '3',
                 fillOpacity: 0.7
             });
 
@@ -729,7 +722,13 @@ class ViewModel {
 
     _zoomToFeature(map) {
         return function (e) {
-            map.fitBounds(e.target.getBounds());
+            // map.fitBounds(e.target.getBounds());
+            e.target.setStyle({
+                weight: 2,
+                color: 'black',
+                dashArray: '3', 
+                fillOpacity: 1
+            });
         }
     }
 
