@@ -223,7 +223,6 @@ class Model {
             }
     
         }
-        console.log(tractData);
         this.tractDataMaps[key] = tractData;
     }
 

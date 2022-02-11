@@ -293,6 +293,7 @@ td {
 
 
 
+/* 
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -342,5 +343,5 @@ td {
 @keyframes animatetop {
   from {top: -300px; opacity: 0}
   to {top: 0; opacity: 1}
-}
-
+} 
+*/

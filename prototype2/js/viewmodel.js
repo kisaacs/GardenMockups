@@ -333,9 +333,6 @@ class ViewModel {
         // removing all rows in the DataTable
         table.rows().remove();
         let data = this.model.getOriginalData(key);
-
-        // let body = table.getElementsByTagName('tbody')[0];
-        // body.innerHTML = "";
         for (let i = 0; i < data.length; i++) {
             table.row.add(
                 [
@@ -344,18 +341,9 @@ class ViewModel {
                     data[i]['location_type'],
                     data[i]['location_name'],
                     data[i]['value']
-                ]); // .draw();
-            // let row = document.createElement('tr');
-            // this._addColumnValue(row, data[i]['variable_name']);
-            // this._addColumnValue(row, data[i]['variable_desc']);
-            // this._addColumnValue(row, data[i]['location_type']);
-            // this._addColumnValue(row, data[i]['location_name']);
-            // this._addColumnValue(row, data[i]['value']);
-            // body.appendChild(row);
+                ]);
         }
         table.draw();
-        // $(table).DataTable();
-        // $('.dataTables_length').addClass('bs-select');
         return table;
     }
 
