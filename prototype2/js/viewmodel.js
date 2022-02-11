@@ -673,10 +673,11 @@ class ViewModel {
     _parseFeature(tractData, colorMapping) {
         return function (feature) {
             let string = feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
+            console.log(string);
             if (string in tractData) {
                 return colorMapping(tractData[string][0] / tractData[string][1]);
             }
-            return colorMapping();
+            return 0;
         }
     }
 
@@ -722,7 +723,7 @@ class ViewModel {
 
     _zoomToFeature(map) {
         return function (e) {
-            // map.fitBounds(e.target.getBounds());
+            map.fitBounds(e.target.getBounds());
             e.target.setStyle({
                 weight: 2,
                 color: 'black',
