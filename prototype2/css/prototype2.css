@@ -3,14 +3,6 @@ html {
 	width: 100%;
 }
 
-circle {
-	height: 40px;
-	width: 40px;
-	position: fixed;
-	background-color: black;
-	z-index: 600000;
-}
-
 body {
 	display: flex;
 	flex-direction: column;

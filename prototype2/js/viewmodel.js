@@ -1,3 +1,6 @@
+var colors1 = ["#EFF8FB", "#B4CDE1", "#8D97C4", "#875AA5", "#7E287B"];
+var colors2 = ["#F1F7EA", "#BCDFBE", "#7ECDC4", "#47A3C8", "#0F6BAB"];
+// colors for map 1 and 2
 
 class ViewModel {
     constructor() {
@@ -6,9 +9,6 @@ class ViewModel {
 		if("lang" in this.queryFlags){
 			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
 		}
-        this.colors = this.model.interpolate("yellow", "firebrick");
-        // the two colors passed into this function will be the two end colors of the legend
-        // and map illustration (shows the greatest and lowest level)
 		this.selectedData = {};
         try {
 			// I'm triggering a custom event here to notify the view when the variables have been successfully fetched.
@@ -29,9 +29,7 @@ class ViewModel {
       * @param {*} mapId The id of the div that the map will attach to
       */
     createMap(mapId) {
-
         let mymap = L.map(mapId).setView([34.0489, -112.0937], 7);
-
         this.selectedData[mapId] = "";
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -44,11 +42,6 @@ class ViewModel {
             
         ).addTo(mymap);
         L.control.scale().addTo(mymap);
-
-        // locate address
-        //var geocoder = L.Control.geocoder({
-        //    defaultMarkGeocode: true
-        //}).addTo(mymap);
 
         var bigimage = L.control.BigImage({
             printControlTitle: 'Export map',
@@ -271,7 +264,12 @@ class ViewModel {
      * @param {*} colors array of colors that represent different amount
      */
     populateLegend(key, legend) {
-        let colors = this.colors;
+        let colors = [];
+        if (key == "map1") {
+            colors = colors1;
+        } else {
+            colors = colors2;
+        }
         legend.innerHTML = "";
         let legendWidth = 200;
         let legendHeight = 50;
@@ -426,13 +424,12 @@ class ViewModel {
      * @param {*} variableName 
      */
     async populateMap(key, map, infoBox, variableName) {
-
+        let colors = [];
         if (key == "map1") {
-            this.colors = ["#EFF8FB", "#B4CDE1", "#8D97C4", "#875AA5", "#7E287B"];
+            colors = colors1;
         } else {
-            this.colors = ["#F1F7EA", "#BCDFBE", "#7ECDC4", "#47A3C8", "#F6BAB"];
+            colors = colors2;
         }
-
 		this.selectedData[key] = variableName;
         let old_geojson = this.model.getGeoJson(key);
         if (old_geojson !== null) {
@@ -452,7 +449,7 @@ class ViewModel {
                 var start2 = new Date();
                 console.log("\n\nStart rendering the map after" + variableName + " is selected.....");
 
-                let colorMapping = this.model.getColorMapping(this.colors, key);
+                let colorMapping = this.model.getColorMapping(colors, key);
                 let tractData = this.model.getTractData(key);
                 let parseFeature = this._parseFeature(tractData, colorMapping);
                 let style = this._style(parseFeature);
