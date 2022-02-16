@@ -10,6 +10,8 @@ class ViewModel {
 			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
 		}
 		this.selectedData = {};
+        this.var1 = "";
+        this.var2 = "";
         try {
 			// I'm triggering a custom event here to notify the view when the variables have been successfully fetched.
 			// We have to wait for this to happen before making data requests
@@ -115,6 +117,20 @@ class ViewModel {
                 );
             }
         });
+    }
+
+
+    /**
+    * Creates the export modal pop-up
+    * 
+    * @param {*} modalId The id of the div that the pop-up modal will attach to
+    */
+    loadExportModal(modalId) {
+        if (modalId == "modal1"){
+            document.getElementById("varSelected1").innerHTML = this.var1;
+        }else{
+            document.getElementById("varSelected2").innerHTML = this.var2;
+        }   
     }
 
 
@@ -392,7 +408,6 @@ class ViewModel {
 
         try {
             await this.model.fetchData(key, variableName).then((response) => {
-
                 var end1 = new Date();
                 var duration1 = end1.getTime() - start1.getTime();
                 console.log("\nTime recorded: " + duration1 + " milliseconds\n");
@@ -421,6 +436,11 @@ class ViewModel {
                 var total = duration1 + duration2;
                 console.log("\nTime recorded: " + duration2 + " milliseconds\n");
                 console.log("\nTotal time elapsed after" + variableName + " is selected: " + total + " milliseconds\n");
+                if (key == "map1") {
+                    this.var1 = variableName;
+                } else {
+                    this.var2 = variableName;
+                }
                 return 1;
             });
 
@@ -661,7 +681,6 @@ class ViewModel {
     _parseFeature(tractData, colorMapping) {
         return function (feature) {
             let string = feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
-            console.log(string);
             if (string in tractData) {
                 return colorMapping(tractData[string][0] / tractData[string][1]);
             }

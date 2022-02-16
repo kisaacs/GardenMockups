@@ -115,7 +115,7 @@ body {
 	min-width: fit-content;
 }
 
-.XButton, .QButton, .ShareButton, .DownloadButton, .LocButton, .GraphButton, .TableButton {
+.XButton, .QButton, .ShareButton, .DownloadButton, .LocButton, .GraphButton, .TableButton, .ExportButton {
 	height: 25px;
 	border: solid 2px #E35F59;
 	border-radius: 8px;
@@ -306,4 +306,53 @@ body {
 	float: right;
 	align-self: flex-end;
 	margin: auto;
+}
+
+.modal-header{
+	background-color:#9A2C44;
+	color: #F39A8C;
+	font-weight: bold;
+	font-size: 22px;
+	font-style: italic;
+}
+
+#exportContent{
+	margin-bottom: 10%;
+}
+
+.exportOption{
+	display: inline-block;
+}
+
+#exportMap, #exportGraph, #exportTable{
+	display: inline-block;
+	margin-right: 5%;
+} 
+
+.exportText{
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.exportIcon{
+	height: 50px;
+	width: 50px;
+	align-self: center;
+}
+
+#exportBtn{
+	display: flex;
+	justify-content: center;
+}
+
+.exportButton{
+	height: 40px;
+	width: 300px;
+	background-color: #E35F59;
+	color: black;
+	border: solid 1.5px #3E3C3A;
+	border-radius: 15px;
+	font-size: 12px;
+	font-weight: bold;
+	margin: 0 auto;
 }

@@ -109,21 +109,15 @@ document.addEventListener("DOMContentLoaded", function() {
 	   }
 	});
 
-// var modal = document.getElementById("myModal");
-// var btn = document.getElementById("DownloadButton1");
-// var span = document.getElementsByClassName("close")[0];
-// btn.onclick = function() {
-//   modal.style.display = "block";
-// }
-// span.onclick = function() {
-//   modal.style.display = "none";
-// }
-// window.onclick = function(event) {
-//   if (event.target == modal) {
-//     modal.style.display = "none";
-//   }
-// }
-	
+
+	document.getElementById("DownloadButton1").addEventListener('click', function (event) {
+		viewModel.loadExportModal("modal1");
+	});
+	document.getElementById("DownloadButton2").addEventListener('click', function (event) {
+		viewModel.loadExportModal("modal2");
+	});
+
+
 	for( const el of document.getElementsByClassName("ShareButton")){
 		el.addEventListener('click', (event) => {
 			navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
