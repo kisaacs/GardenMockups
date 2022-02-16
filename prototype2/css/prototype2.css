@@ -345,7 +345,7 @@ body {
 	justify-content: center;
 }
 
-.exportButton{
+#exportButton{
 	height: 40px;
 	width: 300px;
 	background-color: #E35F59;

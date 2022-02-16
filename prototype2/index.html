@@ -75,7 +75,7 @@
 				<img class="TableButton" id="TableButton1" src="TableIcon.png">
 				<img class="GraphButton" id="GraphButton1" src="GraphIcon.png">
 				<img class="LocButton selected" id="LocButton1" src="LocIcon.png">
-				<span id="DownloadContainer1"><img class="DownloadButton" id="DownloadButton1" src="DownloadIcon.png" data-toggle="modal" data-target="#modal1"></span>
+				<span id="DownloadContainer1"><img class="DownloadButton" id="DownloadButton1" src="DownloadIcon.png" data-toggle="modal" data-target="#modal"></span>
 				<img class="ShareButton" id="ShareButton1" src="ShareIcon.png">
 			</div>
 			<div class="subBar">
@@ -107,7 +107,7 @@
 				<img class="TableButton" id="TableButton2" src="TableIcon.png">
 				<img class="GraphButton" id="GraphButton2" src="GraphIcon.png">
 				<img class="LocButton selected" id="LocButton2" src="LocIcon.png">
-				<span id="DownloadContainer2"><img class="DownloadButton" id="DownloadButton2" src="DownloadIcon.png" data-toggle="modal" data-target="#modal1"></span>
+				<span id="DownloadContainer2"><img class="DownloadButton" id="DownloadButton2" src="DownloadIcon.png" data-toggle="modal" data-target="#modal"></span>
 				<img class="ShareButton" id="ShareButton2" src="ShareIcon.png">
 			</div>
 			<div class="subBar">
@@ -133,7 +133,7 @@
 
 	
 <!-- Export Selection Pop-Up -->
-<div class="modal fade" id="modal1">
+<div class="modal fade" id="modal">
 	<div class="modal-dialog" style="max-width: 60%;">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -150,61 +150,61 @@
 					<div id="exportContent">
 						<div id="exportMap">
 							<div class="exportChoice">
-								<input type="radio" class="exportOption1" name="option1" value="exportOption1">
+								<input type="radio" name="exportOption" value="exportOption">
 								<p class="exportText">MAP</p>
 							</div>	
 							<div class="exportOption">
-								<div><input type="radio" id="mapPNG1" name="map1" value="mapPNG1"></div>
+								<div><input type="radio" id="mapPNG" name="option" value="mapPNG"></div>
 								<div><img class="exportIcon" src="export icons-01.svg"></div>
 							</div>	
 							<div class="exportOption">
-								<div><input type="radio" id="mapCSV1" name="map1" value="mapCSV1"></div>
+								<div><input type="radio" id="mapCSV" name="option" value="mapCSV"></div>
 								<div><img class="exportIcon" src="export icons-02.svg"></div>
 							</div>
 							<div class="exportOption">
-								<div><input type="radio" id="mapPDF1" name="map1" value="mapPDF1"></div>
+								<div><input type="radio" id="mapPDF" name="option" value="mapPDF"></div>
 								<div><img class="exportIcon" src="export icons-03.svg"></div>
 							</div>
 						</div>
 						<div id="exportGraph">
 							<div class="exportChoice">
-								<input type="radio" class="exportOption1" name="option1" value="exportOption1">
+								<input type="radio" name="exportOption" value="exportOption">
 								<p class="exportText">GRAPH</p>
 							</div>	
 							<div class="exportOption">
-								<div><input type="radio" id="graphPNG1" name="graph1" value="graphPNG1"></div>
+								<div><input type="radio" id="graphPNG" name="option" value="graphPNG"></div>
 								<div><img class="exportIcon" src="export icons-01.svg"></div>
 							</div>	
 							<div class="exportOption">
-								<div><input type="radio" id="graphCSV1" name="graph1" value="graphCSV1"></div>
+								<div><input type="radio" id="graphCSV" name="option" value="graphCSV"></div>
 								<div><img class="exportIcon" src="export icons-02.svg"></div>
 							</div>
 							<div class="exportOption">
-								<div><input type="radio" id="tablePDF1" name="table1" value="tablePDF1"></div>
+								<div><input type="radio" id="tablePDF" name="option" value="tablePDF"></div>
 								<div><img class="exportIcon" src="export icons-03.svg"></div>
 							</div>
 						</div>
 						<div id="exportTable">
 							<div class="exportChoice">
-								<input type="radio" class="exportOption1" name="option1" value="exportOption1">
+								<input type="radio" name="exportOption" value="exportOption">
 								<p class="exportText">TABLE</p>
 							</div>	
 							<div class="exportOption">
-								<div><input type="radio" id="tablePNG1" name="table1" value="tablePNG1"></div>
+								<div><input type="radio" id="tablePNG" name="option" value="tablePNG"></div>
 								<div><img class="exportIcon" src="export icons-01.svg"></div>
 							</div>	
 							<div class="exportOption">
-								<div><input type="radio" id="tableCSV1" name="table1" value="tableCSV1"></div>
+								<div><input type="radio" id="tableCSV" name="option" value="tableCSV"></div>
 								<div><img class="exportIcon" src="export icons-02.svg"></div>
 							</div>
 							<div class="exportOption">
-								<div><input type="radio" id="tablePDF1" name="table1" value="tablePDF1"></div>
+								<div><input type="radio" id="tablePDF" name="option" value="tablePDF"></div>
 								<div><img class="exportIcon" src="export icons-03.svg"></div>
 							</div>
 						</div>
 					</div>
 					<div id="exportBtn">
-						<button type="submit" class="exportButton" id="export1"> DOWNLOAD </button>
+						<button type="submit" id="exportButton"> DOWNLOAD </button>
 					</div>				
 				</div>
 			</div>
