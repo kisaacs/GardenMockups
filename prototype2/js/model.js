@@ -194,21 +194,7 @@ class Model {
                     data[i]['location_name'] = '0' + data[i]['location_name'];
                 }
                 blockData.push(data[i]);
-            } else if (data[i]['location_type'] === 'centroid' || data[i]['location_type'] === 'point') {
-                // Below is code for converting the point and centroid latitude and longitutde data into 
-                // block data. As it stands, fetching to do all of these conversion is too time intensive
-
-                // let newData = JSON.parse(JSON.stringify(data[i]));
-                // newData['location_type'] = 'block_group';
-                // let coord = data[i]['location_name'].split(",");
-                // await fetch("https://geo.fcc.gov/api/census/area?lat=" + coord[0] + "&lon=" + coord[1])
-                //     .then((response) => response.json())
-                //     .then((response) => {
-                //         let value = response['results'][0]['block_fips'];
-                //         value = value.slice(0, 12);
-                //         newData['location_name'] = value;
-                //         blockData.push(newData);
-                //     });
+            } else if (data[i]['location_type'] === 'centroid' || data[i]['location_type'] === 'point') { 
             }
         }
         this.blockDataLists[key] = blockData;

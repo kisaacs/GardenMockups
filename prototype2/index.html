@@ -5,7 +5,8 @@
 	<title>Arizona Map</title>
 	<!-- Javascript files -->
 	<!-- bootstrap -->
-	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity= "sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 	<!-- jquery -->
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<!-- Bootstrap tooltips -->
@@ -29,7 +30,7 @@
 	<script src="js/view.js"></script>
 	<!-- CSS Files -->
 	<!-- bootstrap -->
-	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href= "https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous" />
 	<!-- awesomecomplete -->
 	<link rel="stylesheet" href="awesomplete/awesomplete.css">
 	<!-- leaflet -->
@@ -51,16 +52,7 @@
 
 	<!-- leaflet geosearch -->
 	<script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"/>
-
-	<!-- leaflet big image -->
-	<link rel="stylesheet" href="css/Leaflet.BigImage.css">
-	<script src="js/Leaflet.BigImage.js"></script>
-
-	<!-- js pdf -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
-			integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
-			crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"/> 
 </head>
 <body>
 	
@@ -83,7 +75,7 @@
 				<img class="TableButton" id="TableButton1" src="TableIcon.png">
 				<img class="GraphButton" id="GraphButton1" src="GraphIcon.png">
 				<img class="LocButton selected" id="LocButton1" src="LocIcon.png">
-				<span id="DownloadContainer1"><img class="DownloadButton" id="DownloadButton1" src="DownloadIcon.png"></span>
+				<span id="DownloadContainer1"><img class="DownloadButton" id="DownloadButton1" src="DownloadIcon.png" data-toggle="modal" data-target="#modal"></span>
 				<img class="ShareButton" id="ShareButton1" src="ShareIcon.png">
 			</div>
 			<div class="subBar">
@@ -115,7 +107,7 @@
 				<img class="TableButton" id="TableButton2" src="TableIcon.png">
 				<img class="GraphButton" id="GraphButton2" src="GraphIcon.png">
 				<img class="LocButton selected" id="LocButton2" src="LocIcon.png">
-				<span id="DownloadContainer2"><img class="DownloadButton" id="DownloadButton2" src="DownloadIcon.png"></span>
+				<span id="DownloadContainer2"><img class="DownloadButton" id="DownloadButton2" src="DownloadIcon.png" data-toggle="modal" data-target="#modal"></span>
 				<img class="ShareButton" id="ShareButton2" src="ShareIcon.png">
 			</div>
 			<div class="subBar">
@@ -138,6 +130,87 @@
 			</div>
 		</div>
 	</div>
-</body>
 
+	
+<!-- Export Selection Pop-Up -->
+<div class="modal fade" id="modal">
+	<div class="modal-dialog" style="max-width: 60%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Export</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+			</div>
+			<div class="modal-body">
+				<div><span style="font-weight: bold">Data variable selected: </span><span id="varSelected1"></span></div>
+				<br>
+				<p class="exportText">1) Select if you want your map, graph, and/or table selection to be exported. Your current view will be automatically selected.</p>
+				<p class="exportText">2) Then, click the check boxes for the format(s) you would like to download - PNG, CSV, and/or PDF.</p>
+				<p class="exportText">3) Click download to download your selection.</p>
+				<div>
+					<div id="exportContent">
+						<div id="exportMap">
+							<div class="exportChoice">
+								<input type="radio" name="exportOption" value="exportOption">
+								<p class="exportText">MAP</p>
+							</div>	
+							<div class="exportOption">
+								<div><input type="radio" id="mapPNG" name="option" value="mapPNG"></div>
+								<div><img class="exportIcon" src="export icons-01.svg"></div>
+							</div>	
+							<div class="exportOption">
+								<div><input type="radio" id="mapCSV" name="option" value="mapCSV"></div>
+								<div><img class="exportIcon" src="export icons-02.svg"></div>
+							</div>
+							<div class="exportOption">
+								<div><input type="radio" id="mapPDF" name="option" value="mapPDF"></div>
+								<div><img class="exportIcon" src="export icons-03.svg"></div>
+							</div>
+						</div>
+						<div id="exportGraph">
+							<div class="exportChoice">
+								<input type="radio" name="exportOption" value="exportOption">
+								<p class="exportText">GRAPH</p>
+							</div>	
+							<div class="exportOption">
+								<div><input type="radio" id="graphPNG" name="option" value="graphPNG"></div>
+								<div><img class="exportIcon" src="export icons-01.svg"></div>
+							</div>	
+							<div class="exportOption">
+								<div><input type="radio" id="graphCSV" name="option" value="graphCSV"></div>
+								<div><img class="exportIcon" src="export icons-02.svg"></div>
+							</div>
+							<div class="exportOption">
+								<div><input type="radio" id="tablePDF" name="option" value="tablePDF"></div>
+								<div><img class="exportIcon" src="export icons-03.svg"></div>
+							</div>
+						</div>
+						<div id="exportTable">
+							<div class="exportChoice">
+								<input type="radio" name="exportOption" value="exportOption">
+								<p class="exportText">TABLE</p>
+							</div>	
+							<div class="exportOption">
+								<div><input type="radio" id="tablePNG" name="option" value="tablePNG"></div>
+								<div><img class="exportIcon" src="export icons-01.svg"></div>
+							</div>	
+							<div class="exportOption">
+								<div><input type="radio" id="tableCSV" name="option" value="tableCSV"></div>
+								<div><img class="exportIcon" src="export icons-02.svg"></div>
+							</div>
+							<div class="exportOption">
+								<div><input type="radio" id="tablePDF" name="option" value="tablePDF"></div>
+								<div><img class="exportIcon" src="export icons-03.svg"></div>
+							</div>
+						</div>
+					</div>
+					<div id="exportBtn">
+						<button type="submit" id="exportButton"> DOWNLOAD </button>
+					</div>				
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
 </html>

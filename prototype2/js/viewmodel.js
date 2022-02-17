@@ -10,6 +10,8 @@ class ViewModel {
 			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
 		}
 		this.selectedData = {};
+        this.var1 = "";
+        this.var2 = "";
         try {
 			// I'm triggering a custom event here to notify the view when the variables have been successfully fetched.
 			// We have to wait for this to happen before making data requests
@@ -41,12 +43,6 @@ class ViewModel {
             
         ).addTo(mymap);
         L.control.scale().addTo(mymap);
-
-        var bigimage = L.control.BigImage({
-            printControlTitle: 'Export map',
-            mapName: mapId
-        }).addTo(mymap);
-
         return mymap;
     }
 
@@ -121,6 +117,20 @@ class ViewModel {
                 );
             }
         });
+    }
+
+
+    /**
+    * Creates the export modal pop-up
+    * 
+    * @param {*} modalId The id of the div that the pop-up modal will attach to
+    */
+    loadExportModal(modalId) {
+        if (modalId == "modal1"){
+            document.getElementById("varSelected1").innerHTML = this.var1;
+        }else{
+            document.getElementById("varSelected2").innerHTML = this.var2;
+        }   
     }
 
 
@@ -339,9 +349,6 @@ class ViewModel {
         // removing all rows in the DataTable
         table.rows().remove();
         let data = this.model.getOriginalData(key);
-
-        // let body = table.getElementsByTagName('tbody')[0];
-        // body.innerHTML = "";
         for (let i = 0; i < data.length; i++) {
             table.row.add(
                 [
@@ -350,18 +357,9 @@ class ViewModel {
                     data[i]['location_type'],
                     data[i]['location_name'],
                     data[i]['value']
-                ]); // .draw();
-            // let row = document.createElement('tr');
-            // this._addColumnValue(row, data[i]['variable_name']);
-            // this._addColumnValue(row, data[i]['variable_desc']);
-            // this._addColumnValue(row, data[i]['location_type']);
-            // this._addColumnValue(row, data[i]['location_name']);
-            // this._addColumnValue(row, data[i]['value']);
-            // body.appendChild(row);
+                ]);
         }
         table.draw();
-        // $(table).DataTable();
-        // $('.dataTables_length').addClass('bs-select');
         return table;
     }
 
@@ -410,7 +408,6 @@ class ViewModel {
 
         try {
             await this.model.fetchData(key, variableName).then((response) => {
-
                 var end1 = new Date();
                 var duration1 = end1.getTime() - start1.getTime();
                 console.log("\nTime recorded: " + duration1 + " milliseconds\n");
@@ -439,6 +436,11 @@ class ViewModel {
                 var total = duration1 + duration2;
                 console.log("\nTime recorded: " + duration2 + " milliseconds\n");
                 console.log("\nTotal time elapsed after" + variableName + " is selected: " + total + " milliseconds\n");
+                if (key == "map1") {
+                    this.var1 = variableName;
+                } else {
+                    this.var2 = variableName;
+                }
                 return 1;
             });
 
@@ -678,7 +680,7 @@ class ViewModel {
 
     _parseFeature(tractData, colorMapping) {
         return function (feature) {
-            let string = "" + feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
+            let string = feature.properties['STATE'] + feature.properties['COUNTY'] + feature.properties['TRACT'];
             if (string in tractData) {
                 return colorMapping(tractData[string][0] / tractData[string][1]);
             }
@@ -692,8 +694,7 @@ class ViewModel {
                 fillColor: parseFeature(feature),
                 weight: 1,
                 opacity: 1,
-                color: 'white',
-                dashArray: '3',
+                color: null,
                 fillOpacity: 0.7
             };
         }
@@ -715,8 +716,8 @@ class ViewModel {
             var layer = e.target;
             layer.setStyle({
                 weight: 2,
-                color: '#666',
-                dashArray: '',
+                color: 'white',
+                dashArray: '3',
                 fillOpacity: 0.7
             });
 
@@ -730,6 +731,12 @@ class ViewModel {
     _zoomToFeature(map) {
         return function (e) {
             map.fitBounds(e.target.getBounds());
+            e.target.setStyle({
+                weight: 2,
+                color: 'black',
+                dashArray: '3', 
+                fillOpacity: 1
+            });
         }
     }
 
