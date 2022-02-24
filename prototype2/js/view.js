@@ -111,17 +111,15 @@ document.addEventListener("DOMContentLoaded", function() {
 	   }
 	});
 
-	var csvBtn1 = document.getElementById("CSVmap1");
-		csvBtn1.addEventListener('click', (event) => {
-			viewModel.downloadBlockData("map1");
+
+	document.getElementById("DownloadButton1").addEventListener('click', function (event) {
+		viewModel.loadExportModal("modal1");
 	});
-	
-	var csvBtn2 = document.getElementById("CSVmap2");
-		csvBtn2.addEventListener('click', (event) => {
-			viewModel.downloadBlockData("map2");
+	document.getElementById("DownloadButton2").addEventListener('click', function (event) {
+		viewModel.loadExportModal("modal2");
 	});
 
-	
+
 	for( const el of document.getElementsByClassName("ShareButton")){
 		el.addEventListener('click', (event) => {
 			navigator.clipboard.writeText(window.location.href.split('?')[0]+constructQueryString());
