@@ -326,7 +326,9 @@ class ViewModel {
 				colorSquare.className = "colorSquare";
 				let lLabel = document.createElement("span");
 				lLabel.className = "legendText";
-				lLabel.innerHTML = cutoffs[colors[i]][0]+" - "+cutoffs[colors[i]][1];
+				let lowerBound = +(Math.round( cutoffs[colors[i]][0].toString() + "e+2")  + "e-2"); // round cutoff to 2 decimal places
+				let upperBound = +(Math.round( cutoffs[colors[i]][1].toString() + "e+2")  + "e-2"); // round cutoff to 2 decimal places
+				lLabel.innerHTML = lowerBound+" - "+upperBound;
 				lEntry.appendChild(colorSquare);
 				lEntry.appendChild(lLabel);
 				legend.parentNode.children[0].appendChild(lEntry);
