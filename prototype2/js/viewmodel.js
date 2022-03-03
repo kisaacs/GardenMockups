@@ -155,7 +155,7 @@ class ViewModel {
     changeBack(btn) {
         var id = btn.id[btn.id.length - 1];
         btn.innerHTML = this.model.LANG.SEARCH;
-        btn.className = "search";
+        btn.className = "querySubmit";
     }
 	
 	/**

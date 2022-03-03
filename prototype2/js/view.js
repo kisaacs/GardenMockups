@@ -361,6 +361,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		for(s of document.getElementsByClassName("legendLabel")){
 			s.innerHTML = viewModel.model.LANG.LEGENDLABEL+": >>";
 		}
+		for(s of document.getElementsByClassName("querySubmit")){
+			s.value = viewModel.model.LANG.SEARCH;
+		}
 		document.getElementById("search1").innerHTML = viewModel.model.LANG.SEARCH;
 		document.getElementById("search2").innerHTML = viewModel.model.LANG.SEARCH;
 		document.title = viewModel.model.LANG.TITLE;
