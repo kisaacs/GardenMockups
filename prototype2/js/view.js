@@ -179,7 +179,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			let newMaps;
 			if(event.target.parentNode.parentNode.id=="left"){
 				newMaps = viewModel.closeQueryPanel(1,map1,map2);
-				if(newMaps["map1"]){
+				if(newMaps==undefined){
+
+				} else if(newMaps["map1"]){
 					map1 = newMaps["map1"];
 					infoBox1 = newMaps["box1"];
 					map1.addEventListener('moveend', () => {
@@ -324,13 +326,13 @@ document.addEventListener("DOMContentLoaded", function() {
 		viewModel.resize();
 	});
 	
-	var label = document.getElementById("subButton")
+	var label = document.getElementById("searchBar1")
 	var contSel = document.getElementById("contSel")
 	var mediumSel = document.getElementById("mediumSel")
 
 	contSel.addEventListener("input", async function(e){
 		var contVal = contSel.options[contSel.selectedIndex].text
-		for(const cont of viewModel.model.concData.contaminants){
+		for(const cont of viewModel.model.concentrationTypes.contaminants){
 			var tempVal = ""
 			await viewModel.getLabel(cont).then(l => {tempVal = l;})
 			if(tempVal == contVal){
@@ -344,7 +346,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		await viewModel.fillMediumList(contVal);
 		if(mediumSel.value != "" && contSel.value != ""){
 			var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
-			for(const medium of concData.media){
+			for(const medium of viewModel.model.concentrationTypes.media){
 				var tempVal = ""
 				await viewModel.getLabel(medium).then(l => {tempVal = l;})
 				if(tempVal == mediumVal){
@@ -365,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	mediumSel.addEventListener("input", async function(e){
 		var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
-		for(const medium of viewModel.model.concData.media){
+		for(const medium of viewModel.model.concentrationTypes.media){
 			var tempVal = ""
 			await viewModel.getLabel(medium).then(l => {tempVal = l;})
 			if(tempVal == mediumVal){
@@ -379,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		await viewModel.fillContList(mediumVal);
 		if(mediumSel.value != "" && contSel.value != ""){
 			var contVal = contSel.options[contSel.selectedIndex].text
-			for(const cont of concData.contaminants){
+			for(const cont of viewModel.model.concentrationTypes.contaminants){
 				var tempVal = ""
 				await viewModel.getLabel(cont).then(l => {tempVal = l;})
 				if(tempVal == contVal){

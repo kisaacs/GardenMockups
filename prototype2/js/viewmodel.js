@@ -24,8 +24,11 @@ class ViewModel {
         this.screenWidth = document.getElementById("sectionContainer").getBoundingClientRect().width
         fetch(new Request("http://localhost:3000/concentration")) // Get all contaminants and materials from ontology
             .then(response => response.json())
-            .then(data => {this.model.concentrationTypes = data;});
-        
+            .then(data => {
+                this.model.concentrationTypes = data;
+                this.fillMediumList();
+                this.fillContList();
+            });
     }
 
 
@@ -628,11 +631,11 @@ class ViewModel {
 			let center;
 			let zoom;
 			if(side==1){
-				let newDownload = document.createElement("img");
+				/*let newDownload = document.createElement("img");
 				newDownload.setAttribute("id","DownloadButton1");
 				newDownload.setAttribute("class","DownloadButton");
 				newDownload.setAttribute("src","DownloadIcon.png");
-				document.getElementById("DownloadContainer1").appendChild(newDownload);
+				document.getElementById("DownloadContainer1").appendChild(newDownload);*/
 				center = map1.getCenter();
 				zoom = map1.getZoom();
 				map1.remove();
@@ -640,11 +643,11 @@ class ViewModel {
 				retObj["box1"] = this.createInfoBox(retObj["map1"]);
 				retObj["map1"].setView({lat: center.lat, lng: center.lng},zoom,{animate: false});
 			} else {
-				let newDownload = document.createElement("img");
+				/*let newDownload = document.createElement("img");
 				newDownload.setAttribute("id","DownloadButton2");
 				newDownload.setAttribute("class","DownloadButton");
 				newDownload.setAttribute("src","DownloadIcon.png");
-				document.getElementById("DownloadContainer2").appendChild(newDownload);
+				document.getElementById("DownloadContainer2").appendChild(newDownload);*/
 				center = map2.getCenter();
 				zoom = map2.getZoom();
 				map2.remove();
@@ -844,7 +847,7 @@ class ViewModel {
         temp.value = "";
         list.appendChild(temp);
         if(node==""){
-            for(const medium of this.model.concData.media){
+            for(const medium of this.model.concentrationTypes.media){
                 var temp = document.createElement("option")
                 await this.getLabel(medium)
                     .then(l => {temp.text = l;})
@@ -858,12 +861,13 @@ class ViewModel {
                 }
             }
         } else {
+            var self = this
             await fetch(new Request("http://localhost:3000/concentration?ask=media&contaminant="+node.value))
             .then(response => response.json())
             .then(async function(data){
                 for(const medium of data){
                     var temp = document.createElement("option")
-                    await this.getLabel(medium)
+                    await self.getLabel(medium)
                     .then(l => {temp.text = l;})
                     temp.value = medium;
                     list.appendChild(temp);
@@ -896,7 +900,7 @@ class ViewModel {
         temp.value = "";
         list.appendChild(temp);
         if(node==""){
-            for(const cont of this.model.concData.contaminants){
+            for(const cont of this.model.concentrationTypes.contaminants){
                 var temp = document.createElement("option")
                 await this.getLabel(cont)
                     .then(l => {temp.text = l;})
@@ -910,12 +914,13 @@ class ViewModel {
                 }
             }
         } else {
+            var self = this
             await fetch(new Request("http://localhost:3000/concentration?ask=contaminant&medium="+node.value))
             .then(response => response.json())
             .then(async function(data){
                 for(const cont of data){
                     var temp = document.createElement("option")
-                    await this.getLabel(cont)
+                    await self.getLabel(cont)
                     .then(l => {temp.text = l;})
                     temp.value = cont;
                     list.appendChild(temp);
