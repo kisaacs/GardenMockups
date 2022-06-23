@@ -324,6 +324,80 @@ document.addEventListener("DOMContentLoaded", function() {
 		viewModel.resize();
 	});
 	
+	var label = document.getElementById("subButton")
+	var contSel = document.getElementById("contSel")
+	var mediumSel = document.getElementById("mediumSel")
+
+	contSel.addEventListener("input", async function(e){
+		var contVal = contSel.options[contSel.selectedIndex].text
+		for(const cont of viewModel.model.concData.contaminants){
+			var tempVal = ""
+			await viewModel.getLabel(cont).then(l => {tempVal = l;})
+			if(tempVal == contVal){
+				contVal = cont;
+				break;
+			}
+		}
+		if(contSel.value==""){
+			contVal = ""
+		}
+		await viewModel.fillMediumList(contVal);
+		if(mediumSel.value != "" && contSel.value != ""){
+			var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
+			for(const medium of concData.media){
+				var tempVal = ""
+				await viewModel.getLabel(medium).then(l => {tempVal = l;})
+				if(tempVal == mediumVal){
+					mediumVal = medium;
+					break;
+				}
+			}
+			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
+			.then(response => response.json())
+			.then(async function(data) {
+				await viewModel.getLabel(data)
+				.then(dat=>{
+					label.value=dat
+				})
+			})
+		}
+	})
+
+	mediumSel.addEventListener("input", async function(e){
+		var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
+		for(const medium of viewModel.model.concData.media){
+			var tempVal = ""
+			await viewModel.getLabel(medium).then(l => {tempVal = l;})
+			if(tempVal == mediumVal){
+				mediumVal = medium;
+				break;
+			}
+		}
+		if(mediumSel.value==""){
+			mediumVal = ""
+		}
+		await viewModel.fillContList(mediumVal);
+		if(mediumSel.value != "" && contSel.value != ""){
+			var contVal = contSel.options[contSel.selectedIndex].text
+			for(const cont of concData.contaminants){
+				var tempVal = ""
+				await viewModel.getLabel(cont).then(l => {tempVal = l;})
+				if(tempVal == contVal){
+					contVal = cont;
+					break;
+				}
+			}
+			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
+			.then(response => response.json())
+			.then(async function(data){
+				await viewModel.getLabel(data)
+				.then(dat=>{
+					label.value=dat
+				})
+			})
+		}
+	})
+
 	let langSelector = document.getElementById("langSelect");
 
 	for(var opt of Object.values(viewModel.model.LANGS)) {

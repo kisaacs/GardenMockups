@@ -66,6 +66,7 @@ class Model {
 		this.hasChanged = [false,false]; // Whether each map view has been changed by the user yet
 		// Whether you are setting the map's zoom via code
 		this.isSetByCode = false; // This should toggle to determine if an event is triggered by the map or by the code
+        this.concentrationTypes = {}; //Store every contaminant and material used in concentration data
     }
 
     /**

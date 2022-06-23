@@ -22,6 +22,10 @@ class ViewModel {
             alert("Variables Were Not Loaded from Scrutinizer");
         }
         this.screenWidth = document.getElementById("sectionContainer").getBoundingClientRect().width
+        fetch(new Request("http://localhost:3000/concentration")) // Get all contaminants and materials from ontology
+            .then(response => response.json())
+            .then(data => {this.model.concentrationTypes = data;});
+        
     }
 
 
@@ -806,6 +810,123 @@ class ViewModel {
                 click: zoomToFeature,
 				contextmenu: openTileInfo
             });
+        }
+    }
+
+    async printNode(node,html=false){
+        var ret = ""
+        await fetch(new Request("http://localhost:3000/node?ask=print&iri="+node.value)).then(request => request.text()).then(function(dat){ret=dat;});
+        return ret
+    }
+    
+    async getLabel(node){
+        var ret = ""
+        await fetch(new Request("http://localhost:3000/node?ask=label&iri="+node.value)).then(request => request.text()).then(function(dat){ret=dat;});
+        return ret
+    }
+
+    /**
+     * Fill the medium dropdown with available options given the currently selected contaminant
+     * @param {*} node - An rdflib graph node representing the ontology term of the selected contaminant
+     * node is "" for no selection
+     */
+    async fillMediumList(node=""){
+        var list = document.getElementById("mediumSel");
+        var prev = ""
+        if(list.options.length>0 && list.selectedIndex<list.options.length){
+            prev = list.options[list.selectedIndex].text
+        }
+        while(list.firstChild){
+            list.removeChild(list.firstChild);
+        }
+        var temp = document.createElement("option")
+        temp.text = "---Medium---";
+        temp.value = "";
+        list.appendChild(temp);
+        if(node==""){
+            for(const medium of this.model.concData.media){
+                var temp = document.createElement("option")
+                await this.getLabel(medium)
+                    .then(l => {temp.text = l;})
+                temp.value = medium;
+                list.appendChild(temp);
+            }
+            for(const op of list.options){
+                if(op.text == prev){
+                    op.selected = true;
+                    break
+                }
+            }
+        } else {
+            await fetch(new Request("http://localhost:3000/concentration?ask=media&contaminant="+node.value))
+            .then(response => response.json())
+            .then(async function(data){
+                for(const medium of data){
+                    var temp = document.createElement("option")
+                    await this.getLabel(medium)
+                    .then(l => {temp.text = l;})
+                    temp.value = medium;
+                    list.appendChild(temp);
+                }
+                for(const op of list.options){
+                    if(op.text == prev){
+                        op.selected = true;
+                        break
+                    }
+                }
+            })
+        }
+    }
+    /**
+     * Fill the contaminant dropdown with available options given the currently selected medium
+     * @param {*} node - An rdflib graph node representing the ontology term of the selected medium
+     * node is "" for no selection
+     */
+    async fillContList(node=""){
+        var list = document.getElementById("contSel");
+        var prev = ""
+        if(list.options.length>0 && list.selectedIndex<list.options.length){
+            prev = list.options[list.selectedIndex].text
+        }
+        while(list.firstChild){
+            list.removeChild(list.firstChild);
+        }
+        var temp = document.createElement("option")
+        temp.text = "---Contaminant---";
+        temp.value = "";
+        list.appendChild(temp);
+        if(node==""){
+            for(const cont of this.model.concData.contaminants){
+                var temp = document.createElement("option")
+                await this.getLabel(cont)
+                    .then(l => {temp.text = l;})
+                temp.value = cont;
+                list.appendChild(temp);
+            }
+            for(const op of list.options){
+                if(op.text == prev){
+                    op.selected = true;
+                    break
+                }
+            }
+        } else {
+            await fetch(new Request("http://localhost:3000/concentration?ask=contaminant&medium="+node.value))
+            .then(response => response.json())
+            .then(async function(data){
+                for(const cont of data){
+                    var temp = document.createElement("option")
+                    await this.getLabel(cont)
+                    .then(l => {temp.text = l;})
+                    temp.value = cont;
+                    list.appendChild(temp);
+                }
+                for(const op of list.options){
+                    if(op.text == prev){
+                        op.selected = true;
+                        break
+                    }
+                }
+            })
         }
     }
 }
