@@ -326,78 +326,24 @@ document.addEventListener("DOMContentLoaded", function() {
 		viewModel.resize();
 	});
 	
-	var label = document.getElementById("searchBar1")
-	var contSel = document.getElementById("contSel")
-	var mediumSel = document.getElementById("mediumSel")
-
-	contSel.addEventListener("input", async function(e){
-		var contVal = contSel.options[contSel.selectedIndex].text
-		for(const cont of viewModel.model.concentrationTypes.contaminants){
-			var tempVal = ""
-			await viewModel.getLabel(cont).then(l => {tempVal = l;})
-			if(tempVal == contVal){
-				contVal = cont;
-				break;
-			}
-		}
-		if(contSel.value==""){
-			contVal = ""
-		}
-		await viewModel.fillMediumList(contVal);
-		if(mediumSel.value != "" && contSel.value != ""){
-			var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
-			for(const medium of viewModel.model.concentrationTypes.media){
-				var tempVal = ""
-				await viewModel.getLabel(medium).then(l => {tempVal = l;})
-				if(tempVal == mediumVal){
-					mediumVal = medium;
-					break;
-				}
-			}
-			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
-			.then(response => response.json())
-			.then(async function(data) {
-				await viewModel.getLabel(data)
-				.then(dat=>{
-					label.value=dat
-				})
-			})
-		}
+	var contSel1 = document.getElementById("contSel1")
+	var mediumSel1 = document.getElementById("mediumSel1")
+	var contSel2 = document.getElementById("contSel2")
+	var mediumSel2 = document.getElementById("mediumSel2")
+	contSel1.addEventListener("input", async function(e){
+		await viewModel.contUpdate(e,1);
 	})
 
-	mediumSel.addEventListener("input", async function(e){
-		var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
-		for(const medium of viewModel.model.concentrationTypes.media){
-			var tempVal = ""
-			await viewModel.getLabel(medium).then(l => {tempVal = l;})
-			if(tempVal == mediumVal){
-				mediumVal = medium;
-				break;
-			}
-		}
-		if(mediumSel.value==""){
-			mediumVal = ""
-		}
-		await viewModel.fillContList(mediumVal);
-		if(mediumSel.value != "" && contSel.value != ""){
-			var contVal = contSel.options[contSel.selectedIndex].text
-			for(const cont of viewModel.model.concentrationTypes.contaminants){
-				var tempVal = ""
-				await viewModel.getLabel(cont).then(l => {tempVal = l;})
-				if(tempVal == contVal){
-					contVal = cont;
-					break;
-				}
-			}
-			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
-			.then(response => response.json())
-			.then(async function(data){
-				await viewModel.getLabel(data)
-				.then(dat=>{
-					label.value=dat
-				})
-			})
-		}
+	contSel2.addEventListener("input", async function(e){
+		await viewModel.contUpdate(e,2);
+	})
+
+	mediumSel1.addEventListener("input", async function(e){
+		await viewModel.mediumUpdate(e,1);
+	})
+
+	mediumSel2.addEventListener("input", async function(e){
+		await viewModel.mediumUpdate(e,2);
 	})
 
 	let langSelector = document.getElementById("langSelect");

@@ -824,7 +824,13 @@ class ViewModel {
     
     async getLabel(node){
         var ret = ""
-        await fetch(new Request("http://localhost:3000/node?ask=label&iri="+node.value)).then(request => request.text()).then(function(dat){ret=dat;});
+        await fetch(new Request("http://localhost:3000/node?ask=label&iri="+node.value)).then(function(request){
+            console.log("request"+request);
+            return request.text();
+        }).then(function(dat){
+            console.log("dat="+dat);
+            ret=dat;
+        });
         return ret
     }
 
@@ -833,8 +839,8 @@ class ViewModel {
      * @param {*} node - An rdflib graph node representing the ontology term of the selected contaminant
      * node is "" for no selection
      */
-    async fillMediumList(node=""){
-        var list = document.getElementById("mediumSel");
+    async fillMediumList(node="",side=1){
+        var list = document.getElementById("mediumSel"+side);
         var prev = ""
         if(list.options.length>0 && list.selectedIndex<list.options.length){
             prev = list.options[list.selectedIndex].text
@@ -851,7 +857,7 @@ class ViewModel {
                 var temp = document.createElement("option")
                 await this.getLabel(medium)
                     .then(l => {temp.text = l;})
-                temp.value = medium;
+                temp.value = medium.value;
                 list.appendChild(temp);
             }
             for(const op of list.options){
@@ -869,7 +875,7 @@ class ViewModel {
                     var temp = document.createElement("option")
                     await self.getLabel(medium)
                     .then(l => {temp.text = l;})
-                    temp.value = medium;
+                    temp.value = medium.value;
                     list.appendChild(temp);
                 }
                 for(const op of list.options){
@@ -886,8 +892,8 @@ class ViewModel {
      * @param {*} node - An rdflib graph node representing the ontology term of the selected medium
      * node is "" for no selection
      */
-    async fillContList(node=""){
-        var list = document.getElementById("contSel");
+    async fillContList(node="",side=1){
+        var list = document.getElementById("contSel"+side);
         var prev = ""
         if(list.options.length>0 && list.selectedIndex<list.options.length){
             prev = list.options[list.selectedIndex].text
@@ -904,7 +910,7 @@ class ViewModel {
                 var temp = document.createElement("option")
                 await this.getLabel(cont)
                     .then(l => {temp.text = l;})
-                temp.value = cont;
+                temp.value = cont.value;
                 list.appendChild(temp);
             }
             for(const op of list.options){
@@ -922,7 +928,7 @@ class ViewModel {
                     var temp = document.createElement("option")
                     await self.getLabel(cont)
                     .then(l => {temp.text = l;})
-                    temp.value = cont;
+                    temp.value = cont.value;
                     list.appendChild(temp);
                 }
                 for(const op of list.options){
@@ -934,5 +940,82 @@ class ViewModel {
             })
         }
     }
+    async contUpdate(event,side){
+		var contSel = document.getElementById("contSel"+side)
+		var mediumSel = document.getElementById("mediumSel"+side)
+        var label = document.getElementById("searchBar"+side)
+		var contVal = contSel.options[contSel.selectedIndex].text
+		for(const cont of this.model.concentrationTypes.contaminants){
+			var tempVal = ""
+			await this.getLabel(cont).then(l => {tempVal = l;})
+			if(tempVal == contVal){
+				contVal = cont;
+				break;
+			}
+		}
+		if(contSel.value==""){
+			contVal = ""
+		}
+		await this.fillMediumList(contVal,side);
+		if(mediumSel.value != "" && contSel.value != ""){
+			var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
+			for(const medium of this.model.concentrationTypes.media){
+				var tempVal = ""
+				await this.getLabel(medium).then(l => {tempVal = l;})
+				if(tempVal == mediumVal){
+					mediumVal = medium;
+					break;
+				}
+			}
+            var self=this
+			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
+			.then(response => response.json())
+			.then(async function(data) {
+				await self.getLabel(data)
+				.then(dat=>{
+					label.value=dat
+				})
+			})
+		}
+	}
+
+	async mediumUpdate(event,side){
+		var contSel = document.getElementById("contSel"+side)
+		var mediumSel = document.getElementById("mediumSel"+side)
+        var label = document.getElementById("searchBar"+side)
+		var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
+		for(const medium of this.model.concentrationTypes.media){
+			var tempVal = ""
+			await this.getLabel(medium).then(l => {tempVal = l;})
+			if(tempVal == mediumVal){
+				mediumVal = medium;
+				break;
+			}
+		}
+		if(mediumSel.value==""){
+			mediumVal = ""
+		}
+		await this.fillContList(mediumVal,side);
+		if(mediumSel.value != "" && contSel.value != ""){
+			var contVal = contSel.options[contSel.selectedIndex].text
+			for(const cont of this.model.concentrationTypes.contaminants){
+				var tempVal = ""
+				await this.getLabel(cont).then(l => {tempVal = l;})
+				if(tempVal == contVal){
+					contVal = cont;
+					break;
+				}
+			}
+            var self = this
+			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
+			.then(response => response.json())
+			.then(async function(data){
+				await self.getLabel(data)
+				.then(dat=>{
+					label.value=dat
+				})
+			})
+		}
+	}
 }
 

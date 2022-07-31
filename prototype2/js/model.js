@@ -66,7 +66,7 @@ class Model {
 		this.hasChanged = [false,false]; // Whether each map view has been changed by the user yet
 		// Whether you are setting the map's zoom via code
 		this.isSetByCode = false; // This should toggle to determine if an event is triggered by the map or by the code
-        this.concentrationTypes = {}; //Store every contaminant and material used in concentration data
+        this.validVars = {}; //Store every variable name from the database mapped to its ontology ID
     }
 
     /**
@@ -82,6 +82,73 @@ class Model {
 
     getUnits(variableName) {
         return this.variableMap[variableName]['unit'];
+    }
+
+    /*
+     * Check to see if the given ACS variable is in the database
+     */
+    checkACSVariable(acsID){
+        for (let i = 0; i < this.variableDesc.length; i++) {
+            if (this.variableMap[this.variableDesc[i]]['name'] == acsID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Check to see if the given EJS variable is in the database
+     */
+    checkEJSVariable(ejsID){
+        for (let i = 0; i < this.variableDesc.length; i++) {
+            if (this.variableMap[this.variableDesc[i]]['name'] == ejsID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    checkConcentrationVariable(material, medium) {
+        elementToSymbol = {
+            "hydrogen":"h","helium":"he","lithium":"li","beryllium":"be","boron":"b","carbon":"c","nitrogen":"n","oxygen":"o",
+            "fluorine":"f","neon":"ne","sodium":"na","magnesium":"mg","aluminum":"al","aluminium":"al","silicon":"si","phosphorus":"p","sulfur":"s",
+            "chlorine":"cl","argon":"ar","potassium":"k","calcium":"ca","scandium":"sc","titanium":"ti","vanadium":"v","chromium":"cr",
+            "manganese":"mn","iron":"fe","cobalt":"co","nickel":"ni","copper":"cu","zinc":"zn","gallium":"ga","germanium":"ge",
+            "arsenic":"as","selenium":"se","bromine":"br","krypton":"kr","rubidium":"rb","strontium":"sr","yttrium":"y","zirconium":"zr",
+            "niobium":"nb","molybdenum":"mo","technetium":"tc","ruthenium":"ru","rhodium":"rh","palladium":"pd","silver":"ag","cadmium":"cd",
+            "indium":"in","tin":"sn","antimony":"sb","tellurium":"te","iodine":"i","xenon":"xe","cesium":"cs","barium":"ba",
+            "lanthanum":"la","cerium":"ce","praseodymium":"pr","neodymium":"nd","promethium":"pm","samarium":"sm","europium":"eu","gadolinium":"gd",
+            "terbium":"tb","dysprosium":"dy","holmium":"ho","erbium":"er","thulium":"tm","ytterbium":"yb","lutetium":"lu","hafnium":"hf",
+            "tantalum":"ta","wolfram":"w","rhenium":"re","osmium":"os","iridium":"ir","platinum":"pt","gold":"au","mercury":"hg",
+            "thallium":"tl","lead":"pb","bismuth":"bi","polonium":"po","astatine":"at","radon":"rn","francium":"fr","radium":"ra",
+            "actinium":"ac","thorium":"th","protactinium":"pa","uranium":"u","neptunium":"np","plutonium":"pu","americium":"am","curium":"cm",
+            "berkelium":"bk","californium":"cf","einsteinium":"es","fermium":"fm","mendelevium":"md","nobelium":"no","lawrencium":"lr","rutherfordium":"rf",
+            "dubnium":"db","seaborgium":"sg","bohrium":"bh","hassium":"hs","meitnerium":"mt","darmstadtium ":"ds ","roentgenium ":"rg ","copernicium ":"cn ",
+            "nihonium":"nh","flerovium":"fl","moscovium":"mc","livermorium":"lv","tennessine":"ts","oganesson":"og"
+        }
+        ontologyMediumToDatabaseMedium = {
+            "shoot system":"brassica vegetables",
+            "bulb":"bulb vegetables",
+            "distilled water":"field blank",
+            "fruits":"fruiting vegetables",
+            "fruit":"fruiting vegetables",
+            "vascular leaf":"",// covers both "herbs" and "leafy" Not sure how to handle this yet
+            "seed":"legumes",
+            "plant structure":"other",
+            "root":"root and tuber vegetables",
+            "top soil":"yard soil",
+            "tap water":"water",
+            "well water":"",// Not in database? might be under another water designation
+            "fresh water":""// Not in database? might be under another water designation
+        }
+        for (let i = 0; i < this.variableDesc.length; i++) {
+            if (this.variableMap[this.variableDesc[i]]['name'] == material || (material in elementToSymbol && this.variableMap[this.variableDesc[i]]['name'] == elementToSymbol[material])) {
+                if(this.variableMap[this.variableDesc[i]]['medium'] == medium || (medium in ontologyMediumToDatabaseMedium && this.variableMap[this.variableDesc[i]]['medium'] == ontologyMediumToDatabaseMedium[medium])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     getOriginalData(key) {

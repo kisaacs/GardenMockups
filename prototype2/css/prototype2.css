@@ -696,3 +696,8 @@ p.filterTypeLabel {
 .awesomplete {
     width: 100%;
 }
+
+.concentrationMenu {
+    margin: 0px;
+    flex-grow: 2;
+}
