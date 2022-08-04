@@ -46,6 +46,26 @@ let LANG_pig = {
 
 let LANGS = {'en':LANG_en, 'pig':LANG_pig};
 
+// List of topics for the query panel linked to their ontology ID
+let TOPICS = {//'Contaminants':'Contaminants',// Contaminants are handled separately, so it doesn't have an ID
+				// Contaminants disabled currently until it can be validated through the database properly
+			  'Race or Ethnicity':'SRPDIO_2030021',
+		  	  'Age':'SRPDIO_2030006',
+		  	  'Minority Status':'SRPDIO_2030024',
+		  	  'Civilian Status':'SRPDIO_2030000',
+		  	  'Computer and Internet Access':'SRPDIO_2030003',
+		  	  'Disability Status':'SRPDIO_2030001',
+		  	  'Educational Status':'SRPDIO_2030002',
+		  	  'Employment Status':'SRPDIO_2030018',
+		  	  'Food Stamp or SNAP Status':'SRPDIO_2030013',
+		  	  'Grandparent Primary Care':'SRPDIO_2030008',
+		  	  'Groupd Quarters Type':'SRPDIO_2030010',
+		  	  'Health Insurance Coverage':'SRPDIO_2030014',
+		  	  'Housing Quality':'SRPDIO_2030009',
+		  	  'Income Quality':'SRPDIO_2030011',
+		  	  'Language Spoken':'SRPDIO_2030022',
+		  	  'Veteran Status':'SRPDIO_2030020'};
+
 class Model {
     constructor(langId='en') {
 		if(langId in LANGS){
@@ -66,8 +86,9 @@ class Model {
 		this.hasChanged = [false,false]; // Whether each map view has been changed by the user yet
 		// Whether you are setting the map's zoom via code
 		this.isSetByCode = false; // This should toggle to determine if an event is triggered by the map or by the code
-        this.validVars = {}; //Store every variable name from the database mapped to its ontology ID
-    }
+        this.ontologyMap = {}; //Store every valid ontologyId mapped to its variable name from the database
+		this.TOPICS = TOPICS;// List of topics for the query panel linked to their ontology ID
+	}
 
     /**
      * Getter functions for the various data types in each map
@@ -108,8 +129,11 @@ class Model {
         return false;
     }
 
+	/**
+	  * Check to see if the given contaminant variable is in the database
+	  */
     checkConcentrationVariable(material, medium) {
-        elementToSymbol = {
+        elementToSymbol = {// Currently elements are listed in the database by symbol and name, so we need to convert between them
             "hydrogen":"h","helium":"he","lithium":"li","beryllium":"be","boron":"b","carbon":"c","nitrogen":"n","oxygen":"o",
             "fluorine":"f","neon":"ne","sodium":"na","magnesium":"mg","aluminum":"al","aluminium":"al","silicon":"si","phosphorus":"p","sulfur":"s",
             "chlorine":"cl","argon":"ar","potassium":"k","calcium":"ca","scandium":"sc","titanium":"ti","vanadium":"v","chromium":"cr",
@@ -126,6 +150,7 @@ class Model {
             "dubnium":"db","seaborgium":"sg","bohrium":"bh","hassium":"hs","meitnerium":"mt","darmstadtium ":"ds ","roentgenium ":"rg ","copernicium ":"cn ",
             "nihonium":"nh","flerovium":"fl","moscovium":"mc","livermorium":"lv","tennessine":"ts","oganesson":"og"
         }
+		//Map from what the medium is called in the ontology to its database name
         ontologyMediumToDatabaseMedium = {
             "shoot system":"brassica vegetables",
             "bulb":"bulb vegetables",
@@ -141,7 +166,7 @@ class Model {
             "well water":"",// Not in database? might be under another water designation
             "fresh water":""// Not in database? might be under another water designation
         }
-        for (let i = 0; i < this.variableDesc.length; i++) {
+        for (let i = 0; i < this.variableDesc.length; i++) { // Check to see if the contaminant/medium combination is in the database
             if (this.variableMap[this.variableDesc[i]]['name'] == material || (material in elementToSymbol && this.variableMap[this.variableDesc[i]]['name'] == elementToSymbol[material])) {
                 if(this.variableMap[this.variableDesc[i]]['medium'] == medium || (medium in ontologyMediumToDatabaseMedium && this.variableMap[this.variableDesc[i]]['medium'] == ontologyMediumToDatabaseMedium[medium])) {
                     return true;
@@ -216,6 +241,18 @@ class Model {
         });
         return colors;
     }
+	/**
+	  * Get the map from ontology IDs to variable IDs from the server
+	  */
+	async fetchOntologyDataMap(){
+		fetch("http://localhost:3000/data?ask=dataVars&src=ontology")
+		.then((res)=>{
+			res.json()
+			.then((data)=>{
+				this.ontologyMap = data
+			})
+		})
+	}
 
     /**
      * Fetches the scrutinizer variable metadata and stores it in the variableDesc and variableMap
@@ -239,7 +276,7 @@ class Model {
      *  originalDataLists, tractDataMaps, and blockDataLists variables under the specified
      *  key.
      * @param {} key The key that will be used to store the fetched data
-     * @param {*} variableName The name of the variable that will be fetched 
+     * @param {*} variableName The name of the variable that will be fetched
      */
     async fetchData(key, variableName) {
         let variable = this.variableMap[variableName]['name'];
@@ -247,14 +284,14 @@ class Model {
         const data = await response.json();
         this.originalDataLists[key] = data;
         await this._createBlockData(key, data);
-        await this._createTractDataMap(key, data);     
+        await this._createTractDataMap(key, data);
     }
 
     /**
      * Fills the blockDataLists variable under the specified key with the specified data. Each object in
      * the data list should have at least the 'location_type' and 'location_name' specifiers.
-     * @param {*} key 
-     * @param {*} data 
+     * @param {*} key
+     * @param {*} data
      */
     async _createBlockData(key, data) {
         let blockData = [];
@@ -264,7 +301,7 @@ class Model {
                     data[i]['location_name'] = '0' + data[i]['location_name'];
                 }
                 blockData.push(data[i]);
-            } else if (data[i]['location_type'] === 'centroid' || data[i]['location_type'] === 'point') { 
+            } else if (data[i]['location_type'] === 'centroid' || data[i]['location_type'] === 'point') {
             }
         }
         this.blockDataLists[key] = blockData;
@@ -273,7 +310,7 @@ class Model {
     /**
      * Fills the tractDataMaps variable under the specified key with the specified data. Each object
      * in the data list should have at least the 'location_name' and 'location_type' specifiers
-     * @param {} key 
+     * @param {} key
      */
     async _createTractDataMap(key, data) {
         if (!(key in this.blockDataLists)) {
@@ -291,14 +328,14 @@ class Model {
                 tractData[tractId][0] += value; // Current sum of values in the tract
                 tractData[tractId][1] += 1;     // Current num of values in the tract
             }
-    
+
         }
         this.tractDataMaps[key] = tractData;
     }
 
     /**
      * Gets the minimum and maximum data values from the tractMap under the specified key.
-     * @param {*} key 
+     * @param {*} key
      */
     _getMinMax(key) {
         if (!(key in this.tractDataMaps)) {
@@ -318,7 +355,7 @@ class Model {
         }
         return [min, max];
     }
-	
+
 	/**
 	* Returns an object containing the keys and values
 	* from the query string in the url

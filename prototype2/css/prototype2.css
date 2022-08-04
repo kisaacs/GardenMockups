@@ -165,12 +165,9 @@ p {
 	width: 25px;
 }
 
-#left{
+#left, #right{
 	flex-grow: 1;
-}
-
-#right{
-	flex-grow: 1;
+	flex-basis: min-content;
 }
 
 #linkMapButton {
@@ -380,7 +377,7 @@ p {
 #exportMap, #exportGraph, #exportTable{
 	display: inline-block;
 	margin-right: 5%;
-} 
+}
 
 .exportText{
 	font-size: 14px;

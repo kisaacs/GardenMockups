@@ -45,17 +45,17 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 	<!-- Google Fonts -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-	
+
 	<!-- leaflet geocoder -->
 	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
 	<!-- leaflet geosearch -->
 	<script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"/> 
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"/>
 </head>
 <body>
-	
+
 	<div id="tempElement"></div>
 	<div id="titleBar">
 		<img id="logo" src="logo.png">
@@ -118,12 +118,12 @@
 							<div class="select-wrapper"><select class="queryMenu" id="topicSel1">
 							</select></div>
 						</div>
-						<div class="queryMeasureMenuDiv">
+						<div class="queryMeasureMenuDiv disabled" id="measureDiv1">
 							<p class = "queryMenuLabel">Measure</p>
 							<div class="select-wrapper"><select class="queryMenu" id="measureSel1">
 							</select></div>
 						</div>
-						<div class="concentrationMenu disabled">
+						<div class="concentrationMenu disabled" id="concMenu1">
 							<div class="queryTopicMenuDiv">
 								<p class = "queryMenuLabel">Contaminant</p>
 								<div class="select-wrapper"><select class="queryMenu" id="contSel1">
@@ -317,12 +317,12 @@
 							<div class="select-wrapper"><select class="queryMenu" id="topicSel2">
 							</select></div>
 						</div>
-						<div class="queryMeasureMenuDiv">
+						<div class="queryMeasureMenuDiv disabled" id="measureDiv2">
 							<p class = "queryMenuLabel">Measure</p>
 							<div class="select-wrapper"><select class="queryMenu" id="measureSel2">
 							</select></div>
 						</div>
-						<div class="concentrationMenu disabled">
+						<div class="concentrationMenu disabled" id="concMenu2">
 							<div class="queryTopicMenuDiv">
 								<p class = "queryMenuLabel">Contaminant</p>
 								<div class="select-wrapper"><select class="queryMenu" id="contSel2">
@@ -455,7 +455,7 @@
 		</div>
 	</div>
 
-	
+
 <!-- Export Selection Pop-Up -->
 <div class="modal fade" id="modal">
 	<div class="modal-dialog" style="max-width: 60%;">
@@ -476,11 +476,11 @@
 							<div class="exportChoice">
 								<input type="radio" name="exportOption" value="exportOption">
 								<p class="exportText">MAP</p>
-							</div>	
+							</div>
 							<div class="exportOption">
 								<div><input type="radio" id="mapPNG" name="option" value="mapPNG"></div>
 								<div><img class="exportIcon" src="export icons-01.svg"></div>
-							</div>	
+							</div>
 							<div class="exportOption">
 								<div><input type="radio" id="mapCSV" name="option" value="mapCSV"></div>
 								<div><img class="exportIcon" src="export icons-02.svg"></div>
@@ -494,11 +494,11 @@
 							<div class="exportChoice">
 								<input type="radio" name="exportOption" value="exportOption">
 								<p class="exportText">GRAPH</p>
-							</div>	
+							</div>
 							<div class="exportOption">
 								<div><input type="radio" id="graphPNG" name="option" value="graphPNG"></div>
 								<div><img class="exportIcon" src="export icons-01.svg"></div>
-							</div>	
+							</div>
 							<div class="exportOption">
 								<div><input type="radio" id="graphCSV" name="option" value="graphCSV"></div>
 								<div><img class="exportIcon" src="export icons-02.svg"></div>
@@ -512,11 +512,11 @@
 							<div class="exportChoice">
 								<input type="radio" name="exportOption" value="exportOption">
 								<p class="exportText">TABLE</p>
-							</div>	
+							</div>
 							<div class="exportOption">
 								<div><input type="radio" id="tablePNG" name="option" value="tablePNG"></div>
 								<div><img class="exportIcon" src="export icons-01.svg"></div>
-							</div>	
+							</div>
 							<div class="exportOption">
 								<div><input type="radio" id="tableCSV" name="option" value="tableCSV"></div>
 								<div><img class="exportIcon" src="export icons-02.svg"></div>
@@ -529,7 +529,7 @@
 					</div>
 					<div id="exportBtn">
 						<button type="submit" id="exportButton"> DOWNLOAD </button>
-					</div>				
+					</div>
 				</div>
 			</div>
 		</div>

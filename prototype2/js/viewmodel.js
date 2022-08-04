@@ -5,36 +5,131 @@ var colors2 = ["#F1F7EA", "#BCDFBE", "#7ECDC4", "#47A3C8", "#0F6BAB"];
 class ViewModel {
     constructor() {
         this.model = new Model();
-		this.queryFlags = this.model.getQueryFlags();
-		if("lang" in this.queryFlags){
-			this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
-		}
-		this.selectedData = {};
+        this.queryFlags = this.model.getQueryFlags();
+        if("lang" in this.queryFlags){
+            this.model.LANG = this.model.LANGS[this.queryFlags["lang"]];
+        }
+        this.selectedData = {};
         this.var1 = "";
         this.var2 = "";
         try {
-			// I'm triggering a custom event here to notify the view when the variables have been successfully fetched.
-			// We have to wait for this to happen before making data requests
-            this.model.fetchVariables().then(()=>{document.getElementById('tempElement').dispatchEvent(new Event('fetched'));});
+            // I'm triggering a custom event here to notify the view when the variables have been successfully fetched.
+            // We have to wait for this to happen before making data requests
+            this.model.fetchVariables().then(()=>{
+                document.getElementById('tempElement').dispatchEvent(new Event('fetched'));
+            });
         } catch (error) {
             console.log("Error Requesting variables from scrutinizer");
             console.log(error);
             alert("Variables Were Not Loaded from Scrutinizer");
         }
+        this.model.fetchOntologyDataMap()// maps the ontology IDs that are in the database to their variable names
         this.screenWidth = document.getElementById("sectionContainer").getBoundingClientRect().width
-        fetch(new Request("http://localhost:3000/concentration")) // Get all contaminants and materials from ontology
-            .then(response => response.json())
-            .then(data => {
-                this.model.concentrationTypes = data;
-                this.fillMediumList();
-                this.fillContList();
-            });
+        fetch(new Request("http://localhost:3000/concentration")) // Get all contaminants and materials from server
+        .then(response => response.json())
+        .then(data => {
+            this.model.concentrationTypes = data;
+            for(var i=1;i<3;i++){
+                this.fillMediumList("",i);
+                this.fillContList("",i);
+            }
+        });
+        this.loadTopics();
     }
 
+    /**
+      * Load topics from the topic list in the model into the query panel
+      */
+    loadTopics(){
+        for(var i=1;i<3;i++){// for both the left and right panel
+            let topicDropdown = document.getElementById("topicSel"+i);
+            while(topicDropdown.firstChild){
+                topicDropdown.removeChild(topicDropdown.firstChild);
+            }
+            let placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.innerHTML = "---Topic---";
+            topicDropdown.appendChild(placeholder);
+            for(var t in this.model.TOPICS){
+                let opt = document.createElement("option");
+                opt.value = this.model.TOPICS[t];
+                opt.innerHTML = t;
+                topicDropdown.appendChild(opt);
+            }
+            //topicDropdown.selectedIndex = 0;
+        }
+    }
+
+    async loadMeasures(uri,side){
+        let measureDropdown = document.getElementById("measureSel"+side)
+        while(measureDropdown.firstChild){
+            measureDropdown.removeChild(measureDropdown.firstChild)
+        }
+        let placeholder = document.createElement("option")
+        placeholder.value = ""
+        //placeholder.innerHTML = "---Measure---"
+        measureDropdown.appendChild(placeholder)
+        console.log(uri)
+        await fetch("http://localhost:3000/data?ask=subs&iri="+uri)
+        .then((data)=>{
+            data.json().then((vars)=>{
+                for(var v of vars){
+                    let opt = document.createElement("option")
+                    opt.value = v.value
+                    this.getLabel(v).then((lab)=>{opt.innerHTML = lab;})
+                    measureDropdown.appendChild(opt)
+                }
+                placeholder.innerHTML = "---Measure---"
+            })
+        })
+    }
+
+    /**
+      * Handle input into the Topic field
+      */
+    handleTopicMenu(inputEvent, side){
+        let topicField = document.getElementById("topicSel"+side)
+        let choice = topicField.selectedOptions[0]
+        if(choice.value=="Contaminants"){
+            document.getElementById("concMenu"+side).classList.remove("disabled")
+            document.getElementById("measureDiv"+side).classList.add("disabled")
+        } else {
+            document.getElementById("concMenu"+side).classList.add("disabled")
+            document.getElementById("measureDiv"+side).classList.remove("disabled")
+            this.loadMeasures(choice.value,side)
+        }
+    }
+
+    handleMeasureMenu(inputEvent, side){
+        let measureField = document.getElementById("measureSel"+side)
+        let choice = measureField.selectedOptions[0]
+        if(choice.value!="" && choice.value in this.model.ontologyMap){
+            var success = 0
+            for(var v of this.model.variableDesc){
+                if(v.includes(this.model.ontologyMap[choice.value])){
+                    document.getElementById("searchBar"+side).value = v
+                    success=1
+                    break
+                }
+            }
+            if(success==0){
+                document.getElementById("searchBar"+side).value = this.model.ontologyMap[choice.value]
+            }
+        } else {
+            document.getElementById("searchBar"+side).value = ""
+        }
+    }
+
+    handleSearchBar(side){
+        if (event.keyCode === 13) {
+			event.preventDefault();
+			document.getElementById("search"+side).click();
+		}
+    }
 
     /**
       * Creates an empty map using the leaflet API
-      * 
+      *
       * @param {*} mapId The id of the div that the map will attach to
       */
     createMap(mapId) {
@@ -48,7 +143,7 @@ class ViewModel {
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiYmxhcmEiLCJhIjoiY2tnNzFrNmo2MDMweDJ5cW0zaXJwbWQ1ZyJ9.WydwzOibe0497pQbasuF-A',
         }
-            
+
         ).addTo(mymap);
         L.control.scale().addTo(mymap);
         return mymap;
@@ -56,7 +151,7 @@ class ViewModel {
 
     /**
      * Creates an empty info box and attaches it to the map
-     * 
+     *
      * @param {*} map The map object to add the info box to
      */
     createInfoBox(map) {
@@ -75,7 +170,7 @@ class ViewModel {
 
     /**
      *  Creates a basic search bar with the Awesomplete library
-     * 
+     *
      * @param {*} searchBar The input object that will become a search bar
      */
     createSearchBar(searchBar) {
@@ -87,13 +182,13 @@ class ViewModel {
 
     /**
      *  Creates a search address bar
-     * 
+     *
      * @param {*} map The map of the search
      * @param {*} bar The input object that will become a search bar
      */
     createSearchAddress(map, barDiv) {
         var markers = L.layerGroup().addTo(map);
-        var bar = document.getElementById(barDiv);  
+        var bar = document.getElementById(barDiv);
 
         bar.addEventListener('keyup', function (event) {
             if (event.keyCode === 13) {
@@ -102,7 +197,7 @@ class ViewModel {
                 var query_addr = bar.value;
                 const provider = new window.GeoSearch.OpenStreetMapProvider()
                 var query_promise = provider.search({ query: query_addr});
-                
+
                 query_promise.then(value => {
                     value = value[0];
                     //for(var i=0; i < value.length; i++){
@@ -121,7 +216,7 @@ class ViewModel {
                     //};
                     }, reason => {
                         console.log(reason);
-                    } 
+                    }
                 );
             }
         });
@@ -130,7 +225,7 @@ class ViewModel {
 
     /**
     * Creates the export modal pop-up
-    * 
+    *
     * @param {*} modalId The id of the div that the pop-up modal will attach to
     */
     loadExportModal(modalId) {
@@ -138,14 +233,14 @@ class ViewModel {
             document.getElementById("varSelected1").innerHTML = this.var1;
         }else{
             document.getElementById("varSelected2").innerHTML = this.var2;
-        }   
+        }
     }
 
 
     /**
     *
     * Change the search button into a loading icon when clicked (only change when there is value in the search bar)
-    * 
+    *
     * @param {*} btn the search btn
     */
     changeToLoad(btn) {
@@ -156,7 +251,7 @@ class ViewModel {
     /**
     *
     * Change the search button's background back to original
-    * 
+    *
     * @param {*} btn the search btn
     */
     changeBack(btn) {
@@ -164,7 +259,7 @@ class ViewModel {
         btn.innerHTML = this.model.LANG.SEARCH;
         btn.className = "querySubmit";
     }
-	
+
 	/**
 	* Remoce query panel from the screen once the search has been complete
 	*/
@@ -177,7 +272,7 @@ class ViewModel {
 			}
 		}
 	}
-	
+
 	/**
 	* Update the details subBar with the new data type
 	*/
@@ -195,7 +290,7 @@ class ViewModel {
 
     /**
      * Downloads data from the specified map into a csv file
-     * 
+     *
      * @param {*} key The key for the map's data in the model
      */
     downloadBlockData(key) {
@@ -227,7 +322,7 @@ class ViewModel {
 
     /**
     * Downloads data from the specified table into a csv file
-    * 
+    *
     * @param {*} key The key for the table's data in the model
     */
     downloadTableData(key) {
@@ -252,7 +347,7 @@ class ViewModel {
         hiddenElement.download = "table" + id + ".csv";
         hiddenElement.click();
     }
-	
+
 	/**
 	* Downloads the appropriate map or table data depending on whether
 	* the map or table is currently in view
@@ -275,7 +370,7 @@ class ViewModel {
 
     /**
      * Populates the legend with the colormapping being used by the specified visualiztion
-     * 
+     *
      * @param {*} key The model key for the specified visualization's data
      * @param {*} legend The div object that will have the colormapping filled out
      * @param {*} colors array of colors that represent different amount
@@ -381,7 +476,7 @@ class ViewModel {
     /**
      * Empties and fills the given table object with the data for the given key
      * See the MDB DataTable API for methods for the DataTable object
-     * 
+     *
      * @param {*} key The model key for the specified visualization's data
      * @param {*} table The DataTable object that will be filled and returned
      */
@@ -405,7 +500,7 @@ class ViewModel {
 
     /**
      * Adds a th element to the given thead element
-     * 
+     *
      * @param {*} head The thead element
      * @param {*} name The inner text value of the th element
      */
@@ -424,11 +519,11 @@ class ViewModel {
 
     /**
      * Populates the map with data regarding the specified variable
-     * 
-     * @param {*} key 
-     * @param {*} map 
-     * @param {*} infoBox 
-     * @param {*} variableName 
+     *
+     * @param {*} key
+     * @param {*} map
+     * @param {*} infoBox
+     * @param {*} variableName
      */
     async populateMap(key, map, infoBox, variableName) {
         let colors = [];
@@ -502,7 +597,7 @@ class ViewModel {
     async fetchVariable(key, variableName) {
         try {
             await this.model.fetchData(key, variableName).then((response) => {
-                console.log("Successfully fetch " + variableName + " data from scrutinizer"); 
+                console.log("Successfully fetch " + variableName + " data from scrutinizer");
                 return 1;
             });
         } catch (error) {
@@ -510,7 +605,7 @@ class ViewModel {
             return -1;
         }
     }
-	
+
 	/**
 	* Resizes maps and tables based on window size
 	* Currently only depends on screen width
@@ -547,7 +642,7 @@ class ViewModel {
 		}
         this.screenWidth = document.getElementById("sectionContainer").getBoundingClientRect().width
 	}
-	
+
 	/**
 	* Toggles the disabled class on the second map
 	*/
@@ -595,7 +690,7 @@ class ViewModel {
 		}
 		this.resize();
 	}
-	
+
 	/**
 	* Toggle between map, table, and chart on the given side
 	* newView = 0 for map, 1 for table, 2 for chart
@@ -619,11 +714,11 @@ class ViewModel {
 			document.getElementById("GraphButton"+side).classList.add("selected");
 		}
 	}
-	
+
 	openQueryPanel(side){
 		document.getElementById("queryPanel"+side).classList.remove("disabled");
 	}
-	
+
 	closeQueryPanel(side,map1,map2){
 		let pan = document.getElementById("queryPanel"+side);
 		if(pan.classList.contains("disabled")){
@@ -663,7 +758,7 @@ class ViewModel {
 			pan.classList.add("disabled");
 		}
 	}
-	
+
 	/**
 	* Toggles the value parameter of the given object between value1 and value2
 	*
@@ -678,7 +773,7 @@ class ViewModel {
 			object.value = value1
 		}
 	}
-	
+
 	toggleSrc(object, value1, value2){
 		if(object.src == value1){
 			object.src = value2
@@ -686,11 +781,11 @@ class ViewModel {
 			object.src = value1
 		}
 	}
-	
+
 	toggleSync(){
 		this.model.isLinked = !this.model.isLinked;
 	}
-	
+
 	/**
 	* Sync maps
 	*/
@@ -706,7 +801,7 @@ class ViewModel {
 			this.model.isSetByCode = false;
 		}
 	}
-	
+
 	createInfoPanel(parentDivId){
 		for(s of document.getElementsByClassName("infoPanel")){
 			if(s.parentNode.id==parentDivId){
@@ -727,9 +822,9 @@ class ViewModel {
 	}
 
     /*
-     * 
+     *
      * Helper functions for populating the map
-     *  
+     *
      */
 
     _parseFeature(tractData, colorMapping) {
@@ -788,12 +883,12 @@ class ViewModel {
             e.target.setStyle({
                 weight: 2,
                 color: 'black',
-                dashArray: '3', 
+                dashArray: '3',
                 fillOpacity: 1
             });
         }
     }
-	
+
 	_openTileInfo(map) {
 		let temp=this;
 		return function (e) {
@@ -821,13 +916,10 @@ class ViewModel {
         await fetch(new Request("http://localhost:3000/node?ask=print&iri="+node.value)).then(request => request.text()).then(function(dat){ret=dat;});
         return ret
     }
-    
+
     async getLabel(node){
         var ret = ""
-        await fetch(new Request("http://localhost:3000/node?ask=label&iri="+node.value)).then(function(request){
-            console.log("request"+request);
-            return request.text();
-        }).then(function(dat){
+        await fetch(new Request("http://localhost:3000/node?ask=label&iri="+node.value)).then(function(request){return request.text();}).then(function(dat){
             console.log("dat="+dat);
             ret=dat;
         });
@@ -836,10 +928,8 @@ class ViewModel {
 
     /**
      * Fill the medium dropdown with available options given the currently selected contaminant
-     * @param {*} node - An rdflib graph node representing the ontology term of the selected contaminant
-     * node is "" for no selection
      */
-    async fillMediumList(node="",side=1){
+    async fillMediumList(contaminant="",side=1){
         var list = document.getElementById("mediumSel"+side);
         var prev = ""
         if(list.options.length>0 && list.selectedIndex<list.options.length){
@@ -850,14 +940,12 @@ class ViewModel {
         }
         var temp = document.createElement("option")
         temp.text = "---Medium---";
-        temp.value = "";
+        temp.value = "TEMP";
         list.appendChild(temp);
-        if(node==""){
-            for(const medium of this.model.concentrationTypes.media){
+        if(contaminant==""){
+            for(const medium in this.model.concentrationTypes.media){
                 var temp = document.createElement("option")
-                await this.getLabel(medium)
-                    .then(l => {temp.text = l;})
-                temp.value = medium.value;
+                temp.text = medium
                 list.appendChild(temp);
             }
             for(const op of list.options){
@@ -867,32 +955,24 @@ class ViewModel {
                 }
             }
         } else {
-            var self = this
-            await fetch(new Request("http://localhost:3000/concentration?ask=media&contaminant="+node.value))
-            .then(response => response.json())
-            .then(async function(data){
-                for(const medium of data){
-                    var temp = document.createElement("option")
-                    await self.getLabel(medium)
-                    .then(l => {temp.text = l;})
-                    temp.value = medium.value;
-                    list.appendChild(temp);
+            var media = this.model.concentrationTypes.contaminants[contaminant]
+            for(const medium of media){
+                var temp = document.createElement("option")
+                temp.text = medium
+                list.appendChild(temp);
+            }
+            for(const op of list.options){
+                if(op.text == prev){
+                    op.selected = true;
+                    break
                 }
-                for(const op of list.options){
-                    if(op.text == prev){
-                        op.selected = true;
-                        break
-                    }
-                }
-            })
+            }
         }
     }
     /**
      * Fill the contaminant dropdown with available options given the currently selected medium
-     * @param {*} node - An rdflib graph node representing the ontology term of the selected medium
-     * node is "" for no selection
      */
-    async fillContList(node="",side=1){
+    async fillContList(medium="",side=1){
         var list = document.getElementById("contSel"+side);
         var prev = ""
         if(list.options.length>0 && list.selectedIndex<list.options.length){
@@ -903,14 +983,12 @@ class ViewModel {
         }
         var temp = document.createElement("option")
         temp.text = "---Contaminant---";
-        temp.value = "";
+        temp.value = "TEMP";
         list.appendChild(temp);
-        if(node==""){
-            for(const cont of this.model.concentrationTypes.contaminants){
+        if(medium==""){
+            for(const cont in this.model.concentrationTypes.contaminants){
                 var temp = document.createElement("option")
-                await this.getLabel(cont)
-                    .then(l => {temp.text = l;})
-                temp.value = cont.value;
+                temp.text = cont
                 list.appendChild(temp);
             }
             for(const op of list.options){
@@ -920,102 +998,48 @@ class ViewModel {
                 }
             }
         } else {
-            var self = this
-            await fetch(new Request("http://localhost:3000/concentration?ask=contaminant&medium="+node.value))
-            .then(response => response.json())
-            .then(async function(data){
-                for(const cont of data){
-                    var temp = document.createElement("option")
-                    await self.getLabel(cont)
-                    .then(l => {temp.text = l;})
-                    temp.value = cont.value;
-                    list.appendChild(temp);
+            var contaminants = this.model.concentrationTypes.media[medium]
+            for(const cont of contaminants){
+                var temp = document.createElement("option")
+                temp.text = cont
+                list.appendChild(temp);
+            }
+            for(const op of list.options){
+                if(op.text == prev){
+                    op.selected = true;
+                    break
                 }
-                for(const op of list.options){
-                    if(op.text == prev){
-                        op.selected = true;
-                        break
-                    }
-                }
-            })
+            }
         }
     }
-    async contUpdate(event,side){
+
+    async contUpdate(event,side){ // called when the user chooses a new contaminant from the dropdown
 		var contSel = document.getElementById("contSel"+side)
 		var mediumSel = document.getElementById("mediumSel"+side)
         var label = document.getElementById("searchBar"+side)
 		var contVal = contSel.options[contSel.selectedIndex].text
-		for(const cont of this.model.concentrationTypes.contaminants){
-			var tempVal = ""
-			await this.getLabel(cont).then(l => {tempVal = l;})
-			if(tempVal == contVal){
-				contVal = cont;
-				break;
-			}
-		}
-		if(contSel.value==""){
-			contVal = ""
-		}
+        if(contSel.value == "TEMP"){
+            contVal = ""
+        }
 		await this.fillMediumList(contVal,side);
-		if(mediumSel.value != "" && contSel.value != ""){
+		if(mediumSel.value != "TEMP" && contSel.value != "TEMP"){
 			var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
-			for(const medium of this.model.concentrationTypes.media){
-				var tempVal = ""
-				await this.getLabel(medium).then(l => {tempVal = l;})
-				if(tempVal == mediumVal){
-					mediumVal = medium;
-					break;
-				}
-			}
-            var self=this
-			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
-			.then(response => response.json())
-			.then(async function(data) {
-				await self.getLabel(data)
-				.then(dat=>{
-					label.value=dat
-				})
-			})
+			label.value="Concentration of "+contVal+" in "+mediumVal
 		}
 	}
 
-	async mediumUpdate(event,side){
+	async mediumUpdate(event,side){ // called when the user chooses a new medium from the dropdown
 		var contSel = document.getElementById("contSel"+side)
 		var mediumSel = document.getElementById("mediumSel"+side)
         var label = document.getElementById("searchBar"+side)
 		var mediumVal = mediumSel.options[mediumSel.selectedIndex].text
-		for(const medium of this.model.concentrationTypes.media){
-			var tempVal = ""
-			await this.getLabel(medium).then(l => {tempVal = l;})
-			if(tempVal == mediumVal){
-				mediumVal = medium;
-				break;
-			}
-		}
-		if(mediumSel.value==""){
+		if(mediumSel.value=="TEMP"){
 			mediumVal = ""
 		}
 		await this.fillContList(mediumVal,side);
-		if(mediumSel.value != "" && contSel.value != ""){
+		if(mediumSel.value != "TEMP" && contSel.value != "TEMP"){
 			var contVal = contSel.options[contSel.selectedIndex].text
-			for(const cont of this.model.concentrationTypes.contaminants){
-				var tempVal = ""
-				await this.getLabel(cont).then(l => {tempVal = l;})
-				if(tempVal == contVal){
-					contVal = cont;
-					break;
-				}
-			}
-            var self = this
-			await fetch(new Request("http://localhost:3000/?ask=concentration&chemical="+contVal.value+"&material="+mediumVal.value))
-			.then(response => response.json())
-			.then(async function(data){
-				await self.getLabel(data)
-				.then(dat=>{
-					label.value=dat
-				})
-			})
+			label.value="Concentration of "+contVal+" in "+mediumVal
 		}
 	}
 }
-
